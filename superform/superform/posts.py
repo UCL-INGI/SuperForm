@@ -63,6 +63,14 @@ def publish_from_new_post():
     return redirect(url_for('index'))
 
 
+@posts_page.route('/list_posts', methods=['GET'])
+@login_required()
+def get_all_posts():
+    from sqlalchemy import desc
+    posts = db.session.query(Post).filter(Post.user_id == session.get("user_id", "")).order_by(desc(Post.id))
+    return render_template('list_posts.html', posts=posts)
+
+
 @posts_page.route('/records')
 @login_required()
 def records():

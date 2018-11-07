@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}Superform - All my posts{% endblock %}
+{% block styles %}
+    {{super()}}
+    <link rel="stylesheet"
+          href="{{url_for('static', filename='css/style.css')}}">
+{% endblock %}
+{% block scripts %}
+    <!--<script src="{{url_for('static', filename='js/script.js')}}"></script>-->
+    {{super()}}
+{% endblock %}
+
+
+
+
+
+{% block content %}
+    <h1>All my posts</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Subject
+                    </th>
+                    <th>
+                        Body
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for p in posts %}
+                    <tr>
+                        <td>
+                            {{ p.id }}
+                        </td>
+                        <td>
+                            {{ p.title }}
+                        </td>
+                        <td>
+                            {{ p.description }}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-primary" contenteditable="true">Edit</button>
+                            <button type="button" class="btn btn-outline-primary" contenteditable="true">Copy</button>
+                            <button type="button" class="btn btn-outline-primary" contenteditable="true">Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
