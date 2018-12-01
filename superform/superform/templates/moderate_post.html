@@ -41,6 +41,9 @@
                             </div>
                         </div>
                     </div>
+                    {% set module_name = chan.module.split('.')[2].lower() %}
+                    {% set template = 'plugins/' + module_name + '/moderate.html' %}
+                    {% include template ignore missing %}
                 </div>
             </div>
             <button class="btn btn-success" {% if notconf %} disabled {% endif %}>Publish</button>
@@ -48,5 +51,13 @@
     {% else %}
         Your are not logged in.
     {% endif %}
+
+{% endblock %}
+{% block scripts %}
+    <script>
+        {% set module_name = chan.module.split('.')[2].lower() %}
+        {% set template = 'plugins/' + module_name + '/moderate.js'%}
+        {% include template ignore missing %}
+    </script>
 
 {% endblock %}
