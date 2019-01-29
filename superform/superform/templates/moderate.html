@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Moderation{% endblock %}
+{% block content %}
+    {% if session.logged_in %}
+        <h1>Moderation</h1>
+        <div class="row">
+            <div class="col-md-12">
+
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Channel</th>
+                            <th>Subject</th>
+                            <th>Body</th>
+                            <th>Author</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in publishings %}
+                            <tr>
+                                <td>{{ item.channel.name }}</td>
+                                <td>
+                                    {% if item.title == "" %}
+                                        <span class="text-muted">(vide)</span>
+                                    {% else %}
+                                        {{ item.title }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.description == "" %}
+                                        <span class="text-muted">(vide)</span>
+                                    {% else %}
+                                        {{ item.description[:100] }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.get_author() }}</td>
+                                <td>
+                                    <a href="{{ url_for('publishings.moderate_publishing',id=item.post_id,idc=item.channel_id) }}" class="btn btn-outline-primary" role="button">Moderate</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+            </div>
+        </div>
+    {% else %}
+        <p>You are not logged in.</p>
+    {% endif %}
+{% endblock %}

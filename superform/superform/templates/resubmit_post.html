@@ -1,0 +1,257 @@
+{% extends "layout.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat_bubble.css') }}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}" crossorigin="anonymous">
+{% endblock %}
+{% block title %}Resubmit{% endblock %}
+{% block content %}
+    <h1>resubmit this publication</h1>
+    {% if session.logged_in %}
+        <form method="POST" action="">
+            <div class="row"  module-namechan="{{channel.module }}">
+                <div id="modify_pub" class="col-md-4">
+                    <div class="form-group">
+                        <label for="titlepost">Title</label><br>
+                        <input type="text" name="titlepost" id="titlepost" class="form-control" value="{{ pub.title }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="descrpost">Description</label><br>
+                        <textarea class="form-control" rows="5" id="descrpost" name="descrpost">{{ pub.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="linkurlpost">Link</label><br>
+                        <input type="text" name="linkurlpost" id="linkurlpost" class="form-control" value="{{ pub.link_url }}">
+                    </div>
+                    {% if channel.module == "superform.plugins.gcal" %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                <label for="datedebut">Starting date</label><br>
+                                <input  type="date" name="datedebut" id="datedebut" class="form-control" value="{{ pub.date_start }}">
+                            </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="heuredebut">Starting time</label><br>
+                                    <input type="time" name="heuredebut" id="heuredebut"  class="form-control" value="{{ pub.hour_start }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="datefin">Ending date</label><br>
+                                    <input type="date" name="datefin" id="datefin" class="form-control" value="{{ pub.date_end }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="heurefin">Ending time</label><br>
+                                    <input type="time" name="heurefin" id="heurefin" class="form-control" value="{{ pub.hour_end }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label><br>
+                            <input type="text" name="location" id="location" class="form-control" value="{{ pub.location }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="color">Color</label><br>
+                            <input type="text" name="color" id="color" class="form-control" value="{{ pub.color_id }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="visibility">Visibility</label><br>
+                            <input type="text" name="visibility" id="visibility" class="form-control" value="{{ pub.visibility }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="availability">Availability</label><br>
+                            <input type="text" name="availability" id="availability" class="form-control" value="{{ pub.availability }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="guests">Guests emails</label><br>
+                            <input type="text" name="guests" id="guests" class="form-control" value="{{ pub.guests }}">
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="imagepost">Image</label><br>
+                        <input type="file" name="imagepost" id="imagepost" class="form-control" value="{{ pub.image_url }}">
+                    </div>
+                    {% if channel.module != "superform.plugins.gcal" %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="datefrompost">Publication Date</label><br>
+                                <input id="datefrompost" name="datefrompost" type="date" class="form-control" value="{{ pub.date_from }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateuntilpost">Publication Until</label><br>
+                                <input id="dateuntilpost" name="dateuntilpost" type="date" class="form-control" value="{{ pub.date_until }}">
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div id="old_pub" class="col-md-4">
+                    <div class="form-group">
+                        <label for="titlepost_old">Title</label><br>
+                        <input disabled type="text" id="titlepost_old" class="form-control" value="{{ pub.title }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="descrpost_old">Description</label><br>
+                        <textarea disabled class="form-control" rows="5" id="descrpost_old">{{ pub.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="linkurlpost_old">Link</label><br>
+                        <input disabled type="text" id="linkurlpost_old" class="form-control" value="{{ pub.link_url }}">
+                    </div>
+                    {% if channel.module == "superform.plugins.gcal" %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                <label for="datedebut_old">Starting date</label><br>
+                                <input disabled type="date" id="datedebut_old" class="form-control" value="{{ pub.date_start }}">
+                            </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="heuredebut_old">Starting time</label><br>
+                                    <input disabled type="time" id="heuredebut_old"  class="form-control" value="{{ pub.hour_start }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="datefin_old">Ending date</label><br>
+                                    <input disabled type="date" id="datefin_old" class="form-control" value="{{ pub.date_end }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="heurefin_old">Ending time</label><br>
+                                    <input disabled type="time" id="heurefin_old" class="form-control" value="{{ pub.hour_end }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="location_old">Location</label><br>
+                            <input type="text" id="location_old" class="form-control" value="{{ pub.location }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="color_old">Color</label><br>
+                            <input type="text" id="color_old" class="form-control" value="{{ pub.color_id }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="visibility_old">Visibility</label><br>
+                            <input type="text" id="visibility_old" class="form-control" value="{{ pub.visibility }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="availability_old">Availability</label><br>
+                            <input type="text" id="availability_old" class="form-control" value="{{ pub.availability }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="guests">Guests emails</label><br>
+                            <input type="text" id="guests_old" class="form-control" value="{{ pub.guests }}">
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="imagepost_old">Image</label><br>
+                        <input disabled type="file" id="imagepost_old" class="form-control" value="{{ pub.image_url }}">
+                    </div>
+                    {% if channel.module != "superform.plugins.gcal" %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="datefrompost_old">Publication Date</label><br>
+                                <input disabled id="datefrompost_old" type="date" class="form-control" value="{{ pub.date_from }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateuntilpost_old">Publication Until</label><br>
+                                <input disabled id="dateuntilpost_old" type="date" class="form-control" value="{{ pub.date_until }}">
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div id="pagination_old" class="row">
+                        <div class="col-md-2 text-center">
+                            <a id="prev_button" class="btn_a disabled"><i class="fas fa-angle-double-left fa-2x"></i></a>
+                        </div>
+                        <div class="col-md-8">
+                            <h4 id="current_date" style="text-align: center"></h4>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <a id="next_button" class="btn_a disabled"><i class="fas fa-angle-double-right fa-2x"></i></a>
+                        </div>
+                    </div>
+                 </div>
+                <div id="comment_pub" class="col-md-4">
+                    <div id="chat_box" class="card" style="display: none">
+                        <div class="card-header">Comments</div>
+                        <div class="card-body scroll">
+                            {% for comment in comments %}
+                                {% if comment != None %}
+                                    {% if comment.user_comment != None and comment.user_comment != ''%}
+                                        <div class="talk-bubble right round tri-right btm-right-in">
+                                          <div id="user_{{ loop.index }}" class="talktext">
+                                              <h6>{{ comment.date_user_comment }}</h6>
+                                              <p>{{ comment.user_comment }}</p>
+                                          </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if comment.moderator_comment != None and comment.moderator_comment != '' %}
+                                        <div class="talk-bubble left round tri-right btm-left-in">
+                                          <div id="mod_{{ loop.index }}" class="talktext">
+                                              <h6>{{ comment.date_moderator_comment }}</h6>
+                                              <p>{{ comment.moderator_comment }}</p>
+                                          </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div id="mod_comment" class="form-group">
+                        <label for="user_comment">Your comment</label><br>
+                        <textarea class="form-control" rows="5" id="user_comment" name="user_comment"></textarea>
+                    </div>
+                </div>
+            </div>
+            <button id="resubmit" class="btn btn-success" type="submit" formaction="{{ url_for('posts.resubmit_publishing', id=pub.publishing_id) }}" formmethod="post">re-submit</button>
+        </form>
+        <div class="modal fade" id="modalResubmitModerate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                <button id="close_button_moderate"  type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+               <p> Are you sure to submit without comment ?</p>
+              </div>
+              <div class="modal-footer">
+                <button id="close_button_moderate" type="button" class="btn btn-secondary" data-dismiss="modal">no</button>
+                <button id="yes_button_moderate" type="submit" class="btn btn-primary">yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% else %}
+        You are not logged in.
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+    let pubs = JSON.parse({{ pub_versions|tojson }}).reverse();
+    let coms = JSON.parse({{ pub_comments|tojson }});
+    var post_form_validations ={{ post_form_validations|tojson }}
+    </script>
+    <script src="{{ url_for('static', filename='js/post_and_publishing_utils.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/resubmit_moderate.js') }}" crossorigin="anonymous"></script>
+{% endblock %}

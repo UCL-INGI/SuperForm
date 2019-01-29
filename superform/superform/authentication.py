@@ -8,6 +8,7 @@ from superform.models import db, User
 
 authentication_page = Blueprint('authentication', __name__)
 
+
 def prepare_saml_request(request):
     acs_config = current_app.config["SAML"]["sp"]["assertionConsumerService"]
     acs_config["url"] = url_for("authentication.callback", _external=True)
