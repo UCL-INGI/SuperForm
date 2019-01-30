@@ -5,11 +5,12 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+        <meta name="theme-color" content="#343a40">
         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" crossorigin="anonymous">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome.min.css') }}" crossorigin="anonymous">
-
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome.min.css') }}">
+        <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
+        {% block stylesheet %}{% endblock %}
         <title>{% block title %}{% endblock %} - Superform</title>
         {% endblock %}
     </head>
@@ -22,25 +23,34 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                     <li class="nav-item {{ 'active' if request.endpoint == 'index' else '' }}">
                         <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
                     </li>
                     {% if session.logged_in %}
-                        <li class="nav-item">
+                        <li class="nav-item {{ 'active' if request.endpoint == 'posts.new_post' else '' }}">
                             <a class="nav-link" href="{{ url_for('posts.new_post')}}">New post</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item {{ 'active' if request.endpoint == 'posts.records' else '' }}">
                             <a class="nav-link" href="{{ url_for('posts.records')}}">Archives</a>
                         </li>
-                        <li class="nav-item {{ 'active' if request.endpoint == 'authorizations.authorizations' else '' }}">
-                            <a class="nav-link" href="{{ url_for('authorizations.authorizations') }}">Authorizations</a>
-                        </li>
-                        <li class="nav-item {{ 'active' if request.endpoint == 'channels.channel_list' else '' }}">
-                            <a class="nav-link" href="{{ url_for('channels.channel_list') }}">Channels</a>
-                        </li>
+                        {% if session.admin %}
+                            <li class="nav-item {{ 'active' if request.endpoint == 'authorizations.authorizations' else '' }}">
+                                <a class="nav-link" href="{{ url_for('authorizations.authorizations') }}">Authorizations</a>
+                            </li>
+                            <li class="nav-item {{ 'active' if request.endpoint == 'channels.channel_list' else '' }}">
+                                <a class="nav-link" href="{{ url_for('channels.channel_list') }}">Channels</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item {{ 'active' if request.endpoint == 'publishings.moderate' else '' }}">
+                                <a class="nav-link" href="{{ url_for('publishings.moderate') }}">
+                                    Moderate
+                                    <span class="badge badge-secondary">
+                                        {{ session.notification }}
+                                    </span>
+                                </a>
+                            </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ session.first_name }} {{ session.name }}
@@ -62,10 +72,9 @@
         </div>
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}" crossorigin="anonymous"></script>
-        <script src="{{ url_for('static', filename='js/popper.min.js') }}" crossorigin="anonymous"></script>
-        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" crossorigin="anonymous"></script>
-
+        <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
         {% block scripts %}{% endblock %}
     </body>
 </html>

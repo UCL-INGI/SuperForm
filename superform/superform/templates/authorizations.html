@@ -1,82 +1,155 @@
 {% extends "layout.html" %}
 {% block title %}Authorizations{% endblock %}
+{% block stylesheet %}
+{% endblock %}
 {% block content %}
-    <h1>Authorizations</h1>
     {% if rw_channels|length==0 %}
     <p>You have no channel to moderate</p>
     {% else %}
-        <form method="post">
-            <div id="accordion">
-                {% for channel in rw_channels %}
-                    <div class="card mb-2">
-                        <div class="card-header" id="heading{{ loop.index }}">
-                            <h5 class="mb-0">
-                                <i class="fas fa-fw fa-chevron-right"></i>
-                                <button type=button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapseOne">
-                                    {{ channel.name }}
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#accordion">
-                            <div class="card-body p-0">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Person</th>
-                                            <th>Permission</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for authorization in channel.authorizations %}
-                                            {% set is_session_user = authorization.user_id == session["user_id"] %}
+        <div class="container">
+            <h1>Authorizations</h1>
+            <form method="post">
+                <div id="accordion">
+                    {% for channel in rw_channels %}
+                        <div class="card mb-2">
+                            <div class="card-header" id="heading{{ loop.index }}">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-fw fa-chevron-right"></i>
+                                    <button name="{{ channel.name }}" type=button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapseOne">
+                                        {{ channel.name }}
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#accordion">
+                                <div class="card-body p-0">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Person</th>
+                                                <th>Permission</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for authorization in channel.authorizations %}
+                                                {% set is_session_user = authorization.user_id == session["user_id"] %}
+                                                <tr>
+                                                    <td>{{ authorization.user_id }}</td>
+                                                    <td>
+                                                        <select class="form-control" id="sel1" name="permission_edit#{{ authorization.user_id }}#{{ channel.id }}" {{ 'disabled' if is_session_user else '' }}>
+                                                            {% for permission in permissions %}
+                                                                <option value="{{ permission.value }}" {{ 'selected' if authorization.permission == permission.value else '' }}>{{ permission }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <a type="button" href="{{ url_for('authorizations.delete_authorization',id=authorization.user_id,cid=authorization.channel_id) }}" class="btn btn-danger">Delete</a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
                                             <tr>
                                                 <td>
-                                                    {{ authorization.user_id }}
+                                                    <input type="hidden" name="channel_id{{ loop.index }}" value="{{ channel.id }}">
+                                                    <input class="form-control js-search-user" type="text" placeholder="Username" name="username{{ loop.index }}" data-trigger="focus" data-toggle="popover" data-placement="bottom" data-content="Enter a username" autocomplete="off">
                                                 </td>
                                                 <td>
-                                                    <select class="form-control" id="sel1" name="permission_edit#{{ authorization.user_id }}#{{ channel.id }}" {{ 'disabled' if is_session_user else '' }}>
+                                                    <select class="form-control" id="sel1" name="permission{{ loop.index }}">
                                                         {% for permission in permissions %}
-                                                            <option value="{{ permission.value }}" {{ 'selected' if authorization.permission == permission.value else '' }}>{{ permission }}</option>
+                                                            <option value="{{ permission.value }}">{{ permission }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    {% if not is_session_user %}
-                                                        <a type="button" href="{{ url_for('authorizations.delete_authorization',id=authorization.user_id,cid=authorization.channel_id) }}" class="btn btn-danger">Delete</a>
-                                                    {% endif %}
+                                                    <a href="#" type="button" data-channelid="{{ channel.id }}" class="add btn btn-success">Add</a>
                                                 </td>
                                             </tr>
-                                        {% endfor %}
-                                        <tr>
-                                            <td>
-                                                <input type="hidden" name="channel_id{{ loop.index }}" value="{{ channel.id }}">
-                                                <input class="form-control" type="text" placeholder="Username" name="username{{ loop.index }}">
-                                            </td>
-                                            <td>
-                                                <select class="form-control" id="sel1" name="permission{{ loop.index }}">
-                                                    {% for permission in permissions %}
-                                                        <option value="{{ permission.value }}">{{ permission }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <a href="#" type="button" data-channelid="{{ channel.id }}" class="add btn btn-success">Add</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <button class="btn btn-warning">Update</button>
-        </form>
+                    {% endfor %}
+                </div>
+                <button id="update" class="btn btn-warning">Update</button>
+            </form>
+        </div>
     {% endif %}
 {% endblock %}
 {% block scripts %}
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script>
+        var address = "{{ url_for('api.search')}}";
+
+        function searchUser(input) {
+
+            var value = input.val()
+
+            if (value.length === 0) {
+                input.attr("data-content", "Enter a username");
+                input.data("bs.popover").show();
+                return;
+            }
+
+            $.getJSON(address, {
+                "name": value
+            }, function(json) {
+
+                if (typeof json === 'undefined') {
+                    input.attr("data-content", "Error");
+                    input.data("bs.popover").show();
+                    return;
+                }
+                if (json.length === 0) {
+                    input.attr("data-content", "No result");
+                    input.data("bs.popover").show();
+                    return;
+                }
+
+                var container = $("<div>");
+
+                for (var k = 0; k < json.length; k++) {
+
+                    var a = $("<a>");
+                    a.text(json[k]["id"]);
+                    a.attr("href", "#");
+
+                    var span = $("<span>");
+                    span.text("(" + json[k]["first_name"] + " " + json[k]["name"] + ")");
+                    span.addClass("text-muted");
+
+                    var div = $("<div>");
+                    div.append(a);
+                    div.append(span);
+                    container.append(div);
+                }
+
+                input.attr("data-content", container.html());
+                input.data("bs.popover").show();
+            });
+        }
+
+        function addPopoverEvents(input) {
+            var tip = input.data("bs.popover").tip;
+            tip.querySelectorAll("a").forEach(function(link) {
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    input.val(this.innerText);
+                });
+            });
+        }
+
+        function addPopover(input) {
+            input.popover({
+                html: true
+            });
+            input.on("keyup", debounce(function() {
+                searchUser($(this));
+            }, 300));
+            input.on('shown.bs.popover', function() {
+                addPopoverEvents($(this));
+            });
+        }
+
         $('.collapse').on('show.bs.collapse hide.bs.collapse', function () {
             $(this).parent().find('i').toggleClass('fa-chevron-right').toggleClass('fa-chevron-down');
         });
@@ -85,19 +158,24 @@
            $(e).parent().parent().remove();
         }
 
-        $('.add').on('click',function(){
+        $('.add').on('click',function() {
            var nbinput = ($('input').length)/2;
-           var chanid = $(this).data("channelid")
-           $(this).parent().parent().parent().append('<tr><td><input type="hidden" name="channel_id'+nbinput+'" value="'+chanid+'"><input class="form-control" type="text" placeholder="Username" name="username'+nbinput+'"></td><td><select class="form-control" id="sel1"name="permission'+nbinput+'">\n' +
+           var chanid = $(this).data("channelid");
+           var parent = $(this).parent().parent().parent();
+           parent.append('<tr><td><input type="hidden" name="channel_id'+nbinput+'" value="'+chanid+'"><input class="form-control js-search-user" data-trigger="focus" data-toggle="popover" data-placement="bottom" data-content="Enter a username" autocomplete="off" type="text" placeholder="Username" name="username'+nbinput+'"></td><td><select class="form-control" id="sel1"name="permission'+nbinput+'">\n' +
                '{% for permission in permissions %}\n'+
                    '<option value="{{ permission.value }}">{{ permission }}</option>\n'
                    +
                    '{% endfor %}\n' +
                '</select></td><td><button class="remove btn btn-warning" onclick="remove(this)">Remove</button></td></tr>');
+
+           addPopover(parent.find(".js-search-user").last());
         });
 
 
-
+        $(".js-search-user").each(function() {
+            addPopover($(this));
+        });
 
     </script>
 {% endblock %}

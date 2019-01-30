@@ -6,8 +6,8 @@
         <thead class="thead-light">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
                 <th scope="col">Module</th>
+                <th scope="col">Name</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -15,8 +15,10 @@
             {% for channel in channels %}
             <tr>
                 <th scope="row">{{ channel.id }}</th>
+                <td>
+                    <div > <img  width="35" height="35" src="static/logos/{{ channel.module.split('.')[2] }}_logo.png" title="{{ channel.module.split('.')[2] }}" alt="{{ channel.module.split('.')[2] }}" /></div>
+                </td>
                 <td>{{ channel.name }}</td>
-                <td>{{ channel.module.split('.')[2] }}</td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
                         <a href="{{ url_for('channels.configure_channel',id=channel.id) }}" class="btn btn-secondary" type="button">Configure</a>
@@ -28,24 +30,27 @@
             {% endfor %}
         </tbody>
     </table>
-    <form class="form-inline" method="post">
+    <form class="form-inline" method="post" onsubmit="Correction()">
         <input type="hidden" name="@action" value="new">
         <label class="sr-only" for="inlineFormInputText">Username</label>
-        <div class="input-group mr-sm-2">
-            <input name="name" type="text" class="form-control" id="inlineFormInputText" placeholder="New channel name">
-        </div>
-
         <label class="sr-only" for="inlineFormCustomSelectModule">Module</label>
         <div class="input-group mr-sm-2">
             <select name="module" class="custom-select" id="inlineFormCustomSelectModule">
                 <option selected>Choose a module...</option>
                 {% for module in modules %}
-                <option value="{{ module }}">{{ module }}</option>
+                <option value="{{ module }}">
+                    {{ module }}
+                </option>
                 {% endfor %}
             </select>
         </div>
+        <div class="input-group mr-sm-2" >
+            <input name="name" type="text" class="form-control" id="inlineFormInputName" placeholder="New channel name">
+            <input name="username" type="text" hidden class="form-control" id="inlineFormInputTextUserName" placeholder="New channel username">
+            <input name="password" type="password" hidden class="form-control" id="inlineFormInputTextPassword" placeholder="New channel password">
+        </div>
 
-        <button type="submit" class="btn btn-primary">
+        <button id="add_chan_button" name="add_chan" type="submit" class="btn btn-primary" >
             <i class="fas fa-fw fa-plus"></i>Add a new channel
         </button>
     </form>
@@ -88,6 +93,8 @@
                     </div>
                     <div class="modal-body">
                         <input name="name" type="text" class="form-control" id="inlineFormInputText" placeholder="New channel name">
+                        <input name="username" type="text" class="form-control" id="inlineFormInputText" placeholder="New channel username">
+                        <input name="password" type="password" class="form-control" id="inlineFormInputText" placeholder="New channel password">
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-warning">Update</button>
@@ -101,6 +108,12 @@
 {% endblock %}
 {% block scripts %}
     <script>
+        function Correction() {
+            var corr_prov = $("#inlineFormInputName").val();
+            var corr= corr_prov.replace(/([,:;.?!")'{}(^+=~%$ ])/g, "_");
+            $("#inlineFormInputName").val(corr);
+        }
+
         $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             $(this).find('#channel-name').text(button.data('name'));
@@ -111,5 +124,10 @@
             $(this).find('#channel-name').text(button.data('name'));
             $(this).find('#channel-id').val(button.data('id'));
         });
+    </script>
+    <script src="{{ url_for('static', filename='js/channel.js') }}" crossorigin="anonymous">  </script>
+    <script type="text/javascript">
+        var auth_fields = {{ auth_fields|tojson }}
+
     </script>
 {% endblock %}

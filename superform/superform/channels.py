@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, current_app, url_for, request, make_response, redirect, session, render_template
+from flask import Blueprint, current_app, url_for, request, redirect, render_template
 
 from superform.utils import login_required, get_instance_from_module_path, get_modules_names, get_module_full_name
 from superform.models import db, Channel
@@ -56,18 +56,15 @@ def configure_channel(id):
     config_fields = clas.CONFIG_FIELDS
 
     if request.method == 'GET':
-        if (c.config is not ""):
+        if c.config is not "":
             d = ast.literal_eval(c.config)
             setattr(c, "config_dict", d)
         return render_template("channel_configure.html", channel=c, config_fields=config_fields)
-    str_conf = "{"
-    cfield = 0
+
+    cfg = {}
     for field in config_fields:
-        if cfield > 0:
-            str_conf += ","
-        str_conf += "\"" + field + "\" : \"" + request.form.get(field) + "\""
-        cfield += 1
-    str_conf += "}"
-    c.config = str_conf
+        cfg[field] = request.form.get(field)
+    c.config = json.dumps(cfg)
+
     db.session.commit()
     return redirect(url_for('channels.channel_list'))

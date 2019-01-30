@@ -5,9 +5,15 @@ from smtplib import SMTPException
 from flask import current_app
 import json
 
-FIELDS_UNAVAILABLE = ['Title','Description']
+from superform import db
+from superform.models import State
 
-CONFIG_FIELDS = ["sender","receiver"]
+FIELDS_UNAVAILABLE = ["Image"]
+
+CONFIG_FIELDS = ["sender", "receiver"]
+AUTH_FIELDS = False
+POST_FORM_VALIDATIONS = {}
+
 
 def run(publishing,channel_config):
     json_data = json.loads(channel_config)
@@ -29,5 +35,38 @@ def run(publishing,channel_config):
         smtpObj.sendmail(sender, receivers, text)
         smtpObj.quit()
     except SMTPException as e:
-        #TODO should add log here
+        # TODO should add log here
         print(e)
+    publishing.state = State.VALIDATED_SHARED.value
+    db.session.commit()
+
+
+# Methods from other groups :
+def authenticate(channel_name, publishing_id):
+    return "AlreadyAuthenticated"
+
+
+def post_pre_validation(post):
+    return 1;
+
+
+# returns the name of an extra form, None if not needed
+def get_template_new():
+    return None
+
+
+# returns the name of an extra form (pre-fillable), None if not needed
+def get_template_mod():
+    return None
+
+
+def saveExtraFields(channel, form):
+    return None
+
+
+def deletable():
+    return True
+
+
+def delete(pub):
+    pass

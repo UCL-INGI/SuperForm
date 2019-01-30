@@ -2,8 +2,6 @@ from datetime import datetime
 from functools import wraps
 from flask import render_template, session, current_app
 
-from superform.models import Authorization, Channel
-
 
 def login_required(admin_required=False):
     def decorator(f):
@@ -17,11 +15,21 @@ def login_required(admin_required=False):
     return decorator
 
 
+def datetime_now():
+    return datetime.now()
+
+
 def datetime_converter(stri):
     return datetime.strptime(stri, "%Y-%m-%d")
 
+
 def str_converter(datet):
-    return datetime.strftime(datet,"%Y-%m-%d")
+    return datetime.strftime(datet, "%Y-%m-%d")
+
+
+def str_converter_with_hour(datet):
+    return datetime.strftime(datet, "%Y-%m-%d %H:%M:%S")
+
 
 def get_instance_from_module_path(module_p):
     module_p=module_p.replace(".","/")
