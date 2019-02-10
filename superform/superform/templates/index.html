@@ -4,10 +4,12 @@
     <h1>Index</h1>
 
     {% if session.logged_in %}
+
         <div class="row">
         <div class="col-md-12">
             {% if user.is_mod %}
                 <h2>Unmoderated Publishings</h2>
+                    <div id="search_unmoderated">{% include 'search_unmoderated_publishings.html' %} </div>
                 <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -28,14 +30,17 @@
                     </th>
                   </tr>
                 </thead>
-
-                <tbody>
+                <tbody class="list-publishings">
                 {% for p in publishings %}
                     <tr>
                         <td>
-                            {{ p.channel.name }}
+                            {% for chan in channels %}
+                            {% if p.channel_id == chan.id %}
+                            {{chan.name}}
+                            {% endif %}
+                            {% endfor %}
                         </td>
-                        <td>
+                        <td >
                             {{ p.title }}
                         </td>
                         <td>
@@ -56,6 +61,7 @@
                 </table>
             {% endif %}
             <h2>All my posts</h2>
+                            <div id="search_post">{% include 'search_post.html' %} </div>
             <table class="table table-bordered">
             <thead>
               <tr>
@@ -74,7 +80,7 @@
               </tr>
             </thead>
 
-            <tbody>
+            <tbody class="list-posts">
                 {% for item in posts %}
                 <tr>
                     <td>
@@ -92,16 +98,76 @@
                         <a href="#" class="btn btn-outline-primary" role="button">Edit</a>
                         <a href="#" class="btn btn-outline-primary">Copy</a>
                         <a href="#" class="btn btn-outline-warning" role="button">Delete</a>
+                        <!-- Team06: Export to PDF feature -->
+                        <button type="button" class="btn btn-info"
+                                data-toggle="modal" data-target="#exportModal"
+                                data-id="{{ item.id }}">
+                            <i class="fas fa-fw fa-file-pdf"></i> Export
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
             </table>
         </div>
-      </div>
     {% else %}
         <p>You are not logged in.</p>
     {% endif %}
 
+    <!-- Team06: Export to PDF feature -->
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post">
+                    <input type="hidden" name="@action" value="export">
+                    <input id="post-id" type="hidden" name="id" value="">
+                    <input id="chan-id" type="hidden" name="idc" value="">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Export to PDF</h5>
+                        <button type="button" class="close"
+                                data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Which template would you like to use ?</p>
+                    </div>
+                    <!--<form class="form-inline" method="post">-->
+                        <input type="hidden" name="@action" value="templates">
+                        <label class="sr-only" for="inlineFormInputText">Username</label>
+                        <label class="sr-only"
+                               for="inlineFormCustomSelectTemplate">Template</label>
+                        <div class="input-group mr-sm-2">
+                            <select name="template" class="custom-select"
+                                    id="inlineFormCustomSelectTemplate">
+                                <option selected>Choose a template...</option>
+                                {% for template in templates %}
+                                    <option value="{{ template.id }}">{{ template.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    <!--</form>-->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info">Export to pdf
+                        </button>
+                        <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('#exportModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            $(this).find('#chan-id').val(button.data('idc'));
+            $(this).find('#post-id').val(button.data('id'));
+        });
+    </script>
 {% endblock %}
