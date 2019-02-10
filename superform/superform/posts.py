@@ -1,9 +1,12 @@
-from flask import Blueprint, url_for, request, redirect, session, render_template
+import datetime
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from superform.users import channels_available_for_user
-from superform.utils import login_required, datetime_converter, str_converter, get_instance_from_module_path
-from superform.models import db, Post, Publishing, Channel
+
+from superform.models import db, Channel, Post, Publishing, State, User
 from superform.publishings import create_a_publishing
+from superform.utils import login_required, datetime_converter, str_converter, get_instance_from_module_path
+
 
 posts_page = Blueprint('posts', __name__)
 
@@ -28,16 +31,31 @@ def create_a_post(form):
 def new_post():
     user_id = session.get("user_id", "") if session.get("logged_in", False) else -1
     list_of_channels = channels_available_for_user(user_id)
+
+    ictv_chans = []
+
     for elem in list_of_channels:
         m = elem.module
+
         clas = get_instance_from_module_path(m)
-        unaivalable_fields = ','.join(clas.FIELDS_UNAVAILABLE)
-        setattr(elem, "unavailablefields", unaivalable_fields)
+        unavailable_fields = ','.join(clas.FIELDS_UNAVAILABLE)
+        setattr(elem, "unavailablefields", unavailable_fields)
+
+        if 'ictv_data_form' in unavailable_fields:
+            ictv_chans.append(elem)
 
     if request.method == "GET":
-        return render_template('new.html', l_chan=list_of_channels)
+        ictv_data = None
+        if len(ictv_chans) != 0:
+            from plugins.ictv import process_ictv_channels
+            ictv_data = process_ictv_channels(ictv_chans)
+
+        return render_template('new.html', l_chan=list_of_channels, ictv_data=ictv_data)
     else:
+        # Save as draft
+        # FIXME Maybe refactor the code so that this part is not too confusing?
         create_a_post(request.form)
+        flash("The post was successfully saved as draft", category='success')
         return redirect(url_for('index'))
 
 
@@ -60,6 +78,7 @@ def publish_from_new_post():
                 pub = create_a_publishing(p, c, request.form)
 
     db.session.commit()
+    flash("The post was successfully submitted.", category='success')
     return redirect(url_for('index'))
 
 

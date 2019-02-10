@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}Configure Channel{% endblock %}
+{% block content %}
+    <h1>Configuration</h1>
+    {% if session.logged_in %}
+        <form method="POST" action="">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="{{ config_fields[0] }}">{{ config_fields[0] }}</label><br>
+                                    <input type="text" name="{{ config_fields[0] }}" id="{{ config_fields[0] }}" class="form-control" value="{{ channel.config_dict.get(config_fields[0]) }}" readonly>
+                                    <a type="button" class="btn btn-outline-primary" href="{{ url_token }}" style="margin-top:10px">Get Access-Token</a>
+                                </div>
+                                <div class="form-group">
+                                    <label for="page">page</label><br>
+                                    <select name="page" size = "1" id="page" class="form-control" onChange="{{ select_page }}">
+                                        {% for page in pages %}
+                                            {% if page['id'] == channel.config_dict.get(config_fields[1]) %}
+                                                <option selected value={{ page['id'] }}>{{ page['name'] }}</option>
+                                            {% else %}
+                                                <option value={{ page['id'] }}>{{ page['name'] }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success" type="submit">Save Configuration</button>
+            <a type="button" class="btn btn-outline-primary" href="{{ url_for('channels.channel_list') }}">Abort</a>
+        </form>
+    {% else %}
+        Your are not logged in.
+    {% endif %}
+
+{% endblock %}
+

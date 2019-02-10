@@ -4,6 +4,12 @@ import datetime
 
 db = SQLAlchemy()
 
+class State(Enum):
+    INCOMPLETE = -1
+    NOTVALIDATED = 0
+    VALIDATED = 1
+    PUBLISHED = 2
+
 
 class User(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True, nullable=False)
@@ -38,12 +44,12 @@ class Post(db.Model):
         return '<Post {}>'.format(repr(self.id))
 
     def is_a_record(self):
-        if (len(self.publishings) == 0):
+        if len(self.publishings) == 0:
             return False
         else:
             # check if all the publications from a post are archived
             for pub in self.publishings:
-                if (pub.state != 2):
+                if pub.state != State.PUBLISHED.value:
                     # state 2 is archived.
                     return False
             return True
@@ -52,7 +58,7 @@ class Post(db.Model):
 class Publishing(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey("channel.id"), nullable=False)
-    state = db.Column(db.Integer, nullable=False, default=-1)
+    state = db.Column(db.Integer, nullable=False, default=State.INCOMPLETE)
     title = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
     link_url = db.Column(db.Text)
@@ -99,10 +105,3 @@ class Authorization(db.Model):
 class Permission(Enum):
     AUTHOR = 1
     MODERATOR = 2
-
-
-class State(Enum):
-    INCOMPLETE = -1
-    NOTVALIDATED = 0
-    VALIDATED = 1
-    PUBLISHED = 2

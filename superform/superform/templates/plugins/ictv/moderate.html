@@ -1,0 +1,10 @@
+{%  if 'ictv_data_form' in chan.unavailablefields  %}
+    {{ ictv_data[chan.name]['error']|safe }}
+    <!-- Generate table dropdown for ictv channel options -->
+    {{ ictv_data[chan.name]['dropdown']|safe }}
+{% endif %}
+
+{%  if 'ictv_data_form' in chan.unavailablefields  %}
+    <!-- ICTV extra data form -->
+    {{ ictv_data[chan.name]['data']|safe }}
+{% endif %}

@@ -9,6 +9,7 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome.min.css') }}" crossorigin="anonymous">
+        {% block styles %}{% endblock %}
 
         <title>{% block title %}{% endblock %} - Superform</title>
         {% endblock %}
@@ -58,6 +59,7 @@
             </div>
         </nav>
         <div class="container-fluid">
+            {% block messages %}{% endblock %}
             {% block content %}{% endblock %}
         </div>
         <!-- Optional JavaScript -->

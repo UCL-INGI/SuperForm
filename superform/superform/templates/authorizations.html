@@ -80,11 +80,9 @@
         $('.collapse').on('show.bs.collapse hide.bs.collapse', function () {
             $(this).parent().find('i').toggleClass('fa-chevron-right').toggleClass('fa-chevron-down');
         });
-
         function remove(e){
            $(e).parent().parent().remove();
         }
-
         $('.add').on('click',function(){
            var nbinput = ($('input').length)/2;
            var chanid = $(this).data("channelid")
@@ -95,9 +93,5 @@
                    '{% endfor %}\n' +
                '</select></td><td><button class="remove btn btn-warning" onclick="remove(this)">Remove</button></td></tr>');
         });
-
-
-
-
     </script>
 {% endblock %}
