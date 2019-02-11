@@ -54,18 +54,33 @@ def configure_channel(id):
     m = c.module
     clas = get_instance_from_module_path(m)
     config_fields = clas.CONFIG_FIELDS
-
     if request.method == 'GET':
-        if (c.config is not ""):
+        if c.config is not "":
             d = ast.literal_eval(c.config)
             setattr(c, "config_dict", d)
+            # TEAM06: addition for pdf feature
+            if str(m) == 'superform.plugins.pdf':
+                return pdf_plugin(id, c, config_fields)
+            # TEAM06: end addition
+
         return render_template("channel_configure.html", channel=c, config_fields=config_fields)
     str_conf = "{"
     cfield = 0
     for field in config_fields:
         if cfield > 0:
             str_conf += ","
-        str_conf += "\"" + field + "\" : \"" + request.form.get(field) + "\""
+
+        # TEAM06: changes for the pdf feature
+        if str(m) == "superform.plugins.pdf":
+            if field == "Format":
+                str_conf += "\"" + field + "\" : \"" + request.form['format'] + "\""
+            else:
+                str_conf += "\"" + field + "\" : \"" + request.form[
+                    'logo'] + "\""
+            print('field=%s\nstr_conf=%s' %(field,str_conf))
+        else:
+            str_conf += "\"" + field + "\" : \"" + request.form.get(field) + "\""
+        # TEAM06: end changes
         cfield += 1
     str_conf += "}"
     c.config = str_conf

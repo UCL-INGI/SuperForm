@@ -2,13 +2,17 @@ from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
 import datetime
 
-db = SQLAlchemy()
 
 class State(Enum):
     INCOMPLETE = -1
     NOTVALIDATED = 0
     VALIDATED = 1
     PUBLISHED = 2
+    REFUSED = 3
+    OUTDATED = 4
+
+
+db = SQLAlchemy()
 
 
 class User(db.Model):
@@ -17,7 +21,9 @@ class User(db.Model):
     name = db.Column(db.String(120), nullable=False)
     first_name = db.Column(db.String(120), nullable=False)
     admin = db.Column(db.Boolean, default=False)
-
+    # TEAM2: Google calendar
+    gcal_cred = db.Column(db.String(2147483647), nullable=True)
+    # TEAM2: Google calendar
     posts = db.relationship("Post", backref="user", lazy=True)
     authorizations = db.relationship("Authorization", backref="user", lazy=True)
 
@@ -57,6 +63,9 @@ class Post(db.Model):
 
 class Publishing(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"), nullable=False)
+    # TEAM2: Stat module
+    user_id = db.Column(db.String(80), db.ForeignKey("user.id"), nullable=False)
+    # TEAM2: Stat module
     channel_id = db.Column(db.Integer, db.ForeignKey("channel.id"), nullable=False)
     state = db.Column(db.Integer, nullable=False, default=State.INCOMPLETE)
     title = db.Column(db.Text, nullable=False)
@@ -91,7 +100,6 @@ class Channel(db.Model):
 
 
 class Authorization(db.Model):
-
     user_id = db.Column(db.String(80), db.ForeignKey("user.id"), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey("channel.id"), nullable=False)
     permission = db.Column(db.Integer, nullable=False)

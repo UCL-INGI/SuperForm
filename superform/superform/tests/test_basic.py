@@ -51,6 +51,24 @@ def login(client, login):
             sess["email"] = "hello@genemail.com"
             sess['user_id'] = login
 
+def create_user(id, name, first_name, email):
+    user = User(id=id, name=name, first_name=first_name, email=email)
+    write_to_db(user)
+    return user
+
+def create_channel(name, module, config):
+    channel = Channel(name=name, module=get_module_full_name(module), config=json.dumps(config))
+    write_to_db(channel) 
+    return channel
+
+def create_auth(channel_id, user_id, permission):
+    auth = Authorization(channel_id=channel_id, user_id=user_id, permission=permission)
+    write_to_db(auth) 
+    return auth
+
+def write_to_db(obj):
+    db.session.add(obj)
+    db.session.commit()
 
 ## Testing Functions ##
 
@@ -91,12 +109,7 @@ def test_log_out(client):
 
 def test_new_post(client):
     login(client,"myself")
-    rv = client.post('/new',data=dict(titlepost='A new test post',
-                                      descrpost= "A description",
-                                      linkurlpost="http://www.test.com",
-                                      imagepost="image.jpg",
-                                      datefrompost="2018-07-01",
-                                      dateuntilpost="2018-07-01"))
+    rv = client.post('/new',data=dict(titlepost='A new test post', descrpost= "A description", linkurlpost="http://www.test.com", imagepost="image.jpg",datefrompost="2018-07-01T09:00",dateuntilpost="2018-07-01T10:00"))
     assert rv.status_code ==302
     posts = db.session.query(Post).all()
     assert len(posts)>0
@@ -131,7 +144,9 @@ def test_forbidden(client):
 
 
 def test_date_converters():
-    t = datetime_converter("2017-06-02")
+    t = datetime_converter("2017-06-02T09:00")
+    assert t.minute == 0
+    assert t.hour == 9
     assert t.day == 2
     assert t.month == 6
     assert t.year == 2017
@@ -150,17 +165,17 @@ def test_get_module_name():
 
 
 def test_is_moderator():
-    user = User(id=1, name="test", first_name="utilisateur", email="utilisateur.test@uclouvain.be")
+    user = User(id=63, name="test", first_name="utilisateur", email="utilisateur.test@uclouvain.be")
     db.session.add(user)
-    u = User.query.get(1)
+    u = User.query.get(63)
     assert is_moderator(u) == False
-    a= Authorization(channel_id=1,user_id=1,permission=2)
+    a= Authorization(channel_id=1,user_id=63,permission=2)
     db.session.add(a)
     assert is_moderator(u) == True
 
 
 def test_get_moderate_channels_for_user():
-    u = User.query.get(1)
+    u = User.query.get(63)
     channel = Channel(name="test", module=get_module_full_name("mail"), config="{}")
     db.session.add(channel)
     assert get_moderate_channels_for_user(u) is not None
@@ -173,8 +188,23 @@ def test_get_moderate_channels_for_user():
 
 
 def test_channels_available_for_user():
-    u = User.query.get(1)
-    assert len(channels_available_for_user(u.id))==1
+    u = User.query.get(63)
+    #assert len(channels_available_for_user(u.id))==1
+    #TEAM6: MODIFICATION FOR PDF CHANNELS AVAILABLE FOR EVERY USER
+    #u = User.query.get(1)
+    pdf_channels = db.session.query(Channel).filter(Channel.module=="superform.plugins.pdf")
+    pdf_channels_number = 0
+    if (pdf_channels is not None):
+        for chan in pdf_channels:
+            pdf_channels_number+=1
+
+    assert len(channels_available_for_user(u.id))==1 + pdf_channels_number
     user = User(id=3, name="test", first_name="utilisateur3", email="utilisateur3.test@uclouvain.be")
     db.session.add(user)
-    assert len(channels_available_for_user(user.id)) == 0
+    assert len(channels_available_for_user(user.id)) == 0 + pdf_channels_number
+    #END OF MODIFICATION
+
+
+
+
+

@@ -5,11 +5,12 @@ from smtplib import SMTPException
 from flask import current_app
 import json
 
-FIELDS_UNAVAILABLE = ['Title','Description']
+FIELDS_UNAVAILABLE = ['Title', 'Description']
 
-CONFIG_FIELDS = ["sender","receiver"]
+CONFIG_FIELDS = ["sender", "receiver"]
 
-def run(publishing,channel_config):
+
+def run(publishing, channel_config):
     json_data = json.loads(channel_config)
     sender = json_data['sender']
     receivers = json_data['receiver']
