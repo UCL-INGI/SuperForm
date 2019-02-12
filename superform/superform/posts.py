@@ -73,9 +73,14 @@ def publish_from_new_post():
                 # for each selected channel options
                 # create the publication
                 pub = create_a_publishing(p, c, request.form)
+                if pub == None:
+                    p.title = "[DRAFT] " + p.title
+                    flash(
+                        "The form was not filled correctly. Your post has been saved as draft, please proceed to modifications.")
+                else:
+                    print(c)
 
     db.session.commit()
-    flash("The post was successfully submitted.", category='success')
     return redirect(url_for('index'))
 
 
