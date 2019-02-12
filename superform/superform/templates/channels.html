@@ -19,7 +19,7 @@
                 <td>{{ channel.module.split('.')[2] }}</td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                        <a href="{{ url_for('channels.configure_channel',id=channel.id) }}" class="btn btn-secondary" type="button">Configure</a>
+                        <a id="{{ "conf_button_{}".format(channel.id) }}" href="{{ url_for('channels.configure_channel',id=channel.id) }}" class="btn btn-secondary" type="button">Configure</a>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" data-name="{{ channel.name }}" data-id="{{ channel.id }}"><i class="fas fa-fw fa-edit"></i> Edit</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" data-name="{{ channel.name }}" data-id="{{ channel.id }}"><i class="fas fa-fw fa-trash"></i> Delete</button>
                     </div>

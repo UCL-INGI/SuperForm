@@ -3,11 +3,12 @@
 {% block content %}
     <h1>Moderate this publication</h1>
     {% if session.logged_in %}
-        <form method="POST" action="">
-        <!--{% if error %}
-            <div class="alert alert-success">{{message}}</div>
+        {% if notconf %}
+            <div class="alert alert-danger" role="alert">
+                This channel is not yet configured
+            </div>
         {% endif %}
-        -->
+        <form method="POST" action="">
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
@@ -43,7 +44,7 @@
 
                 </div>
             </div>
-            <button class="btn btn-success">Publish</button>
+            <button class="btn btn-success" {% if notconf %} disabled {% endif %}>Publish</button>
         </form>
     {% else %}
         Your are not logged in.

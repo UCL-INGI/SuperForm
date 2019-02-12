@@ -1,12 +1,9 @@
-import datetime
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, url_for, request, redirect, session, render_template
 
-from superform.users import channels_available_for_user
-
-from superform.models import db, Channel, Post, Publishing, State, User
 from superform.publishings import create_a_publishing
+from superform.users import channels_available_for_user
 from superform.utils import login_required, datetime_converter, str_converter, get_instance_from_module_path
-
+from superform.models import db, Post, Publishing, Channel
 
 posts_page = Blueprint('posts', __name__)
 

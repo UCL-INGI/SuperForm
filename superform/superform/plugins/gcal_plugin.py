@@ -79,11 +79,13 @@ def generate_event(publishing):
         },
     }
 
+
 def run(publishing, channel_config):
     creds = get_user_credentials(publishing.user_id)
     service = build('calendar', 'v3', credentials=creds)
     event = generate_event(publishing)
     id = publish(event, service)
+
 
 def publish(event, service):
     """
@@ -92,12 +94,14 @@ def publish(event, service):
     event = service.events().insert(calendarId='primary', body=event).execute()
     return event.get('htmlLink')
 
+
 def delete(id):
     """
     Supprime la publication
     """
 
+
 def is_valid(pub):
     # must have a date_from / date_until with hour and date
     now = datetime.now()
-    return len(pub.title.strip()) != 0 and pub.date_from >= now and pub.date_from <= pub.date_until
+    return len(pub.title.strip()) != 0 and now <= pub.date_from <= pub.date_until
