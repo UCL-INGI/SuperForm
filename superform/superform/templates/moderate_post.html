@@ -3,12 +3,11 @@
 {% block content %}
     <h1>Moderate this publication</h1>
     {% if session.logged_in %}
-        {% if notconf %}
-            <div class="alert alert-danger" role="alert">
-                This channel is not yet configured
-            </div>
-        {% endif %}
         <form method="POST" action="">
+        <!--{% if error %}
+            <div class="alert alert-success">{{message}}</div>
+        {% endif %}
+        -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
@@ -31,19 +30,20 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="datefrompost">Publication Date</label><br>
-                                <input id="datefrompost" name="datefrompost" type="date" class="form-control" value="{{ pub.date_from }}">
+                                <input id="datefrompost" name="datefrompost" type="datetime-local" class="form-control" value="{{ pub.date_from }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateuntilpost">Publication Until</label><br>
-                                <input id="dateuntilpost" name="dateuntilpost" type="date" class="form-control" value="{{ pub.date_until }}">
+                                <input id="dateuntilpost" name="dateuntilpost" type="datetime-local" class="form-control" value="{{ pub.date_until }}">
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
-            <button class="btn btn-success" {% if notconf %} disabled {% endif %}>Publish</button>
+            <button class="btn btn-success">Publish</button>
         </form>
     {% else %}
         Your are not logged in.
