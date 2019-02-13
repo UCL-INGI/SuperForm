@@ -5,6 +5,7 @@ import requests
 
 linkedin_page = Blueprint('linkedin_callback', __name__)
 
+
 @linkedin_page.route("/callback_In", methods=['GET', 'POST'])
 @login_required(admin_required=True)
 def callback_In():
@@ -13,8 +14,8 @@ def callback_In():
     id_channel = request.args.get('state')
     if id_channel is None:
         return redirect(url_for("channels.channel_list"))
-    app_key=current_app.config["LINKEDIN_API_KEY"]
-    app_secret=current_app.config["LINKEDIN_API_SECRET"]
+    app_key = current_app.config["LINKEDIN_API_KEY"]
+    app_secret = current_app.config["LINKEDIN_API_SECRET"]
     code = request.args.get('code')
     if "error" in request.args:
         error = request.args.get('error')
@@ -25,7 +26,7 @@ def callback_In():
                                  data={"grant_type": "authorization_code", "code": code, "redirect_uri": canvas_url,
                                        "client_id": app_key, "client_secret": app_secret})
         response = response.json()
-        token=response['access_token']
+        token = response['access_token']
     except Exception:
         token = 'Unable to generate access_token'
 

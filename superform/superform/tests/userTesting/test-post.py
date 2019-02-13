@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
-from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
+from selenium.webdriver.support.ui import WebDriverWait  # available since 2.4.0
+from selenium.webdriver.support import expected_conditions as EC  # available since 2.26.0
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import random
@@ -10,8 +10,8 @@ import time
 import unittest
 import datetime
 
-class Post(unittest.TestCase):
 
+class Post(unittest.TestCase):
     r = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
 
     def setUp(self):
@@ -102,7 +102,6 @@ class Post(unittest.TestCase):
         self.check_linkedin(self.r)
         self.check_facebook(self.r)
 
-
     def check_linkedin(self, text):
         driver = self.driver
         # Open linked in
@@ -129,10 +128,11 @@ class Post(unittest.TestCase):
         pwd = driver.find_element(By.NAME, "pass")
         pwd.send_keys("testsuperform")
         pwd.submit()
-        driver.get("https://www.facebook.com/Testsuperform-1625488667557071/?notif_id=1544184537965808&notif_t=page_admin")
+        driver.get(
+            "https://www.facebook.com/Testsuperform-1625488667557071/?notif_id=1544184537965808&notif_t=page_admin")
 
         try:
-            #driver.find_elements_by_xpath("//*[contains(text(), " + text + ")]")
+            # driver.find_elements_by_xpath("//*[contains(text(), " + text + ")]")
             WebDriverWait(driver, 5).until(
                 EC.text_to_be_present_in_element((By.TAG_NAME, "body"), "this is a random text:"))
         except:
@@ -200,8 +200,6 @@ class Post(unittest.TestCase):
     def tearDown(self):
         self.driver.close()
 
+
 if __name__ == "__main__":
-
     unittest.main()
-
-

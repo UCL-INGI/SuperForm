@@ -9,105 +9,106 @@
         <div class="col-md-12">
             {% if user.is_mod %}
                 <h2>Unmoderated Publishings</h2>
-                    <div id="search_unmoderated">{% include 'search_unmoderated_publishings.html' %} </div>
+                <div id="search_unmoderated">{% include 'search_unmoderated_publishings.html' %} </div>
                 <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>
+                            Channel
+                        </th>
+                        <th>
+                            Subject
+                        </th>
+                        <th>
+                            Body
+                        </th>
+                        <th>
+                            Author
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="list-publishings">
+                    {% for p in publishings %}
+                        <tr>
+                            <td>
+                                {% for chan in channels %}
+                                    {% if p.channel_id == chan.id %}
+                                        {{ chan.name }}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {{ p.title }}
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col">{{ p.description }}</div>
+                                </div>
+                            </td>
+                            <td>
+                                {{ p.get_author() }}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('publishings.moderate_publishing',id=p.post_id,idc=p.channel_id) }}"
+                                   class="btn btn-outline-primary" role="button">Moderate</a>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            <h2>All my posts</h2>
+            <div id="search_post">{% include 'search_post.html' %} </div>
+            <table class="table table-bordered">
                 <thead>
-                  <tr>
+                <tr>
                     <th>
-                      Channel
+                        #
                     </th>
                     <th>
-                      Subject
+                        Subject
                     </th>
                     <th>
-                      Body
-                    </th>
-                    <th>
-                        Author
+                        Body
                     </th>
                     <th>
                         Action
                     </th>
-                  </tr>
+                </tr>
                 </thead>
-                <tbody class="list-publishings">
-                {% for p in publishings %}
+
+                <tbody class="list-posts">
+                {% for item in posts %}
                     <tr>
                         <td>
-                            {% for chan in channels %}
-                            {% if p.channel_id == chan.id %}
-                            {{chan.name}}
-                            {% endif %}
-                            {% endfor %}
+                            {{ item.id }}
                         </td>
-                        <td >
-                            {{ p.title }}
+                        <td>
+                            {{ item.title }}
                         </td>
                         <td>
                             <div class="row">
-                                <div class="col">{{ p.description }}</div>
+                                <div class="col">{{ item.description }}</div>
                             </div>
                         </td>
                         <td>
-                            {{ p.get_author() }}
-                        </td>
-                        <td>
-                            <a href="{{ url_for('publishings.moderate_publishing',id=p.post_id,idc=p.channel_id) }}" class="btn btn-outline-primary" role="button">Moderate</a>
-
+                            <a href="#" class="btn btn-outline-primary" role="button">Edit</a>
+                            <a href="#" class="btn btn-outline-primary">Copy</a>
+                            <a href="#" class="btn btn-outline-warning" role="button">Delete</a>
+                            <!-- Team06: Export to PDF feature -->
+                            <button type="button" class="btn btn-info"
+                                    data-toggle="modal" data-target="#exportModal"
+                                    data-id="{{ item.id }}">
+                                <i class="fas fa-fw fa-file-pdf"></i> Export
+                            </button>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
-                </table>
-            {% endif %}
-            <h2>All my posts</h2>
-                            <div id="search_post">{% include 'search_post.html' %} </div>
-            <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>
-                  #
-                </th>
-                <th>
-                  Subject
-                </th>
-                <th>
-                  Body
-                </th>
-                <th>
-                    Action
-                </th>
-              </tr>
-            </thead>
-
-            <tbody class="list-posts">
-                {% for item in posts %}
-                <tr>
-                    <td>
-                        {{ item.id }}
-                    </td>
-                    <td>
-                        {{ item.title }}
-                    </td>
-                    <td>
-                        <div class="row">
-                            <div class="col">{{ item.description }}</div>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="#" class="btn btn-outline-primary" role="button">Edit</a>
-                        <a href="#" class="btn btn-outline-primary">Copy</a>
-                        <a href="#" class="btn btn-outline-warning" role="button">Delete</a>
-                        <!-- Team06: Export to PDF feature -->
-                        <button type="button" class="btn btn-info"
-                                data-toggle="modal" data-target="#exportModal"
-                                data-id="{{ item.id }}">
-                            <i class="fas fa-fw fa-file-pdf"></i> Export
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
             </table>
         </div>
     {% else %}
@@ -134,19 +135,19 @@
                         <p>Which template would you like to use ?</p>
                     </div>
                     <!--<form class="form-inline" method="post">-->
-                        <input type="hidden" name="@action" value="templates">
-                        <label class="sr-only" for="inlineFormInputText">Username</label>
-                        <label class="sr-only"
-                               for="inlineFormCustomSelectTemplate">Template</label>
-                        <div class="input-group mr-sm-2">
-                            <select name="template" class="custom-select"
-                                    id="inlineFormCustomSelectTemplate">
-                                <option selected>Choose a template...</option>
-                                {% for template in templates %}
-                                    <option value="{{ template.id }}">{{ template.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                    <input type="hidden" name="@action" value="templates">
+                    <label class="sr-only" for="inlineFormInputText">Username</label>
+                    <label class="sr-only"
+                           for="inlineFormCustomSelectTemplate">Template</label>
+                    <div class="input-group mr-sm-2">
+                        <select name="template" class="custom-select"
+                                id="inlineFormCustomSelectTemplate">
+                            <option selected>Choose a template...</option>
+                            {% for template in templates %}
+                                <option value="{{ template.id }}">{{ template.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <!--</form>-->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-info">Export to pdf

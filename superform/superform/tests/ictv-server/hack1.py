@@ -1,5 +1,3 @@
-
-
 class Hack(ICTVAuthPage):
     def GET(self, channel_id):
         if channel_id == '1':
@@ -10,4 +8,3 @@ class Hack(ICTVAuthPage):
             plugins = Plugin.update_plugins(plugin_dirs)
         chan = PluginChannel.get(channel_id)
         self.plugin_manager.add_mapping(self.app, chan)
-

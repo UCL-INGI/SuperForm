@@ -17,27 +17,32 @@
                     </div>
                     <div class="form-group">
                         <label for="descrpost">Description</label><br>
-                        <textarea class="form-control" rows="5" id="descrpost" name="descrpost">{{ pub.description }}</textarea>
+                        <textarea class="form-control" rows="5" id="descrpost"
+                                  name="descrpost">{{ pub.description }}</textarea>
                     </div>
                     <div class="form-group">
                         <label for="linkurlpost">Link</label><br>
-                        <input type="text" name="linkurlpost" id="linkurlpost" class="form-control" value="{{ pub.link_url }}">
+                        <input type="text" name="linkurlpost" id="linkurlpost" class="form-control"
+                               value="{{ pub.link_url }}">
                     </div>
                     <div class="form-group">
                         <label for="imagepost">Image</label><br>
-                        <input type="file" name="imagepost" id="imagepost" class="form-control" value="{{ pub.image_url }}">
+                        <input type="file" name="imagepost" id="imagepost" class="form-control"
+                               value="{{ pub.image_url }}">
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="datefrompost">Publication Date</label><br>
-                                <input id="datefrompost" name="datefrompost" type="datetime-local" class="form-control" value="{{ pub.date_from }}">
+                                <input id="datefrompost" name="datefrompost" type="datetime-local" class="form-control"
+                                       value="{{ pub.date_from }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateuntilpost">Publication Until</label><br>
-                                <input id="dateuntilpost" name="dateuntilpost" type="datetime-local" class="form-control" value="{{ pub.date_until }}">
+                                <input id="dateuntilpost" name="dateuntilpost" type="datetime-local"
+                                       class="form-control" value="{{ pub.date_until }}">
                             </div>
                         </div>
                     </div>

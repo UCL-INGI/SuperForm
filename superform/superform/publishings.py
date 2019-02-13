@@ -75,6 +75,8 @@ def is_gcal_channel(channel_id):
 def generate_google_user_credentials(channel_id):
     c = db.session.query(Channel).filter(Channel.name == channel_id).first()
     gcal_plugin.generate_user_credentials(c.config)
+
+
 # TEAM2 gcal
 
 
@@ -114,4 +116,3 @@ def moderate_publishing(id, idc):
             return render_template('moderate_post.html', pub=pub, notconf=True)
 
         return redirect(url_for('index'))
-

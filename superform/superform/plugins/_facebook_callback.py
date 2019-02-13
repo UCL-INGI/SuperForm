@@ -6,6 +6,7 @@ from superform.models import db, Channel
 
 facebook_page = Blueprint('facebook_callback', __name__)
 
+
 @facebook_page.route("/callback_fb", methods=['GET', 'POST'])
 @login_required(admin_required=True)
 def callback_fb():

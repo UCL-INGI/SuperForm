@@ -6,8 +6,8 @@ posts_page = Blueprint('users', __name__)
 
 
 def channels_available_for_user(userid):
-    chans= []
-    auths = db.session.query(Authorization).filter(Authorization.user_id==userid)
+    chans = []
+    auths = db.session.query(Authorization).filter(Authorization.user_id == userid)
     for auth in auths:
         chans.append(db.session.query(Channel).get(auth.channel_id))
 
@@ -16,7 +16,7 @@ def channels_available_for_user(userid):
     if (pdf_chans is not None):
         for chan in pdf_chans:
             chans.append(chan)
-    #END OF ADDITION
+    # END OF ADDITION
     return chans
 
 

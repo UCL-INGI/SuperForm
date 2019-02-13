@@ -8,9 +8,9 @@ import pytest
 from superform.models import Authorization, Channel
 from superform import app, db, Post, Publishing, User
 
-
 chan_id_3 = -1  # Should be created
 chan_id_4 = -1  # Shouldn't be created
+
 
 @pytest.fixture
 def client():
@@ -68,9 +68,10 @@ def test_new_channel_as_admin(client):
 
     # Check channel configuration
     chan_creds = chan.config
-    assert chan_creds == "{\"ictv_server_fqdn\" : \"" + ictv_server_fqdn\
-        + "\",\"ictv_channel_id\" : \"" + ictv_channel_id \
-        + "\",\"ictv_api_key\" : \"" + ictv_api_key + "\"}"
+    assert chan_creds == "{\"ictv_server_fqdn\" : \"" + ictv_server_fqdn \
+           + "\",\"ictv_channel_id\" : \"" + ictv_channel_id \
+           + "\",\"ictv_api_key\" : \"" + ictv_api_key + "\"}"
+
 
 def test_new_channel_no_admin(client):
     global chan_id_3, chan_id_4
@@ -91,6 +92,7 @@ def test_new_channel_no_admin(client):
     chan = db.session.query(Channel).filter(Channel.id == chan_id_4).first()
     assert not chan
 
+
 def test_new_publish_ictv(client):
     global chan_id_3, chan_id_4
     login(client, "myself")
@@ -105,7 +107,7 @@ def test_new_publish_ictv(client):
     d = datetime.date.today()
     d += datetime.timedelta(1)
     client.post('/new', data=dict(titlepost=title, descriptionpost=description,
-                                  imagepost = image,
+                                  imagepost=image,
                                   datefrompost=d.strftime("%Y-%m-%d"),
                                   timefrompost=d.strftime("%H:%M"),
                                   dateuntilpost=d.strftime("%Y-%m-%d"),
@@ -133,17 +135,18 @@ def test_new_publish_ictv(client):
     print(chan_id_3)
     print(chan.id)
     client.post('/moderate/' + str(pub.post_id) + '/' + str(chan.id), data={'titlepost': title,
-                                                           'descrpost': description,
-                                                           'imagepost': image,
-                                  'datefrompost': d.strftime("%Y-%m-%d"),
-                                  'timefrompost': d.strftime("%H:%M"),
-                                  'dateuntilpost': d.strftime("%Y-%m-%d"),
-                                  'timeuntilpost': d.strftime("%H:%M")})
+                                                                            'descrpost': description,
+                                                                            'imagepost': image,
+                                                                            'datefrompost': d.strftime("%Y-%m-%d"),
+                                                                            'timefrompost': d.strftime("%H:%M"),
+                                                                            'dateuntilpost': d.strftime("%Y-%m-%d"),
+                                                                            'timeuntilpost': d.strftime("%H:%M")})
 
     # Cleaning up
     db.session.delete(post)
     db.session.delete(pub)
     db.session.commit()
+
 
 def test_delete_channel_no_admin(client):
     global chan_id_3, chan_id_4
@@ -154,6 +157,7 @@ def test_delete_channel_no_admin(client):
     chan = db.session.query(Channel).filter(Channel.id == chan_id_3).first()
     assert chan
 
+
 def test_delete_channel_as_admin(client):
     global chan_id_3, chan_id_4
     login(client, "myself")
@@ -162,13 +166,3 @@ def test_delete_channel_as_admin(client):
 
     chan = db.session.query(Channel).filter(Channel.id == chan_id_3).first()
     assert not chan
-
-
-
-
-
-
-
-
-
-

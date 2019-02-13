@@ -28,7 +28,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="descriptionpost">Description</label><br>
-                                        <textarea class="form-control" rows="5" id="descriptionpost" name="descriptionpost"></textarea>
+                                        <textarea class="form-control" rows="5" id="descriptionpost"
+                                                  name="descriptionpost"></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="linkurlpost">Link</label><br>
@@ -42,13 +43,15 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="datefrompost">Publication Date</label><br>
-                                                <input id="datefrompost" name="datefrompost" type="datetime-local" valueAsDate='document.write(new Date())' class="form-control">
+                                                <input id="datefrompost" name="datefrompost" type="datetime-local"
+                                                       valueAsDate='document.write(new Date())' class="form-control">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="dateuntilpost">Publication Until</label><br>
-                                                <input id="dateuntilpost" name="dateuntilpost" type="datetime-local" class="form-control">
+                                                <input id="dateuntilpost" name="dateuntilpost" type="datetime-local"
+                                                       class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -65,7 +68,11 @@
                                     {% for chan in l_chan %}
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input id="chan_option_{{ chan.id }}" data-namechan="{{ chan.name }}" data-unavailablefields="{{ chan.unavailablefields }}" name="chan_option_{{ chan.id }}" type="checkbox" class="form-check-input checkbox" value="{{ chan.id }}">{{ chan.name }}
+                                                <input id="chan_option_{{ chan.id }}" data-namechan="{{ chan.name }}"
+                                                       data-unavailablefields="{{ chan.unavailablefields }}"
+                                                       name="chan_option_{{ chan.id }}" type="checkbox"
+                                                       class="form-check-input checkbox"
+                                                       value="{{ chan.id }}">{{ chan.name }}
                                             </label>
                                         </div>
                                     {% endfor %}
@@ -91,20 +98,24 @@
 
                                 <div class="form-group">
                                     <label for="{{ chan.name }}_titlepost">Title</label><br>
-                                    <input type="text" name="{{ chan.name }}_titlepost" id="{{ chan.name }}_titlepost" class="form-control">
+                                    <input type="text" name="{{ chan.name }}_titlepost" id="{{ chan.name }}_titlepost"
+                                           class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="{{ chan.name }}_descriptionpost">Description</label><br>
-                                    <textarea class="form-control" rows="5" id="{{ chan.name }}_descriptionpost" name="{{ chan.name }}_descriptionpost"></textarea>
+                                    <textarea class="form-control" rows="5" id="{{ chan.name }}_descriptionpost"
+                                              name="{{ chan.name }}_descriptionpost"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="{{ chan.name }}_linkurlpost">Link</label><br>
-                                    <input type="text" name="{{ chan.name }}_linkurlpost" id="{{ chan.name }}_linkurlpost" class="form-control">
+                                    <input type="text" name="{{ chan.name }}_linkurlpost"
+                                           id="{{ chan.name }}_linkurlpost" class="form-control">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="{{ chan.name }}_imagepost">Image</label><br>
-                                    <input type="file" name="{{ chan.name }}_imagepost" id="{{ chan.name }}_imagepost" class="form-control">
+                                    <input type="file" name="{{ chan.name }}_imagepost" id="{{ chan.name }}_imagepost"
+                                           class="form-control">
                                 </div>
 
                                 <div class="row">
@@ -112,14 +123,19 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="{{ chan.name }}_datefrompost">Publication Date</label><br>
-                                                    <input id="{{ chan.name }}_datefrompost" name="{{ chan.name }}_datefrompost" type="datetime-local" class="form-control">
+                                                    <label for="{{ chan.name }}_datefrompost">Publication
+                                                        Date</label><br>
+                                                    <input id="{{ chan.name }}_datefrompost"
+                                                           name="{{ chan.name }}_datefrompost" type="datetime-local"
+                                                           class="form-control">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="{{ chan.name }}_dateuntilpost">Publication Until</label><br>
-                                                    <input id="{{ chan.name }}_dateuntilpost" name="{{ chan.name }}_dateuntilpost" type="datetime-local" class="form-control">
+                                                    <input id="{{ chan.name }}_dateuntilpost"
+                                                           name="{{ chan.name }}_dateuntilpost" type="datetime-local"
+                                                           class="form-control">
                                                 </div>
                                             </div>
                                         </div>
@@ -151,8 +167,13 @@
 
             </div>
             <div align="right" style="margin-top: 1rem; ">
-                <button class="btn btn-primary" formaction="{{ url_for('posts.new_post')}}" formmethod="post" type="submit">Save as draft</button>
-                <button id="publish-button" class="btn btn-success" formaction="{{ url_for('posts.publish_from_new_post')}}" formmethod="post" type="submit" disabled>Save & Publish</button>
+                <button class="btn btn-primary" formaction="{{ url_for('posts.new_post') }}" formmethod="post"
+                        type="submit">Save as draft
+                </button>
+                <button id="publish-button" class="btn btn-success"
+                        formaction="{{ url_for('posts.publish_from_new_post') }}" formmethod="post" type="submit"
+                        disabled>Save & Publish
+                </button>
                 <button class="btn btn-outline-primary" type="reset">Abort</button>
             </div>
 
@@ -177,12 +198,13 @@
             $('#' + chan_name + '_datefrompost').val(($('#datefrompost')).val());
             $('#' + chan_name + '_dateuntilpost').val(($('#dateuntilpost')).val());
         }
+
         $('input.checkbox').change(function () {
             var nbselected = $('input.checkbox:checked').length;
-            if(nbselected === 0){
-               $("#publish-button").prop('disabled', true);
-            }else{
-               $("#publish-button").prop('disabled', false);
+            if (nbselected === 0) {
+                $("#publish-button").prop('disabled', true);
+            } else {
+                $("#publish-button").prop('disabled', false);
             }
 
             var nameC = $(this).attr('data-namechan');
@@ -193,25 +215,25 @@
                 $(this).addClass('checked');
                 synchronize_fields(nameC);
                 for (var i = 0; i < split.length; i++) {
-                    var field_id = $('#'+split[i].toLowerCase()+'post').attr('id');
+                    var field_id = $('#' + split[i].toLowerCase() + 'post').attr('id');
                     $("input[id='" + nameC + "_" + field_id + "']").prop('disabled', true);
                     $("textarea[id='" + nameC + "_" + field_id + "']").prop('disabled', true);
 
-                    $("label[for='" + nameC + "_" + field_id + "']").append('<a href="#" data-toggle="popover" title="Unavailable field" data-content="This field is unavailable for channel ' + nameC +'"><i class="fas fa-exclamation-circle" style="color:orange"></i></a>');
+                    $("label[for='" + nameC + "_" + field_id + "']").append('<a href="#" data-toggle="popover" title="Unavailable field" data-content="This field is unavailable for channel ' + nameC + '"><i class="fas fa-exclamation-circle" style="color:orange"></i></a>');
 
                 }
                 $('[data-toggle="popover"]').popover();
-                $('#li_'+nameC).show();
+                $('#li_' + nameC).show();
             } else {
                 //If the channel is not selected
                 $(this).removeClass('checked');
                 for (var i = 0; i < split.length; i++) {
-                    var field_id = $('#'+split[i].toLowerCase()+'post').attr('id');
+                    var field_id = $('#' + split[i].toLowerCase() + 'post').attr('id');
                     $("input[id='" + nameC + "_" + field_id + "']").prop('disabled', false);
                     $("textarea[id='" + nameC + "_" + field_id + "']").prop('disabled', false);
                     $("label[for='" + nameC + "_" + field_id + "'] > a").remove();
                 }
-                $('#li_'+nameC).hide();
+                $('#li_' + nameC).hide();
             }
         });
         {% for chan in l_chan %}

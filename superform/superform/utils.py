@@ -3,7 +3,7 @@ from functools import wraps
 from flask import render_template, session, current_app
 
 
-def login_required(admin_required = False):
+def login_required(admin_required=False):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -28,7 +28,9 @@ def datetime_converter(stri):
 
 
 def str_converter(datet):
-    return datetime.strftime(datet,"%Y-%m-%dT%H:%M")
+    return datetime.strftime(datet, "%Y-%m-%dT%H:%M")
+
+
 # TEAM2: Google calendar
 
 
@@ -36,7 +38,7 @@ def get_instance_from_module_path(module_p):
     import os
     module_p = module_p.replace(".", os.sep)  # use the os file path separator
     import importlib.util
-    spec = importlib.util.spec_from_file_location("module.name", module_p+".py")
+    spec = importlib.util.spec_from_file_location("module.name", module_p + ".py")
     foo = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(foo)
     return foo

@@ -4,7 +4,8 @@ import twitter
 from twitter import twitter_utils
 
 FIELDS_UNAVAILABLE = ['Title']
-CONFIG_FIELDS = ["consumer_key","consumer_secret","access_token_key","access_token_secret"]
+CONFIG_FIELDS = ["consumer_key", "consumer_secret", "access_token_key", "access_token_secret"]
+
 
 def tweet_too_big(tweet):
     '''
@@ -17,6 +18,7 @@ def tweet_too_big(tweet):
     else:
         return False
 
+
 def empty_tweet(tweet):
     '''
         Verify if the message is empty
@@ -24,6 +26,7 @@ def empty_tweet(tweet):
         :return: True if the message contains no character, false otherwise
     '''
     return len(tweet) == 0
+
 
 def send_tweet(api, tweet, url):
     '''
@@ -33,21 +36,21 @@ def send_tweet(api, tweet, url):
                 url: the link of the message
         :return: True if the tweet(s) has/have been correctly published, False otherwise
     '''
-    #Separate text in a array, based on separator
+    # Separate text in a array, based on separator
     tweet = tweet.replace("<tweet-separator>", "")
     tweet = tweet.replace("</tweet-separator>", "<tweet-separator>")
     tb_tweets = [i.strip() for i in tweet.split("<tweet-separator>")]
     tb_tweets.pop()
 
-    if len(tb_tweets) < 1 :
+    if len(tb_tweets) < 1:
         return False
 
-    if url :
+    if url:
         last_element = tb_tweets.pop()
-        if len(last_element) + len(" ") + len(url) < 280 :
+        if len(last_element) + len(" ") + len(url) < 280:
             last_element = last_element + " " + url
             tb_tweets.append(last_element)
-        else :
+        else:
             tb_tweets.append(last_element)
             tb_tweets.append(url)
 
@@ -57,7 +60,7 @@ def send_tweet(api, tweet, url):
     return True
 
 
-def run(publishing,channel_config):
+def run(publishing, channel_config):
     tweet = publishing.description
 
     if empty_tweet(tweet):
@@ -65,10 +68,10 @@ def run(publishing,channel_config):
     try:
         json_data = json.loads(channel_config)
 
-        api = twitter.Api(consumer_key = json_data['consumer_key'],
-                  consumer_secret = json_data['consumer_secret'],
-                  access_token_key = json_data['access_token_key'],
-                  access_token_secret = json_data['access_token_secret'])
+        api = twitter.Api(consumer_key=json_data['consumer_key'],
+                          consumer_secret=json_data['consumer_secret'],
+                          access_token_key=json_data['access_token_key'],
+                          access_token_secret=json_data['access_token_secret'])
         api.GetHelpConfiguration()
     except BaseException  as e:
         return "uncorrect credentials"

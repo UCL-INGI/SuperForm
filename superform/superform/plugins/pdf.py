@@ -25,7 +25,6 @@ from reportlab.lib.pagesizes import letter, landscape, A4, A5, A3
 from superform.models import Channel, Post, db, Publishing
 from threading import Timer
 
-
 FIELDS_UNAVAILABLE = []
 
 CONFIG_FIELDS = ["Format", "Logo"]
@@ -36,9 +35,10 @@ LOGOS = ["UCL", "EPL", 'INGI']
 
 
 def pdf_plugin(id, c, config_fields):
-    return render_template("pdf_configuration.html", channel = c,
-                           config_fields = config_fields, formats = FORMATS,
-                           logos = LOGOS)
+    return render_template("pdf_configuration.html", channel=c,
+                           config_fields=config_fields, formats=FORMATS,
+                           logos=LOGOS)
+
 
 def run(publishing, channel_config, debug=False):
     """ Gathers the informations in the config column and launches the
@@ -47,7 +47,7 @@ def run(publishing, channel_config, debug=False):
     json_data = json.loads(channel_config)
     title = publishing.title
     body = publishing.description
-    if ( 'Logo' not in json_data and debug==False):
+    if ('Logo' not in json_data and debug == False):
         print("This channel is not configured yet")
         return redirect(url_for('index'))
     image = json_data['Logo']
@@ -56,11 +56,11 @@ def run(publishing, channel_config, debug=False):
 
     path = datas[0]
     outputFile = datas[1]
-    if (debug==False):
+    if (debug == False):
         webbrowser.open_new_tab('file://' + path)
 
     data_folder = Path("superform/plugins/pdf")
-    file_to_delete = Path("superform/plugins/pdf/"+outputFile)
+    file_to_delete = Path("superform/plugins/pdf/" + outputFile)
     file_size = os.stat(file_to_delete).st_size
     current_dir = os.getcwd()
     os.chdir(data_folder)
@@ -70,8 +70,7 @@ def run(publishing, channel_config, debug=False):
             os.remove(file)
     os.chdir(current_dir)
 
-
-    if(path is not None and outputFile is not None):
+    if (path is not None and outputFile is not None):
         return ["status_OK", outputFile, file_size]
     else:
         return ["status_KO", None, None]
@@ -85,9 +84,9 @@ def export(post_id, idc):
     myPost = db.session.query(Post).filter(
         Post.id == post_id).first()
     myPub = Publishing()
-    myPub.description=myPost.description
-    myPub.title=myPost.title
-    run(myPub,channel_config)
+    myPub.description = myPost.description
+    myPub.title = myPost.title
+    run(myPub, channel_config)
 
     # TODO get the post information
     # db.session... TODO
@@ -97,23 +96,20 @@ def export(post_id, idc):
     return redirect(url_for('index'))
 
 
-
 def create_pdf(titre, corps, image="UCL", size=A4):
     empryString = ""
     fileTitle = empryString.join(e for e in titre if e.isalnum())
     if (len(fileTitle)) == 0:
         fileTitle = "DEFAULT"
-    outfilename = image + "-"+size+"-" +fileTitle +".pdf" #every pdf channel should have different output
+    outfilename = image + "-" + size + "-" + fileTitle + ".pdf"  # every pdf channel should have different output
     localPath = os.path.dirname(__file__) + "/pdf/" + outfilename
 
-    if size=="A5":
-        mySize=A5
-    elif size=="A4":
-        mySize=A4
-    elif size=="A3":
-        mySize=A3
-
-
+    if size == "A5":
+        mySize = A5
+    elif size == "A4":
+        mySize = A4
+    elif size == "A3":
+        mySize = A3
 
     doc = SimpleDocTemplate(localPath, pagesize=mySize,
                             rightMargin=72, leftMargin=72,
@@ -122,8 +118,8 @@ def create_pdf(titre, corps, image="UCL", size=A4):
     Story = []
 
     # Adding logo
-    #print("image path=", image)
-    imagePath = Path("superform/plugins/logos/"+image+".png")
+    # print("image path=", image)
+    imagePath = Path("superform/plugins/logos/" + image + ".png")
     im = Image(imagePath)  # , 2 * inch, 2 * inch)
     Story.append(im)
     styles = getSampleStyleSheet()

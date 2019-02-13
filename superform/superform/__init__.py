@@ -1,5 +1,5 @@
 from flask import Flask, render_template, session, request, redirect, url_for
-#For search
+# For search
 from flask import request, url_for
 import json
 #
@@ -46,11 +46,11 @@ db.init_app(app)
 # List available channels in config
 app.config["PLUGINS"] = {}
 for finder, name, ispkg in pkgutil.iter_modules(superform.plugins.__path__, superform.plugins.__name__ + "."):
-    if name[18] != '_': # do not include files starting with an underscore (useful for callback pages)
+    if name[18] != '_':  # do not include files starting with an underscore (useful for callback pages)
         app.config["PLUGINS"][name] = importlib.import_module(name)
 
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     # Team06: Export to PDF feature
     if request.method == "POST":
@@ -58,7 +58,7 @@ def index():
         if action == "export":
             post_id = request.form.get("id")
             chan_id = request.form.get("template")
-            #print('post_id = %s\nchan_id = %s' %(post_id, chan_id))
+            # print('post_id = %s\nchan_id = %s' %(post_id, chan_id))
             return plugins.pdf.export(post_id, chan_id)
     # end addition
 

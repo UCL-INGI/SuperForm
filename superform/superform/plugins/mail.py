@@ -23,12 +23,12 @@ def run(publishing, channel_config):
     msg.attach(MIMEText(body, 'plain'))
 
     try:
-        smtpObj = smtplib.SMTP(current_app.config["SMTP_HOST"],current_app.config["SMTP_PORT"])
+        smtpObj = smtplib.SMTP(current_app.config["SMTP_HOST"], current_app.config["SMTP_PORT"])
         if current_app.config["SMTP_STARTTLS"]:
             smtpObj.starttls()
         text = msg.as_string()
         smtpObj.sendmail(sender, receivers, text)
         smtpObj.quit()
     except SMTPException as e:
-        #TODO should add log here
+        # TODO should add log here
         print(e)

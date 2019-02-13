@@ -7,11 +7,13 @@ FIELDS_UNAVAILABLE = ['Title']
 
 CONFIG_FIELDS = ["access_token", "page"]
 
+
 def render_specific_config_page(c, config_fields):
     """Render a specific template to configure a Facebook channel"""
     return render_template("channel_configure_facebook.html", channel=c, config_fields=config_fields,
                            url_token=get_url_for_token(c.id),
                            pages=get_list_user_pages(c.config_dict.get("access_token")))
+
 
 def run(publishing, channel_config):
     """Publish the post on the selected page on Facebook"""

@@ -14,12 +14,13 @@ def clear_data(session):
         session.execute(table.delete())
     session.commit()
 
+
 @pytest.fixture
 def client():
     app.app_context().push()
 
     db_fd, database = tempfile.mkstemp()
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///"+database+".db"
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + database + ".db"
     app.config['TESTING'] = True
     client = app.test_client()
 
@@ -47,6 +48,7 @@ def login(client, login):
             sess["email"] = "hello@genemail.com"
             sess['user_id'] = login
 
+
 def prefill_db(client, name, module):
     chan = Channel(name=name, id=-1, module=module, config='')
     db.session.add(chan)
@@ -68,6 +70,7 @@ def test_valid_facebook_configuration(client):
     assert "FACEBOOK_APP_ID" in client.application.config
     assert "FACEBOOK_APP_SECRET" in client.application.config
 
+
 def test_callback_no_param(client):
     """ No parameters given on callback -> redirected to channels """
     login(client, "admin")
@@ -76,6 +79,7 @@ def test_callback_no_param(client):
     assert rv.status_code == 200
     assert rv2.status_code == 200
     assert rv.data == rv2.data
+
 
 def test_callback_wrong_state(client):
     """ Wrong channel id given on callback -> redirected to channels """
@@ -88,6 +92,7 @@ def test_callback_wrong_state(client):
     assert rv2.status_code == 200
     assert rv1.data == rv2.data
     assert rv.data == rv2.data
+
 
 def test_callback_state_not_fb(client):
     """ Received channel id is not a facebook channel -> redirected to channels """
@@ -106,6 +111,6 @@ def test_callback_state_ok_wrong_code(client):
     login(client, "admin")
     chan = prefill_db(client, 'test_fb', 'superform.plugins.facebook')
 
-    rv = client.get('/callback_fb?state='+str(chan.id)+'&code=42', follow_redirects=True)
+    rv = client.get('/callback_fb?state=' + str(chan.id) + '&code=42', follow_redirects=True)
     channel_conf = Channel.query.get(chan.id).config
     assert 'Unable to generate access_token' in channel_conf

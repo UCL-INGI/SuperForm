@@ -77,7 +77,7 @@ def configure_channel(id):
             else:
                 str_conf += "\"" + field + "\" : \"" + request.form[
                     'logo'] + "\""
-            print('field=%s\nstr_conf=%s' %(field,str_conf))
+            print('field=%s\nstr_conf=%s' % (field, str_conf))
         else:
             str_conf += "\"" + field + "\" : \"" + request.form.get(field) + "\""
         # TEAM06: end changes

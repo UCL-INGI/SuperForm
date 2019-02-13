@@ -4,28 +4,36 @@
     <h1>Channels</h1>
     <table class="table">
         <thead class="thead-light">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Module</th>
-                <th scope="col">Action</th>
-            </tr>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Module</th>
+            <th scope="col">Action</th>
+        </tr>
         </thead>
         <tbody>
-            {% for channel in channels %}
+        {% for channel in channels %}
             <tr>
                 <th scope="row">{{ channel.id }}</th>
                 <td>{{ channel.name }}</td>
                 <td>{{ channel.module.split('.')[2] }}</td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                        <a id="{{ "conf_button_{}".format(channel.id) }}" href="{{ url_for('channels.configure_channel',id=channel.id) }}" class="btn btn-secondary" type="button">Configure</a>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" data-name="{{ channel.name }}" data-id="{{ channel.id }}"><i class="fas fa-fw fa-edit"></i> Edit</button>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" data-name="{{ channel.name }}" data-id="{{ channel.id }}"><i class="fas fa-fw fa-trash"></i> Delete</button>
+                        <a id="{{ "conf_button_{}".format(channel.id) }}"
+                           href="{{ url_for('channels.configure_channel',id=channel.id) }}" class="btn btn-secondary"
+                           type="button">Configure</a>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal"
+                                data-name="{{ channel.name }}" data-id="{{ channel.id }}"><i
+                                class="fas fa-fw fa-edit"></i> Edit
+                        </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
+                                data-name="{{ channel.name }}" data-id="{{ channel.id }}"><i
+                                class="fas fa-fw fa-trash"></i> Delete
+                        </button>
                     </div>
                 </td>
             </tr>
-            {% endfor %}
+        {% endfor %}
         </tbody>
     </table>
     <form class="form-inline" method="post">
@@ -40,7 +48,7 @@
             <select name="module" class="custom-select" id="inlineFormCustomSelectModule">
                 <option selected>Choose a module...</option>
                 {% for module in modules %}
-                <option value="{{ module }}">{{ module }}</option>
+                    <option value="{{ module }}">{{ module }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -50,7 +58,8 @@
         </button>
     </form>
 
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="post">
@@ -74,7 +83,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="post">
@@ -87,7 +97,8 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input name="name" type="text" class="form-control" id="inlineFormInputText" placeholder="New channel name">
+                        <input name="name" type="text" class="form-control" id="inlineFormInputText"
+                               placeholder="New channel name">
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-warning">Update</button>

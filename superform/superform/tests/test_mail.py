@@ -20,7 +20,7 @@ def client():
     app.app_context().push()
 
     db_fd, database = tempfile.mkstemp()
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///"+database+".db"
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + database + ".db"
     app.config['TESTING'] = True
     client = app.test_client()
 
@@ -32,8 +32,8 @@ def client():
     clear_data(db.session)
     os.close(db_fd)
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///superform.db"
-    
-    
+
+
 def test_run_mail(client):
-    #Is there a way to test a send mail function?
+    # Is there a way to test a send mail function?
     assert True == True

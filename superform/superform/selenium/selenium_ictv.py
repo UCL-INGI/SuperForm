@@ -3,7 +3,6 @@ import time
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
 
-
 channel_name = "A-beautiful-channel-name"
 channel_server_fqdn = "0.0.0.0:8000"
 channel_ictv_id = "1"
@@ -245,4 +244,3 @@ test_selenium_view_publishing(driver)
 test_selenium_delete_channel(driver)
 test_selenium_logout(driver)
 driver.close()
-

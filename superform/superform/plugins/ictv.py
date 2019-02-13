@@ -36,6 +36,7 @@ class IctvServerConnection(IctvException):
     """
     This class represents the connection problems toward the remote ICTV server
     """
+
     def __init__(self, error_code, **kwargs):
         client_msg = ''
         if 'msg' in kwargs:
@@ -49,7 +50,7 @@ class IctvServerConnection(IctvException):
                         '\t* Are the API keys matching ?\n</p>'
         elif error_code == 400:
             self.msg += '<p>The ' + client_msg + ' was misformed. Please correct the data and retry.</p>\n' \
-                        '<p>If the error persists, take contact with an administrator.</p>'
+                                                 '<p>If the error persists, take contact with an administrator.</p>'
         elif error_code == 404:
             if client_msg == 'slide':
                 self.msg += '<p>The capsule for the slide was not found on the server.</p>'
@@ -62,6 +63,7 @@ class IctvChannelConfiguration(IctvException):
     """
     This class represents the configuration problems of the superform ictv plugin
     """
+
     def __init__(self, fields):
         self.msg = '<p>The following configuration fields of the <strong>' + fields[-1] + \
                    '</strong> channel are misconfigured : </p>\n\t<ul>'
@@ -167,8 +169,8 @@ def generate_ictv_dropdown_control(chan_name):
     code = 'function updateICTVForm(select) {' \
            '    var name = select.options[select.selectedIndex].value;' \
            '    $(".' + chan_name + '_ictv_slide_choice").hide();' \
-           '    $("#' + chan_name + '_ictv_form_" + name).show();' \
-           '};'
+                                    '    $("#' + chan_name + '_ictv_form_" + name).show();' \
+                                                             '};'
     return code
 
 
@@ -204,7 +206,7 @@ def generate_ictv_data_form(chan_name, templates):
     for index, temp in enumerate(templates):
         div_id = chan_name + '_ictv_form_' + temp
         ret = ret + '<div id="' + div_id + '" class=\"' + chan_name + '_ictv_slide_choice\" ' + \
-            ('style=\"display: none;\"' if index != 0 else '') + '>\n'
+              ('style=\"display: none;\"' if index != 0 else '') + '>\n'
         ret = ret + '\t<h5>' + templates[temp]['name'] + '</h5>\n'
 
         for field in templates[temp]:
@@ -212,9 +214,9 @@ def generate_ictv_data_form(chan_name, templates):
                     'text' not in field:
                 ret = ret + '\t<div class="form-group">\n'
                 ret = ret + '\t\t<label for="' + chan_name + '_data_' + temp + '_' + field + \
-                            '">' + field + '</label><br>\n'
+                      '">' + field + '</label><br>\n'
                 ret = ret + '\t\t<input type="text" name="' + chan_name + '_data_' + temp + '_' + field + \
-                            '" id="' + chan_name + '_data_' + temp + '_' + field + '" class="form-control">\n'
+                      '" id="' + chan_name + '_data_' + temp + '_' + field + '" class="form-control">\n'
                 ret = ret + '\t</div>\n'
 
         ret = ret + '</div>\n'
@@ -312,16 +314,15 @@ def generate_capsule(pub):
     :return: the JSON capsule
     """
     capsule = {'name': pub.title + '-' + str(time()), 'theme': 'ictv', 'validity':
-               [int(get_epoch(pub.date_from)), int(get_epoch(pub.date_until))]}
+        [int(get_epoch(pub.date_from)), int(get_epoch(pub.date_until))]}
     return capsule
 
 
 def run(pub, chan_conf):
-
     try:
         slide = generate_slide(chan_conf, pub)
     except (IctvServerConnection, IctvChannelConfiguration) as e:
-        return # StatusCode.ERROR, e.popup(), None
+        return  # StatusCode.ERROR, e.popup(), None
 
     capsule = generate_capsule(pub)
 
@@ -336,8 +337,8 @@ def run(pub, chan_conf):
         slide_url = capsules_url + '/' + str(capsule_id) + '/slides'
         slide_request = post(slide_url, json=slide, headers=request_args['headers'])
         if slide_request.status_code == 201:
-            return # StatusCode.OK, None, None
+            return  # StatusCode.OK, None, None
         else:
-            return # StatusCode.ERROR, IctvServerConnection(slide_request.status_code, msg='slide').popup(), None
+            return  # StatusCode.ERROR, IctvServerConnection(slide_request.status_code, msg='slide').popup(), None
     else:
-        return # StatusCode.ERROR, IctvServerConnection(capsule_request.status_code, msg='capsule').popup(), None
+        return  # StatusCode.ERROR, IctvServerConnection(capsule_request.status_code, msg='capsule').popup(), None

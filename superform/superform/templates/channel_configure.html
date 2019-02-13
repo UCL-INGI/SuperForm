@@ -11,7 +11,8 @@
                             {% for field in config_fields %}
                                 <div class="form-group">
                                     <label for="{{ field }}">{{ field }}</label><br>
-                                    <input type="text" name="{{ field }}" id="{{ field }}" class="form-control" value="{{ channel.config_dict.get(field) }}">
+                                    <input type="text" name="{{ field }}" id="{{ field }}" class="form-control"
+                                           value="{{ channel.config_dict.get(field) }}">
                                 </div>
                             {% endfor %}
                         </div>
