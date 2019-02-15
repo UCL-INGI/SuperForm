@@ -5,7 +5,10 @@ setup(
     packages=['superform'],
     include_package_data=True,
     install_requires=[
+        'apscheduler',
+        'bond',
         'facebook-sdk',
+        'feedgen',
         'feedparser',
         'flask',
         'flask-sqlalchemy',
@@ -17,15 +20,19 @@ setup(
         'pyopenssl',
         'PyRSS2Gen',
         'pytest',
+        'pytest-flask',
+        'pytest-helpers-namespace',
         'pytest-localserver',
-        'python-twitter',
-        'python3-saml',
         'python3-linkedin',
+        'python3-saml',
+        'pytest-selenium',
+        'python-twitter',
         'reportlab',
         'requests',
+        'requests-mock',
         'rfeed',
+        'sqlalchemy',
         'selenium',
-        'sqlalchemy'
-
-    ],
+        'slackclient'
+    ]
 )
