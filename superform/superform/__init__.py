@@ -11,15 +11,11 @@ from flask import Flask, render_template, session, request
 import superform.plugins
 from superform.authentication import authentication_page
 from superform.authorizations import authorizations_page
-from superform.publishings import pub_page
-from superform.models import db, Channel, Post, Publishing, User, State, Authorization, Permission
 from superform.stats import stats_page
 from superform.channels import channels_page
-# from OpenSSL import SSL
-from superform.models import db, Authorization, Channel
+from superform.delete import delete_page
 from superform.models import db, User, Post, Publishing, Channel
 from superform.posts import posts_page
-from superform.users import get_moderate_channels_for_user, is_moderator
 from superform.search import search_page
 from superform.publishings import pub_page
 from superform.users import get_moderate_channels_for_user, is_moderator, channels_available_for_user
@@ -39,6 +35,7 @@ app.register_blueprint(stats_page)
 app.register_blueprint(search_page)
 app.register_blueprint(facebook_page)
 app.register_blueprint(linkedin_page)
+app.register_blueprint(delete_page)
 
 # Init dbs
 db.init_app(app)

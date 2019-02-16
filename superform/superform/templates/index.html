@@ -98,7 +98,8 @@
                         <td>
                             <a href="#" class="btn btn-outline-primary" role="button">Edit</a>
                             <a href="#" class="btn btn-outline-primary">Copy</a>
-                            <a href="#" class="btn btn-outline-warning" role="button">Delete</a>
+                            <a href="{{ url_for('delete.delete', id=item.id) }}" class="btn btn-outline-warning"
+                                   role="button">Delete</a>
                             <!-- Team06: Export to PDF feature -->
                             <button type="button" class="btn btn-info"
                                     data-toggle="modal" data-target="#exportModal"
