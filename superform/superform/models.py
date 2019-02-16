@@ -3,13 +3,13 @@ from enum import Enum
 import datetime
 
 
+# ADRI standardize
 class State(Enum):
-    INCOMPLETE = -1
-    NOTVALIDATED = 0
-    VALIDATED = 1
-    PUBLISHED = 2
-    REFUSED = 3
-    OUTDATED = 4
+    INCOMPLETE = -1     # draft
+    NOTVALIDATED = 0    # waiting to be reviewed by a moderator
+    VALIDATED = 1       # validated by a moderator
+    PUBLISHED = 2       # archived
+    REFUSED = 3         # refused by the moderation, must be reworked or deleted
 
 
 db = SQLAlchemy()

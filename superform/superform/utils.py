@@ -23,7 +23,14 @@ def hour_converter(stri):
 
 
 def datetime_converter(stri):
-    return datetime.strptime(stri, "%Y-%m-%dT%H:%M")
+    try:
+        # Team2 gcal
+        return datetime.strptime(stri, "%Y-%m-%dT%H:%M")
+    except ValueError:
+        # ADRI Give a default hour if hour is not precised
+        date = datetime.strptime(stri + 'T12:00', "%Y-%m-%dT%H:%M")
+        return date
+
 
 
 def str_converter(datet):

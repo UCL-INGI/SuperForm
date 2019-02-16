@@ -67,7 +67,7 @@ def publish_from_new_post():
             if elem.startswith("chan_option_"):
                 def substr(elem):
                     import re
-                    return re.sub('^chan\_option\_', '', elem)
+                    return re.sub(r'^chan\_option\_', '', elem)
 
                 c = Channel.query.get(substr(elem))
                 # for each selected channel options

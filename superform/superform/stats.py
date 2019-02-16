@@ -1,12 +1,8 @@
-from flask import Blueprint, url_for, request, redirect, session, render_template
-from superform.users import channels_available_for_user, is_moderator
-from superform.utils import login_required, datetime_converter, str_converter, get_instance_from_module_path
-from superform.models import db, Post, Publishing, Channel, User, State, Authorization, Permission
-import facebook
-import json
-import http
-import urllib.request
-from .plugins import gcal_plugin
+from flask import Blueprint, session, render_template
+
+from superform.models import db, Post, Publishing, User, State, Authorization, Permission
+from superform.users import channels_available_for_user
+from superform.utils import login_required
 
 stats_page = Blueprint('stats', __name__)
 
@@ -40,51 +36,26 @@ def number_of_publishings():
 
 
 def number_of_waiting():
-    """
-
-    :return:
-    """
-    return db.session.query(Publishing) \
-        .filter(Publishing.user_id == session.get("user_id", ""), \
-                Publishing.state == 0).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == session.get("user_id", ""),
+                                               Publishing.state == State.NOTVALIDATED).count()
 
 
 def number_of_accepted():
-    """
-
-    :return:
-    """
-    return db.session.query(Publishing) \
-        .filter(Publishing.user_id == session.get("user_id", ""), \
-                Publishing.state == 1).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == session.get("user_id", ""),
+                                               Publishing.state == State.VALIDATED).count()
 
 
 def number_of_archived():
-    """
-
-    :return:
-    """
-    return db.session.query(Publishing) \
-        .filter(Publishing.user_id == session.get("user_id", ""), \
-                Publishing.state == State.ARCHIVED).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == session.get("user_id", ""),
+                                               Publishing.state == State.ARCHIVED).count()
 
 
 def accepted_user_posts(User_id):
-    """
-
-    :return:
-    """
-    return db.session.query(Publishing) \
-        .filter(Publishing.user_id == User_id, Publishing.state == 1).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == User_id, Publishing.state == State.VALIDATED).count()
 
 
 def waiting_user_posts(User_id):
-    """
-
-    :return:
-    """
-    return db.session.query(Publishing) \
-        .filter(Publishing.user_id == User_id, Publishing.state == 0).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == User_id, Publishing.state == State.NOTVALIDATED).count()
 
 
 def archived_user_posts(User_id):
@@ -92,17 +63,12 @@ def archived_user_posts(User_id):
 
     :return:
     """
-    return db.session.query(Publishing) \
-        .filter(Publishing.user_id == User_id, Publishing.state == State.ARCHIVED).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == User_id,
+                                               Publishing.state == State.ARCHIVED).count()
 
 
 def total_user_posts(User_id):
-    """
-
-    :return:
-    """
-    return db.session.query(Publishing) \
-        .filter(Publishing.user_id == User_id).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == User_id).count()
 
 
 def number_of_users():

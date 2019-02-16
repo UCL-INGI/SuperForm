@@ -76,8 +76,7 @@ def write_to_db(obj):
     db.session.commit()
 
 
-## Testing Functions ##
-
+# Testing Functions #
 
 def test_index_not_logged_in(client):
     rv = client.get('/', follow_redirects=True)
@@ -176,10 +175,10 @@ def test_is_moderator():
     user = User(id=63, name="test", first_name="utilisateur", email="utilisateur.test@uclouvain.be")
     db.session.add(user)
     u = User.query.get(63)
-    assert is_moderator(u) == False
+    assert is_moderator(u) is False
     a = Authorization(channel_id=1, user_id=63, permission=2)
     db.session.add(a)
-    assert is_moderator(u) == True
+    assert is_moderator(u) is True
 
 
 def test_get_moderate_channels_for_user():
@@ -202,7 +201,7 @@ def test_channels_available_for_user():
     # u = User.query.get(1)
     pdf_channels = db.session.query(Channel).filter(Channel.module == "superform.plugins.pdf")
     pdf_channels_number = 0
-    if (pdf_channels is not None):
+    if pdf_channels is not None:
         for chan in pdf_channels:
             pdf_channels_number += 1
 

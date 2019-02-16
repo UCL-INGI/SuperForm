@@ -1,7 +1,7 @@
 from flask import Blueprint, url_for, request, session
 
 from superform.utils import login_required
-from superform.models import db, Publishing, User, Post
+from superform.models import db, Publishing, User, Post, State
 from superform.users import is_moderator, get_moderate_channels_for_user
 import json
 
@@ -30,7 +30,7 @@ def search_publishings():
                                                                  '%' + request.form['subject'] + '%')) &
                                                              (Publishing.description.like(
                                                                  '%' + request.form['body'] + '%')) &
-                                                             (Publishing.state == 0)) for c in chans)
+                                                             (Publishing.state == State.NOTVALIDATED)) for c in chans)
 
         flattened_list_pubs = [y for x in pubs_per_chan for y in x]
         print(str(flattened_list_pubs))
