@@ -101,7 +101,8 @@ def test_delete_publishing(client):
     assert deleted_publishing is None
 
     # Try with a publishing already posted (state=1)
-    pub2 = Publishing(post_id=id_post, channel_id=id_channel, state=1, title=title_post, description=descr_post,
+    pub2 = Publishing(post_id=id_post, user_id=user_id, channel_id=id_channel, state=1, title=title_post,
+                      description=descr_post,
                       link_url=link_post, image_url=image_post, date_from=date_from, date_until=date_until)
     db.session.add(pub2)
     db.session.commit()
