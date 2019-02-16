@@ -57,10 +57,12 @@ def test_delete_post(client):
 
     path = '/delete_post/' + str(id_post)
 
+    # verify that something has been posted/published
+    assert db.session.query(Post).filter_by(id=id_post).first() is not None
+
     client.get(path)
 
     deleted_post = db.session.query(Post).filter_by(id=id_post).first()
-
     assert deleted_post is None
 
 
@@ -83,12 +85,15 @@ def test_delete_publishing(client):
     id_channel = 1
 
     # Try with a publishing submitted for review (state=0)
-    pub1 = Publishing(post_id=id_post, channel_id=id_channel, state=0, title=title_post, description=descr_post,
+    pub1 = Publishing(post_id=id_post, user_id=user_id, channel_id=id_channel, state=0, title=title_post, description=descr_post,
                       link_url=link_post, image_url=image_post, date_from=date_from, date_until=date_until)
     db.session.add(pub1)
     db.session.commit()
 
     path = '/delete_publishing/' + str(id_post) + '/' + str(id_channel)
+
+    # verify that something has been posted/published
+    assert db.session.query(Publishing).filter(Publishing.post_id == id_post).first() is not None
 
     client.get(path)
 
@@ -102,6 +107,9 @@ def test_delete_publishing(client):
     db.session.commit()
 
     path = '/delete_publishing/' + str(id_post) + '/' + str(id_channel)
+
+    # verify that something has been posted/published
+    assert db.session.query(Publishing).filter(Publishing.post_id == id_post).first() is not None
 
     client.get(path)
 
@@ -132,6 +140,9 @@ def test_delete_not_author(client):
     id_post = p.id
 
     path = '/delete/' + str(id_post)
+
+    # verify that something has been posted/published
+    assert db.session.query(Post).filter_by(id=id_post).first() is not None
 
     client.get(path)
 
