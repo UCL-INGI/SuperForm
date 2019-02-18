@@ -63,8 +63,7 @@ def configure_channel(id):
             if str(m) == 'superform.plugins.pdf':
                 return pdf_plugin(id, c, config_fields)
             # TEAM06: end addition
-
-        # TEAM 07 facebook/linkedin
+        # TEAM 07 facebook/linkedin custom config page
         try:
             return clas.render_specific_config_page(c, config_fields)
         except AttributeError:

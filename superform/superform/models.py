@@ -89,6 +89,7 @@ class Channel(db.Model):
     name = db.Column(db.Text, nullable=False)
     module = db.Column(db.String(100), nullable=False)
     config = db.Column(db.Text, nullable=False)
+    count = db.Column(db.Integer, default=0)
 
     publishings = db.relationship("Publishing", cascade="all, delete-orphan", backref="channel", lazy=True)
     authorizations = db.relationship("Authorization", cascade="all, delete", backref="channel", lazy=True)

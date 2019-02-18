@@ -19,6 +19,7 @@ from superform.posts import posts_page
 from superform.search import search_page
 from superform.publishings import pub_page
 from superform.users import get_moderate_channels_for_user, is_moderator, channels_available_for_user
+from superform.plugins.pdf import export
 from superform.plugins._linkedin_callback import linkedin_page
 from superform.plugins._facebook_callback import facebook_page
 
@@ -56,7 +57,7 @@ def index():
             post_id = request.form.get("id")
             chan_id = request.form.get("template")
             # print('post_id = %s\nchan_id = %s' %(post_id, chan_id))
-            return plugins.pdf.export(post_id, chan_id)
+            return export(post_id, chan_id)
     # end addition
 
     user = User.query.get(session.get("user_id", "")) if session.get(
