@@ -4,6 +4,7 @@ from flask import Blueprint, current_app, url_for, request, make_response, redir
 
 from superform.utils import login_required, get_instance_from_module_path, get_modules_names, get_module_full_name
 from superform.models import db, Channel
+from superform.plugins.pdf import pdf_plugin
 import ast
 
 channels_page = Blueprint('channels', __name__)
@@ -63,7 +64,12 @@ def configure_channel(id):
                 return pdf_plugin(id, c, config_fields)
             # TEAM06: end addition
 
-        return render_template("channel_configure.html", channel=c, config_fields=config_fields)
+        # TEAM 07 facebook/linkedin
+        try:
+            return clas.render_specific_config_page(c, config_fields)
+        except AttributeError:
+            return render_template("channel_configure.html", channel=c, config_fields=config_fields)
+        # TEAM 07
     str_conf = "{"
     cfield = 0
     for field in config_fields:
