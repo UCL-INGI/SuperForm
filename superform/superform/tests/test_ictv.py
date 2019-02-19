@@ -132,11 +132,10 @@ def test_new_publish_ictv(client):
     assert title == pub.title
 
     # Moderate a post
-    print(chan_id_3)
-    print(chan.id)
     client.post('/moderate/' + str(pub.post_id) + '/' + str(chan.id), data={'titlepost': title,
                                                                             'descrpost': description,
                                                                             'imagepost': image,
+                                                                            'linkurlpost': pub.link_url,
                                                                             'datefrompost': d.strftime("%Y-%m-%d"),
                                                                             'timefrompost': d.strftime("%H:%M"),
                                                                             'dateuntilpost': d.strftime("%Y-%m-%d"),

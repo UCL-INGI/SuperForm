@@ -9,3 +9,4 @@ __pycache__/
 /superform/.cache/*
 /superform/.pytest_cache/*
 /superform/superform/superform.db
+superform/superform/plugins/pdf/

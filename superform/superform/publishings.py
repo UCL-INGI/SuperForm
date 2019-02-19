@@ -31,10 +31,10 @@ def create_a_publishing(post, chn, form):
         link_post = form.get(chan + '_linkurlpost') if form.get(chan + '_linkurlpost') is not None else post.link_url
 
     image_post = form.get(chan + '_imagepost') if form.get(chan + '_imagepost') is not None else post.image_url
-    date_from = datetime_converter(form.get(chan + '_datefrompost')) if datetime_converter(
-        form.get(chan + '_datefrompost')) is not None else post.date_from
-    date_until = datetime_converter(form.get(chan + '_dateuntilpost')) if datetime_converter(
-        form.get(chan + '_dateuntilpost')) is not None else post.date_until
+    date_from = datetime_converter(form.get(chan + '_datefrompost')) if form.get(
+        chan + '_datefrompost') is not None else post.date_from
+    date_until = datetime_converter(form.get(chan + '_dateuntilpost')) if form.get(
+        chan + '_dateuntilpost') is not None else post.date_until
 
     pub = Publishing(post_id=post.id, user_id=user_id, channel_id=chn.id,
                      state=0,
