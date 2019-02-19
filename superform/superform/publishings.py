@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from plugins import gcal_plugin
 from superform import channels
-from superform.models import db, Publishing, Channel, State
+from superform.models import db, Publishing, Channel
 from superform.utils import datetime_converter, login_required, str_converter
 
 pub_page = Blueprint('publishings', __name__)
@@ -37,7 +37,7 @@ def create_a_publishing(post, chn, form):
         form.get(chan + '_dateuntilpost')) is not None else post.date_until
 
     pub = Publishing(post_id=post.id, user_id=user_id, channel_id=chn.id,
-                     state=State.NOTVALIDATED,
+                     state=0,
                      title=title_post, description=descr_post,
                      link_url=link_post, image_url=image_post,
                      date_from=date_from, date_until=date_until)
@@ -108,7 +108,7 @@ def moderate_publishing(id, idc):
 
         if channels.valid_conf(c_conf, plugin.CONFIG_FIELDS):
             # state is shared & validated
-            pub.state = State.VALIDATED
+            pub.state = 1
             db.session.commit()
             # running the plugin here
             plugin.run(pub, c_conf)

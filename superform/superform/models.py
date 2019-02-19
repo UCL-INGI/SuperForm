@@ -55,7 +55,7 @@ class Post(db.Model):
         else:
             # check if all the publications from a post are archived
             for pub in self.publishings:
-                if pub.state != State.PUBLISHED.value:
+                if pub.state != 2:
                     # state 2 is archived.
                     return False
             return True
@@ -67,7 +67,7 @@ class Publishing(db.Model):
     user_id = db.Column(db.String(80), db.ForeignKey("user.id"), nullable=False)
     # TEAM2: Stat module
     channel_id = db.Column(db.Integer, db.ForeignKey("channel.id"), nullable=False)
-    state = db.Column(db.Integer, nullable=False, default=State.INCOMPLETE)
+    state = db.Column(db.Integer, nullable=False, default=-1)
     title = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
     link_url = db.Column(db.Text)
