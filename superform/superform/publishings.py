@@ -25,10 +25,12 @@ def create_a_publishing(post, chn, form):
     from importlib import import_module
     plug = import_module(plug_name)
 
+    # TEAM 3 ictv
     if 'forge_link_url' in dir(plug):
         link_post = plug.forge_link_url(chan, form)
     else:
         link_post = form.get(chan + '_linkurlpost') if form.get(chan + '_linkurlpost') is not None else post.link_url
+    # TEAM 3 ictv
 
     image_post = form.get(chan + '_imagepost') if form.get(chan + '_imagepost') is not None else post.image_url
     date_from = datetime_converter(form.get(chan + '_datefrompost')) if form.get(
@@ -84,6 +86,12 @@ def generate_google_user_credentials(channel_id):
 @login_required()
 def moderate_publishing(id, idc):
     pub = db.session.query(Publishing).filter(Publishing.post_id == id, Publishing.channel_id == idc).first()
+
+    # Only publishing that have yet to be moderated can be viewed
+    if pub.state != 0:
+        flash("This publication has already been moderated", category='info')
+        return redirect(url_for('index'))
+
     c = db.session.query(Channel).filter(Channel.id == pub.channel_id).first()
     pub.date_from = str_converter(pub.date_from)
     pub.date_until = str_converter(pub.date_until)
