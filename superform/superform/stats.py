@@ -37,12 +37,12 @@ def number_of_publishings():
 
 def number_of_waiting():
     return db.session.query(Publishing).filter(Publishing.user_id == session.get("user_id", ""),
-                                               Publishing.state == State.NOTVALIDATED).count()
+                                               Publishing.state == 0).count()
 
 
 def number_of_accepted():
     return db.session.query(Publishing).filter(Publishing.user_id == session.get("user_id", ""),
-                                               Publishing.state == State.VALIDATED).count()
+                                               Publishing.state == 1).count()
 
 
 def number_of_archived():
@@ -51,11 +51,11 @@ def number_of_archived():
 
 
 def accepted_user_posts(User_id):
-    return db.session.query(Publishing).filter(Publishing.user_id == User_id, Publishing.state == State.VALIDATED).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == User_id, Publishing.state == 1).count()
 
 
 def waiting_user_posts(User_id):
-    return db.session.query(Publishing).filter(Publishing.user_id == User_id, Publishing.state == State.NOTVALIDATED).count()
+    return db.session.query(Publishing).filter(Publishing.user_id == User_id, Publishing.state == 0).count()
 
 
 def archived_user_posts(User_id):
