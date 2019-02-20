@@ -44,14 +44,14 @@ def login(client, login):
             sess['user_id'] = login
 
 
-## Testing Functions ##
+# Testing Functions #
 
 
 def test_logged_but_not_moderator(client):
     login(client, "myself")
     rv2 = client.get('/', follow_redirects=True)
     assert rv2.status_code == 200
-    assert "Your are not logged in." not in rv2.data.decode()
+    assert "You are not logged in." not in rv2.data.decode()
 
     channel = Channel(name="test", module=get_module_full_name("TestTwitter"), config="{}")
     db.session.add(channel)

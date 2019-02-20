@@ -11,6 +11,7 @@ def create_a_publishing(post, chn, form):
     chan = str(chn.name)
     title_post = form.get(chan + '_titlepost') if (form.get(chan + '_titlepost') is not None) else post.title
     # Team2 stat
+    chn.count += 1
     user_id = session.get("user_id", "") if session.get("logged_in", False) else -1
     # Team2 stat
 

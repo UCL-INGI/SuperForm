@@ -30,7 +30,7 @@ def search_publishings():
                                                                  '%' + request.form['subject'] + '%')) &
                                                              (Publishing.description.like(
                                                                  '%' + request.form['body'] + '%')) &
-                                                             (Publishing.state == State.NOTVALIDATED)) for c in chans)
+                                                             (Publishing.state == 0)) for c in chans)
 
         flattened_list_pubs = [y for x in pubs_per_chan for y in x]
         print(str(flattened_list_pubs))

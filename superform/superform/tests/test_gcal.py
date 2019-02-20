@@ -92,7 +92,7 @@ def test_run_gcal(client):
     while True:
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
         for event in events['items']:
-            if ('summary' in event and event['summary'] == pub.title):
+            if 'summary' in event and event['summary'] == pub.title:
                 goal = event
                 break
         page_token = events.get('nextPageToken')
@@ -102,17 +102,17 @@ def test_run_gcal(client):
     delete_db(user, channel, post, pub)
     if goal:
         service.events().delete(calendarId='primary', eventId=goal['id']).execute()
-    assert goal != None
+    assert goal is not None
 
 
 def test_validity_title_gcal():
     pub = basic_publish(title='    ')
-    assert gcal_plugin.is_valid(pub) == False
+    assert gcal_plugin.is_valid(pub) is False
 
 
 def test_validity_datetime_gcal():
     pub = basic_publish(delta=timedelta(days=-1))
-    assert gcal_plugin.is_valid(pub) == False
+    assert gcal_plugin.is_valid(pub) is False
 
 
 def test_validity_gcal():

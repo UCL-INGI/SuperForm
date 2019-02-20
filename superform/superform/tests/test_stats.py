@@ -1,5 +1,6 @@
 # Gcal import
 from datetime import datetime, timedelta
+from flask import session
 from superform.plugins import gcal_plugin
 from superform import app, db, User, Publishing, channels, Post
 from superform.models import Channel, db
@@ -7,7 +8,6 @@ from googleapiclient.discovery import build
 from superform.tests.test_basic import client, login, write_to_db, create_user, create_channel, create_auth
 from superform.utils import get_module_full_name, str_converter
 import pytest, random, string, json
-# facebook import
 # Stats import
 from superform import stats
 from superform.tests import test_gcal
@@ -34,10 +34,11 @@ def setup_db(channel_name, channel_module):
 
 # We look first the number of post and then we publish a post and then we relook if the number of post is +1
 def test_GCAL_post(client):
-    with app.test_request_context('/make_report/2017', data={'format': 'short'}):
-        k = stats.number_of_posts()
-    # -------------------------
     user, channel, post, pub = setup_db(channel_name='test_gcal', channel_module='gcal_plugin')
+    with app.test_request_context('/make_report/2017', data={'format': 'short'}):
+        session["user_id"] = user.id  # Fix: the test_request_context created here doesn't contain the user_id
+        k = stats.number_of_accepted()
+    # -------------------------
     login(client, user.id)
     rv = client.post('/moderate/' + str(post.id) + '/' + str(channel.id),
                      data=dict(titlepost=pub.title,
@@ -55,7 +56,7 @@ def test_GCAL_post(client):
     while True:
         events = service.events().list(calendarId='primary', pageToken=page_token).execute()
         for event in events['items']:
-            if ('summary' in event and event['summary'] == pub.title):
+            if 'summary' in event and event['summary'] == pub.title:
                 goal = event
                 break
         page_token = events.get('nextPageToken')
@@ -64,12 +65,13 @@ def test_GCAL_post(client):
 
     # -------------------------------
     with app.test_request_context('/make_report/2017', data={'format': 'short'}):
-        k2 = stats.number_of_posts() - 1
+        session["user_id"] = user.id  # Fix: the test_request_context created here doesn't contain the user_id
+        k2 = stats.number_of_accepted() - 1
 
     test_gcal.delete_db(user, channel, post, pub)
     if goal:
         service.events().delete(calendarId='primary', eventId=goal['id']).execute()
-    assert goal != None
+    assert goal is not None
 
     assert k == k2
 
