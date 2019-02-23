@@ -17,6 +17,10 @@ def login_required(admin_required=False):
     return decorator
 
 
+def datetime_now():
+    return datetime.now()
+
+
 # TEAM2: Google calendar: added hours
 def hour_converter(stri):
     return datetime.strptime(stri, "%H:%M")
@@ -30,7 +34,6 @@ def datetime_converter(stri):
         # ADRI Give a default hour if hour is not precised
         date = datetime.strptime(stri + 'T12:00', "%Y-%m-%dT%H:%M")
         return date
-
 
 
 def str_converter(datet):

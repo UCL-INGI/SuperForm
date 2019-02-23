@@ -1,6 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
 import datetime
+import json
+
+from sqlalchemy import UniqueConstraint
+from sqlalchemy.ext.declarative import DeclarativeMeta
+
+from superform.utils import str_converter
 
 
 # ADRI standardize
@@ -10,6 +16,7 @@ class State(Enum):
     VALIDATED = 1       # validated by a moderator
     PUBLISHED = 2       # archived
     REFUSED = 3         # refused by the moderation, must be reworked or deleted
+    OLD_VERSION = 4
 
 
 db = SQLAlchemy()
@@ -61,7 +68,29 @@ class Post(db.Model):
             return True
 
 
+class AlchemyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj.__class__, DeclarativeMeta):
+            # an SQLAlchemy class
+            fields = {}
+            for field in [x for x in vars(obj) if not x.startswith('_') and x != 'metadata']:
+                data = obj.__getattribute__(field)
+                try:
+                    if data.__class__ == datetime.datetime:
+                        fields[field] = str_converter(data)
+                    else:
+                        json.dumps(data)  # this will fail on non-encodable values, like other classes
+                        fields[field] = data
+                except TypeError:
+                    fields[field] = None
+            # a json-encodable dict
+            return fields
+        return json.JSONEncoder.default(self, obj)
+
+
 class Publishing(db.Model):
+    publishing_id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True, nullable=False)
+    num_version = db.Column(db.Integer, nullable=False, default=1)
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"), nullable=False)
     # TEAM2: Stat module
     user_id = db.Column(db.String(80), db.ForeignKey("user.id"), nullable=False)
@@ -74,14 +103,19 @@ class Publishing(db.Model):
     image_url = db.Column(db.Text)
     date_from = db.Column(db.DateTime)
     date_until = db.Column(db.DateTime)
-
-    __table_args__ = (db.PrimaryKeyConstraint('post_id', 'channel_id'),)
+    
+    UniqueConstraint(num_version, post_id, channel_id, name='unicity_publishing_numvers')
+    __table_args__ = ({"sqlite_autoincrement": True},)
 
     def __repr__(self):
-        return '<Publishing {} {}>'.format(repr(self.post_id), repr(self.channel_id))
+        return '<Publishing {} ({} {})>'.format(repr(self.publishing_id), repr(self.post_id), repr(self.channel_id))
 
     def get_author(self):
         return db.session.query(Post).get(self.post_id).user_id
+
+    def get_chan_module(self):  # Return the name of the plugin used by the publication
+        chn = db.session.query(Channel).get(self.channel_id).module
+        return chn[18:]
 
 
 class Channel(db.Model):
@@ -109,6 +143,19 @@ class Authorization(db.Model):
 
     def __repr__(self):
         return '<Authorization {} {}>'.format(repr(self.user_id), repr(self.channel_id))
+
+
+class Comment(db.Model):
+    publishing_id = db.Column(db.Integer, db.ForeignKey("publishing.publishing_id"), primary_key=True, nullable=False)
+    user_comment = db.Column(db.Text, nullable=True)
+    moderator_comment = db.Column(db.Text, nullable=True)
+    date_moderator_comment = db.Column(db.Text, nullable=True)
+    date_user_comment = db.Column(db.Text, nullable=True)
+
+    def __repr__(self):
+        return '<Comment {}>'.format(repr(self.publishing_id))
+
+    __table_args__ = (db.PrimaryKeyConstraint('publishing_id'),)
 
 
 class Permission(Enum):
