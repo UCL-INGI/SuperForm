@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% import "macro/modal.html" as modal %}
+{% block title %}Edit Post{% endblock %}
+{% block stylesheet %}
+    <style>
+        /* Animation */
+
+        .spin {
+            animation: spin 1s infinite linear;
+        }
+
+        @-moz-keyframes spin {
+            from {
+                -moz-transform: rotate(0deg);
+            }
+            to {
+                -moz-transform: rotate(360deg);
+            }
+        }
+
+        @-webkit-keyframes spin {
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Adjustments */
+
+        .jumbotron span,
+        .jumbotron i {
+            margin: 5px;
+        }
+
+        #tabs {
+            padding: 2rem;
+        }
+
+        #buttons,
+        #selector {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .field:not(:last-child) {
+            margin-bottom: 1rem;
+        }
+
+        .field-body {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        #channels a:hover,
+        .list-group-item:hover,
+        .dropdown-item:hover {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div id="content" class="container" style="display:none">
+        <div id="header" class="jumbotron"></div>
+        <form novalidate>
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="logs"></div>
+                    <div id="tabs" class="tab-content card"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="sticky-top">
+                        <h2>Channels</h2>
+                        <div id="selector" class="nav flex-column nav-pills" role="tablist"
+                             aria-orientation="vertical"></div>
+                        <button id="add" class="btn btn-outline-primary" type="button">Add</button>
+                        <button id="delete" class="btn btn-outline-danger" type="button">Delete</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="buttons">
+                        <button id="validate" class="btn btn-lg btn-success" type="button">Save & Publish</button>
+                        <button id="cancel" class="btn btn-lg btn-warning" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modals -->
+    {% call modal.modal_block(id='channels_modal', title='Channels') %}{% endcall %}
+    {% call modal.modal_block(id='picture_modal', title='Image Preview') %}{% endcall %}
+    {% call modal.modal_block(id='twitter_modal', title='Tweet Preview') %}{% endcall %}
+    {% call modal.modal_block(id='copy_to_modal', title='Copy to...') %}{% endcall %}
+    {% call modal.modal_block(id='copy_from_modal', title='Copy to...') %}{% endcall %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        var layout_url = "{{ url_for('static', filename='form/layout.json') }}";
+        var data_url = "{{ url_for('edit.create_data_json', post_id=post_id) }}";
+        var server_url = "{{ url_for('edit.publish_edit_post', post_id=post_id) }}";
+        var split_url = "{{ url_for('api.get_split')}}";
+    </script>
+    <script src="{{ url_for('static', filename='js/form.js') }}"></script>
+{% endblock %}

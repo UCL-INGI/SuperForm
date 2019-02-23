@@ -11,6 +11,8 @@ from flask import Flask, render_template, session, request
 import superform.plugins
 from superform.authentication import authentication_page
 from superform.authorizations import authorizations_page
+from superform.edit import edit_page
+from superform.rss import rss_page
 from superform.stats import stats_page
 from superform.channels import channels_page
 from superform.delete import delete_page
