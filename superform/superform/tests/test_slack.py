@@ -9,8 +9,8 @@ import time
 json_data = open(os.path.dirname(os.path.abspath(__file__)) + '/../config.json')
 data = json.load(json_data)
 
-cha_conf = json.dumps({"token": data["BOT_TOKEN"],
-                       "channel name": "testing-bot"})  # Getted from db
+cha_conf = json.dumps({"token": "xoxb-436564239890-556926824642-J12RceWt7oFMBin3ajkCem8p",
+                       "channel name": "bot-channel"})
 
 
 class Publish(Publishing):

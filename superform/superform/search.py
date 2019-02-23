@@ -49,7 +49,7 @@ def search_publishings():
 
 
 @search_page.route('/search_post', methods=['POST'])
-# @login_required()
+@login_required()
 def search_post():
     '''
         Searching in query for posts with a specific filter

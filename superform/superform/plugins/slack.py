@@ -22,7 +22,7 @@ def run(publishing, channel_config):
         message = make_message(publishing)
 
         channels = slack_client.api_call(
-            "conversations.list"
+            "conversations.list", types=("public_channel", "private_channel")
         )
         if channels['ok']:
             found = False
