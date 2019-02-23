@@ -22,7 +22,7 @@ data = json.load(json_data)
 channelName = "Slack_test"
 pluginName = "superform.plugins.slack"
 fieldTested = ["title", "description", "link"]
-configuration = {"token": data["BOT_TOKEN"], "channel name": "testing-bot"}
+configuration = {"token": data["BOT_TOKEN"], "channel name": "bot-channel"}
 
 
 @pytest.fixture
