@@ -40,8 +40,12 @@ def channel_list():
             channel_id = request.form.get("id")
             channel = Channel.query.get(channel_id)
             name = request.form.get('name')
-            channel.name = name
-            db.session.commit()
+            if name is not '':
+                channel.name = name
+                conf = json.loads(channel.config)
+                conf["channel_name"] = name
+                channel.config = json.dumps(conf)
+                db.session.commit()
 
     channels = Channel.query.all()
     return render_template("channels.html", channels=channels,
@@ -55,6 +59,7 @@ def configure_channel(id):
     m = c.module
     clas = get_instance_from_module_path(m)
     config_fields = clas.CONFIG_FIELDS
+
     if request.method == 'GET':
         if c.config is not "":
             d = ast.literal_eval(c.config)
@@ -82,7 +87,6 @@ def configure_channel(id):
             else:
                 str_conf += "\"" + field + "\" : \"" + request.form[
                     'logo'] + "\""
-            print('field=%s\nstr_conf=%s' % (field, str_conf))
         else:
             str_conf += "\"" + field + "\" : \"" + request.form.get(field) + "\""
         # TEAM06: end changes

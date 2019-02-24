@@ -1,0 +1,15 @@
+.btn_a.disabled {
+    cursor: auto;
+}
+
+.btn_a {
+    cursor: pointer;
+}
+
+.btn_a.disabled i {
+    color: grey;
+}
+
+.scroll {
+    overflow: auto;
+}

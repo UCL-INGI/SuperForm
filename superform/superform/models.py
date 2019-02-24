@@ -12,7 +12,7 @@ from superform.utils import str_converter
 # ADRI standardize
 class State(Enum):
     INCOMPLETE = -1     # draft
-    NOTVALIDATED = 0    # waiting to be reviewed by a moderator
+    NOT_VALIDATED = 0    # waiting to be reviewed by a moderator
     VALIDATED = 1       # validated by a moderator
     PUBLISHED = 2       # archived
     REFUSED = 3         # refused by the moderation, must be reworked or deleted

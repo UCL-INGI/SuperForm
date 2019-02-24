@@ -1,4 +1,9 @@
 {% extends "layout.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat_bubble.css') }}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}" crossorigin="anonymous">
+{% endblock %}
 {% block title %}Moderate{% endblock %}
 {% block content %}
     <h1>Moderate this publication</h1>
@@ -9,8 +14,8 @@
             </div>
         {% endif %}
         <form method="POST" action="">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row" module-namechan="{{ channel.module }}">
+                <div id="modify_pub" class="col-md-4">
                     <div class="form-group">
                         <label for="titlepost">Title</label><br>
                         <input type="text" name="titlepost" id="titlepost" class="form-control" value="{{ pub.title }}">
@@ -27,7 +32,7 @@
                     </div>
                     <div class="form-group">
                         <label for="imagepost">Image</label><br>
-                        <input type="file" name="imagepost" id="imagepost" class="form-control"
+                        <input type="text" name="imagepost" id="imagepost" class="form-control"
                                value="{{ pub.image_url }}">
                     </div>
                     <div class="row">
@@ -42,17 +47,137 @@
                             <div class="form-group">
                                 <label for="dateuntilpost">Publication Until</label><br>
                                 <input id="dateuntilpost" name="dateuntilpost" type="datetime-local"
-                                       class="form-control" value="{{ pub.date_until }}">
+                                       class="form-control"
+                                       value="{{ pub.date_until }}">
                             </div>
                         </div>
                     </div>
-
+                    {% if template!=None %}
+                        {% include template %} <!-- include extra form if necessary -->
+                    {% endif %}
+                </div>
+                <div id="old_pub" class="col-md-4">
+                    <div class="form-group">
+                        <label for="titlepost_old">Title</label><br>
+                        <input disabled type="text" id="titlepost_old" class="form-control" value="{{ pub.title }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="descrpost_old">Description</label><br>
+                        <textarea disabled class="form-control" rows="5"
+                                  id="descrpost_old">{{ pub.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="linkurlpost_old">Link</label><br>
+                        <input disabled type="text" id="linkurlpost_old" class="form-control"
+                               value="{{ pub.link_url }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="imagepost_old">Image</label><br>
+                        <input disabled type="file" id="imagepost_old" class="form-control" value="{{ pub.image_url }}">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="datefrompost_old">Publication Date</label><br>
+                                <input disabled id="datefrompost_old" type="date" class="form-control"
+                                       value="{{ pub.date_from }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateuntilpost_old">Publication Until</label><br>
+                                <input disabled id="dateuntilpost_old" type="date" class="form-control"
+                                       value="{{ pub.date_until }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pagination_old" class="row">
+                        <div class="col-md-2 text-center">
+                            <a id="prev_button" class="btn_a disabled"><i
+                                    class="fas fa-angle-double-left fa-2x"></i></a>
+                        </div>
+                        <div class="col-md-8">
+                            <h4 id="current_date" style="text-align: center"></h4>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <a id="next_button" class="btn_a disabled"><i
+                                    class="fas fa-angle-double-right fa-2x"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div id="comment_pub" class="col-md-4">
+                    <div id="chat_box" class="card" style="display: none">
+                        <div class="card-header">Comments</div>
+                        <div class="card-body scroll">
+                            {% for comment in comments %}
+                                {% if comment != None %}
+                                    {% if comment.user_comment != None and comment.user_comment != '' %}
+                                        <div class="talk-bubble left round tri-right btm-left-in">
+                                            <div id="user_{{ loop.index }}" class="talktext">
+                                                <h6>{{ comment.date_user_comment }}</h6>
+                                                <p>{{ comment.user_comment }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if comment.moderator_comment != None and comment.moderator_comment != '' %}
+                                        <div class="talk-bubble right round tri-right btm-right-in">
+                                            <div id="mod_{{ loop.index }}" class="talktext">
+                                                <h6>{{ comment.date_moderator_comment }}</h6>
+                                                <p>{{ comment.moderator_comment }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div id="mod_comment" class="form-group">
+                        <label for="moderator_comment">Your comment</label><br>
+                        <textarea class="form-control" rows="5" id="moderator_comment"
+                                  name="moderator_comment"></textarea>
+                    </div>
                 </div>
             </div>
             <button class="btn btn-success" {% if notconf %} disabled {% endif %}>Publish</button>
+            <button id="unvalidate" class="btn btn-danger"
+                    formaction="{{ url_for('publishings.unvalidate_publishing',id=pub.publishing_id) }}"
+                    formmethod="post" type="submit">
+                Reject
+            </button>
         </form>
+        <div class="modal fade" id="modalResubmitModerate" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                        <button id="close_button_moderate" type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p> Are you sure to submit without comment ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="close_button_moderate" type="button" class="btn btn-secondary" data-dismiss="modal">
+                            no
+                        </button>
+                        <button id="yes_button_moderate" type="submit" class="btn btn-primary">yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% else %}
-        Your are not logged in.
+        You are not logged in.
     {% endif %}
-
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        let pubs = JSON.parse({{ pub_versions|tojson }}).reverse();
+        let coms = JSON.parse({{ pub_comments|tojson }});
+        var post_form_validations = {{ post_form_validations|tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/post_and_publishing_utils.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/resubmit_moderate.js') }}" crossorigin="anonymous"></script>
 {% endblock %}

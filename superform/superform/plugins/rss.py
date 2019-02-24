@@ -5,13 +5,6 @@ from superform.models import Publishing, db, Channel
 FIELDS_UNAVAILABLE = ['Publication Date']
 CONFIG_FIELDS = ['channel_title', 'channel_description', 'channel_author']
 
-AUTH_FIELDS = False
-POST_FORM_VALIDATIONS = {
-    'title_max_length': 40000,
-    'description_max_length': 40000,
-    'image_type': 'url'
-}
-
 slack_error_callback_page = Blueprint('slack_error', 'channels')
 slack_verify_callback_page = Blueprint('slack', 'channels')
 
