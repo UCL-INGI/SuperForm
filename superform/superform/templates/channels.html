@@ -15,12 +15,15 @@
         {% for channel in channels %}
             <tr>
                 <th scope="row">{{ channel.id }}</th>
+                <td>
+                    <div><img width="35" height="35" src="static/logos/{{ channel.module.split('.')[2] }}_logo.png"
+                              title="{{ channel.module.split('.')[2] }}" alt="{{ channel.module.split('.')[2] }}"/>
+                    </div>
+                </td>
                 <td>{{ channel.name }}</td>
-                <td>{{ channel.module.split('.')[2] }}</td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                        <a id="{{ "conf_button_{}".format(channel.id) }}"
-                           href="{{ url_for('channels.configure_channel',id=channel.id) }}" class="btn btn-secondary"
+                        <a href="{{ url_for('channels.configure_channel',id=channel.id) }}" class="btn btn-secondary"
                            type="button">Configure</a>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal"
                                 data-name="{{ channel.name }}" data-id="{{ channel.id }}"><i
