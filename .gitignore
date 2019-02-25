@@ -11,3 +11,4 @@ __pycache__/
 /superform/superform/superform.db
 superform/superform/plugins/pdf/
 superform/geckodriver.log
+superform/superform/back-up/
