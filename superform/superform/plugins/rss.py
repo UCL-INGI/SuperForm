@@ -37,11 +37,6 @@ def saveExtraFields(channel, form):
     return None
 
 
-# returns the name of an extra form, None if not needed
-def get_template_new():
-    return None
-
-
 # returns the name of an extra form (pre-fillable), None if not needed
 def get_template_mod():
     return None

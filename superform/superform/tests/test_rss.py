@@ -1,6 +1,6 @@
 from superform.models import Channel, Post, Publishing
 from superform.plugins import rss
-from superform.posts import pre_validate_post
+from superform.plugins.rss import post_pre_validation
 
 
 def test_pre_validate_post_title():
@@ -33,11 +33,6 @@ def test_postpre_rss():
     assert ret_code == 1
 
 
-def test_authenticate():
-    ret_code = rss.authenticate(0, 0)
-    assert ret_code == 'AlreadyAuthenticated'
-
-
 def test_deletable():
     ret_code = rss.deletable()
     assert ret_code == True
@@ -49,11 +44,11 @@ def pre_validate_post_title(channel, maxLengthTitle):
     post.description = "x"
     post.link_url = "https://www.test.com"
     post.image_url = "https://www.test.com"
-    assert pre_validate_post(channel, post) == 1
+    assert post_pre_validation(post) == 1
     post.title += "x"
-    assert pre_validate_post(channel, post) == 0
+    assert post_pre_validation(post) == 0
     post.title = ""
-    assert pre_validate_post(channel, post) == 0
+    assert post_pre_validation(post) == 0
 
 
 def pre_validate_post_description(channel, maxLengthDescription):
@@ -62,11 +57,11 @@ def pre_validate_post_description(channel, maxLengthDescription):
     post.description = "x" * maxLengthDescription
     post.link_url = "https://www.test.com"
     post.image_url = "https://www.test.com"
-    assert pre_validate_post(channel, post) == 1
+    assert post_pre_validation(post) == 1
     post.description += "x"
-    assert pre_validate_post(channel, post) == 0
+    assert post_pre_validation(post) == 0
     post.description = ""
-    assert pre_validate_post(channel, post) == 0
+    assert post_pre_validation(post) == 0
 
 
 def pre_validate_post_Link_url(channel):
@@ -75,11 +70,11 @@ def pre_validate_post_Link_url(channel):
     post.description = "x"
     post.link_url = "https://www.test.com"
     post.image_url = "https://www.test.com"
-    assert pre_validate_post(channel, post) == 1
+    assert post_pre_validation(post) == 1
     post.link_url = "test error link"
-    assert pre_validate_post(channel, post) == 0
+    assert post_pre_validation(post) == 0
     post.link_url = ""
-    assert pre_validate_post(channel, post) == 1
+    assert post_pre_validation(post) == 1
 
 
 def pre_validate_post_img_url(channel):
@@ -88,8 +83,8 @@ def pre_validate_post_img_url(channel):
     post.description = "x"
     post.link_url = "https://www.test.com"
     post.image_url = "https://www.test.com"
-    assert pre_validate_post(channel, post) == 1
+    assert post_pre_validation(post) == 1
     post.image_url = "test error link"
-    assert pre_validate_post(channel, post) == 0
+    assert post_pre_validation(post) == 0
     post.image_url = ""
-    assert pre_validate_post(channel, post) == 1
+    assert post_pre_validation(post) == 1

@@ -16,7 +16,8 @@ class State(Enum):
     VALIDATED = 1       # validated by a moderator
     PUBLISHED = 2       # archived
     REFUSED = 3         # refused by the moderation, must be reworked or deleted
-    OLD_VERSION = 4
+    OLD_VERSION = 4     # older version
+    EDITED = 66         # published and edited
 
 
 db = SQLAlchemy()
