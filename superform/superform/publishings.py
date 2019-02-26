@@ -1,15 +1,15 @@
 import json
 
 from datetime import date, timedelta
-from flask import Blueprint, flash, url_for, request, redirect, session, render_template
+from flask import Blueprint, current_app, flash, url_for, request, redirect, session, render_template
 from importlib import import_module
 
 from plugins import gcal_plugin
 from superform.channels import valid_conf
 from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder
 from superform.users import get_moderate_channels_for_user
-from superform.utils import login_required, datetime_converter, str_converter, datetime_now
-from superform.posts import get_post_form_validations
+from superform.utils import login_required, datetime_converter, str_converter, datetime_now, get_modules_names, \
+    get_module_full_name, get_instance_from_module_path
 
 pub_page = Blueprint('publishings', __name__)
 
@@ -242,3 +242,12 @@ def unvalidate_publishing(id):
 
     db.session.commit()
     return redirect(url_for('index'))
+
+
+def get_post_form_validations():
+    mods = get_modules_names(current_app.config["PLUGINS"].keys())
+    post_form_validations = dict()
+    for m in mods:
+        fields = {}
+        post_form_validations[m] = fields
+    return post_form_validations

@@ -1,9 +1,7 @@
 import os
 from flask import Blueprint, json, jsonify, request, redirect, render_template, session
-
-from posts import create_a_publishing, pre_validate_post
-from superform.utils import login_required, datetime_converter
 import json
+from superform.utils import login_required, datetime_converter
 from superform.models import db, Post, Publishing, Channel, User
 from superform.users import channels_available_for_user
 
@@ -185,9 +183,9 @@ def create_a_publishing_edit(post, chn, data):
     make the publishing
     :return: the publishing
     """
-    validate = pre_validate_post(chn, post)
-    if validate == -1 or validate == 0:
-        return validate
+    # validate = pre_validate_post(chn, post)
+    # if validate == -1 or validate == 0:
+    #     return validate
 
     field = data.get('fields')
     title_post = field.get('title') if (field.get('title') is not None) else post.title

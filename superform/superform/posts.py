@@ -2,7 +2,7 @@ import json
 
 from flask import Blueprint, url_for, current_app, request, redirect, session, render_template, flash
 
-from superform.publishings import create_a_publishing
+from superform.publishings import create_a_publishing, get_post_form_validations
 from superform.users import channels_available_for_user
 from superform.utils import login_required, datetime_converter, str_converter, get_instance_from_module_path, \
     get_modules_names, get_module_full_name, datetime_now
@@ -109,17 +109,6 @@ def records():
     posts = db.session.query(Post).filter(Post.user_id == session.get("user_id", ""))
     records = [(p) for p in posts if p.is_a_record()]
     return render_template('records.html', records=records)
-
-
-def get_post_form_validations():
-    mods = get_modules_names(current_app.config["PLUGINS"].keys())
-    post_form_validations = dict()
-    for m in mods:
-        full_name = get_module_full_name(m)
-        clas = get_instance_from_module_path(full_name)
-        fields = clas.POST_FORM_VALIDATIONS
-        post_form_validations[m] = fields
-    return post_form_validations
 
 
 def create_a_resubmit_publishing(pub, chn, form):
