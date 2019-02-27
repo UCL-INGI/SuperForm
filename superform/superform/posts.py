@@ -112,6 +112,7 @@ def records():
 
 
 def create_a_resubmit_publishing(pub, chn, form):
+    user_id = session.get("user_id", "") if session.get("logged_in", False) else -1
     title_post = form.get('titlepost')
     descr_post = form.get('descrpost')
     link_post = form.get('linkurlpost')
@@ -124,7 +125,7 @@ def create_a_resubmit_publishing(pub, chn, form):
         Publishing.num_version.desc()
     ).first()
     new_pub = Publishing(num_version=latest_version_publishing.num_version + 1, post_id=pub.post_id, channel_id=chn.id,
-                         state=State.NOT_VALIDATED.value, title=title_post, description=descr_post,
+                         state=State.NOT_VALIDATED.value, user_id=user_id, title=title_post, description=descr_post,
                          link_url=link_post, image_url=image_post,
                          date_from=date_from, date_until=date_until)
     return new_pub

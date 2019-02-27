@@ -93,9 +93,8 @@ def index():
             page = int(page)
 
         # AJOUTER Post.user_id == user_id dans posts DANS QUERY?
-        posts_var = db.session.query(Post).filter(Post.user_id == user_id).order_by(Post.date_created.desc()).paginate(
-            page, 5, error_out=False)
-        for post in posts_var.items:
+        posts_var = db.session.query(Post).filter(Post.user_id == user_id).order_by(Post.date_created.desc())
+        for post in posts_var:
             publishings_var = db.session.query(Publishing).filter(Publishing.post_id == post.id).all()
             channels_var = set()
             for publishing in publishings_var:

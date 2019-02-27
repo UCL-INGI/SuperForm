@@ -61,6 +61,7 @@
                     </tbody>
                 </table>
             {% endif %}
+
             <h2>All my posts</h2>
             <div id="search_post">{% include 'search_post.html' %} </div>
             <table class="table table-bordered">
@@ -111,9 +112,56 @@
                 {% endfor %}
                 </tbody>
             </table>
+
+            <!--Add publishing that we can rebsumit-->
+            <h2>Refused publishings</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    {% for item in pubs_unvalidated %}
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <span class="font-weight-bold">{{ item.title }}</span>
+                                </div>
+                                <div class="card-subtitle mb-2 text-muted" title="{{ item.comment }}">Comment
+                                    : {{ item.comment_short }}</div>
+                                <div class="card-text">
+                                    <div class="tags">
+                                        {% for channel in item.channels %}
+                                            <a href="#" class="badge badge-primary">
+                                                {{ channel.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                    <p class="preview">
+                                        {{ item.description }}
+                                    </p>
+                                </div>
+                                <a class="btn btn-outline-primary" role="button"
+                                   href="{{ url_for('posts.resubmit_publishing', id=item.publishing_id) }}">Resubmit</a>
+                                <a class="btn btn-outline-warning" role="button" href="#">Delete</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     {% else %}
-        <p>You are not logged in.</p>
+        <!-- If not logged, log in interface -->
+        <div class="container">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <div class="d-flex justify-content-center">
+                        <img src="{{ url_for('static', filename='assets/uclouvain.png') }}" alt="logo ucl">
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-lg btn-success" href="{{ url_for('authentication.login') }}" role="button">
+                            <i class="fas fa-sign-in-alt"></i> Log In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endif %}
 
     <!-- Team06: Export to PDF feature -->
@@ -143,7 +191,7 @@
                     <div class="input-group mr-sm-2">
                         <select name="template" class="custom-select"
                                 id="inlineFormCustomSelectTemplate">
-                            <option selected>Choose a template...</option>
+                            <option selected disabled>Choose a template...</option>
                             {% for template in templates %}
                                 <option value="{{ template.id }}">{{ template.name }}</option>
                             {% endfor %}
