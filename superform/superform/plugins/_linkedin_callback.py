@@ -19,7 +19,6 @@ def callback_In():
     code = request.args.get('code')
     if "error" in request.args:
         error = request.args.get('error')
-        print(error)
     canvas_url = url_for('linkedin_callback.callback_In', _external=True)
     try:
         response = requests.post("https://www.linkedin.com/oauth/v2/accessToken",

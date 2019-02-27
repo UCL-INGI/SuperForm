@@ -28,7 +28,7 @@ def callback_fb():
         access_token = 'Unable to generate access_token'
 
     channel = Channel.query.get(id_channel)
-    if channel == None or channel.module != 'superform.plugins.facebook':
+    if channel is None or channel.module != 'superform.plugins.facebook':
         return redirect(url_for("channels.channel_list"))
     # reset config and add new access_token
     channel.config = "{\"access_token\": \"" + str(access_token) + "\"}"
