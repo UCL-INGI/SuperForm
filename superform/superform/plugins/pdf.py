@@ -110,6 +110,8 @@ def create_pdf(titre, corps, image="UCL", size=A4):
         mySize = A4
     elif size == "A3":
         mySize = A3
+    else:
+        mySize = "A4"  # Default value
 
     doc = SimpleDocTemplate(localPath, pagesize=mySize,
                             rightMargin=72, leftMargin=72,
