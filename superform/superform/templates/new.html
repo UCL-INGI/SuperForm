@@ -96,63 +96,83 @@
                                 <div class="card-body" id="status-content"></div>
                             </div>
 
-
                         </div>
-
                     </div>
-
                 </div>
                 {% for chan in l_chan %}
                     <div class="tab-pane container-fluid fade" id="menu{{ chan.id }}">
-
                         <div class="row">
                             <div class="col-md-8">
-
-                                <div class="form-group">
-                                    <label for="{{ chan.name }}_titlepost">Title</label><br>
-                                    <input type="text" name="{{ chan.name }}_titlepost" id="{{ chan.name }}_titlepost"
-                                           class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="{{ chan.name }}_descriptionpost">Description</label><br>
-                                    <textarea class="form-control" rows="5" id="{{ chan.name }}_descriptionpost"
-                                              name="{{ chan.name }}_descriptionpost"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="{{ chan.name }}_linkurlpost">Link</label><br>
-                                    <input type="text" name="{{ chan.name }}_linkurlpost"
-                                           id="{{ chan.name }}_linkurlpost" class="form-control">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="{{ chan.name }}_imagepost">Image</label><br>
-                                    <input type="file" name="{{ chan.name }}_imagepost" id="{{ chan.name }}_imagepost"
-                                           class="form-control">
-                                </div>
-
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="{{ chan.name }}_datefrompost">Publication
-                                                Date</label><br>
-                                            <input id="{{ chan.name }}_datefrompost"
-                                                   name="{{ chan.name }}_datefrompost" type="datetime-local"
-                                                   class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="{{ chan.name }}_dateuntilpost">Publication Until</label><br>
-                                            <input id="{{ chan.name }}_dateuntilpost"
-                                                   name="{{ chan.name }}_dateuntilpost" type="datetime-local"
-                                                   class="form-control">
+                                            {% if not "Title" in chan.unavailablefields %}
+                                                <div class="form-group">
+                                                    <label for="{{ chan.name }}_titlepost">Title</label><br>
+                                                    <input type="text" name="{{ chan.name }}_titlepost"
+                                                           id="{{ chan.name }}_titlepost" class="form-control">
+                                                </div>
+                                            {% endif %}
+                                            {% if not "Description" in chan.unavailablefields %}
+                                                <div class="form-group">
+                                                    <label for="{{ chan.name }}_descriptionpost">Description</label><br>
+                                                    <textarea class="form-control" rows="5"
+                                                              id="{{ chan.name }}_descriptionpost"
+                                                              name="{{ chan.name }}_descriptionpost"></textarea>
+                                                </div>
+                                            {% endif %}
+                                            {% if not "Link" in chan.unavailablefields %}
+                                                <div class="form-group">
+                                                    <label for="{{ chan.name }}_linkurlpost">Link</label><br>
+                                                    <input type="text" name="{{ chan.name }}_linkurlpost"
+                                                           id="{{ chan.name }}_linkurlpost" class="form-control">
+                                                </div>
+                                            {% endif %}
+                                            {% if not "Image" in chan.unavailablefields %}
+                                                <div class="form-group">
+                                                    <label for="{{ chan.name }}_imagepost">Image</label><br>
+                                                    <div class="input-group">
+                                                        <input type="text" name="{{ chan.name }}_imagepost"
+                                                               id="{{ chan.name }}_imagepost" class="form-control">
+                                                        <button id="js-open-preview-image" type="button"
+                                                                class="btn btn-secondary"
+                                                                onclick="PreviewFunction('{{ chan.name }}_imagepost')">
+                                                            Preview
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="{{ chan.name }}_datefrompost">Publication
+                                                            Date</label><br>
+                                                        <input id="{{ chan.name }}_datefrompost"
+                                                               name="{{ chan.name }}_datefrompost" type="datetime-local"
+                                                               class="form-control" value="{{ date.from }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="{{ chan.name }}_dateuntilpost">Publication
+                                                            Until</label><br>
+                                                        <input id="{{ chan.name }}_dateuntilpost"
+                                                               name="{{ chan.name }}_dateuntilpost"
+                                                               type="datetime-local"
+                                                               class="form-control" value="{{ date.until }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--Used by ICTV module-->
+                                            {% set module_name = chan.module.split('.')[2].lower() %}
+                                            {% set template = 'plugins/' + module_name + '/new.html' %}
+                                            {% include template ignore missing %}
+
                                         </div>
                                     </div>
                                 </div>
-
-                                {% set module_name = chan.module.split('.')[2].lower() %}
-                                {% set template = 'plugins/' + module_name + '/new.html' %}
-                                {% include template ignore missing %}
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -168,33 +188,220 @@
                                     <div class="card-header">Status</div>
                                     <div class="card-body">Content</div>
                                 </div>
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <label for="publishpost">Channels</label>
+                                    </div>
+                                    <div class="card-body">
+                                        <span>{{ chan.name }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
-
+                <div align="right" style="margin-top: 1rem; ">
+                    <button class="btn btn-primary" formaction="{{ url_for('posts.new_post') }}" formmethod="post"
+                            type="submit">
+                        Save as draft
+                    </button>
+                    <button id="publish-button" class="btn btn-success"
+                            formaction="{{ url_for('posts.publish_from_new_post') }}" formmethod="post" type="submit"
+                            disabled>
+                        Save & Publish
+                    </button>
+                    <button class="btn btn-outline-primary" type="reset">
+                        Abort
+                    </button>
+                </div>
             </div>
-            <div align="right" style="margin-top: 1rem; ">
-                <button class="btn btn-primary" formaction="{{ url_for('posts.new_post') }}" formmethod="post"
-                        type="submit">Save as draft
-                </button>
-                <button id="publish-button" class="btn btn-success"
-                        formaction="{{ url_for('posts.publish_from_new_post') }}" formmethod="post" type="submit"
-                        disabled>Save & Publish
-                </button>
-                <button class="btn btn-outline-primary" type="reset">Abort</button>
-            </div>
-
         </form>
-    {% else %}
-        Your are not logged in.
-    {% endif %}
 
+        <!-- Modals -->
+        {% call modal.modal_block(id='previewModal', title='Image preview') %}
+            <div>Preview</div>
+        {% endcall %}
+
+    {% else %}
+        You are not logged in.
+    {% endif %}
 
 {% endblock %}
 
 {% block scripts %}
+    <script type="text/javascript">
+        var post_form_validations = {{ post_form_validations|tojson }};
+    </script>
     <script>
+        function PreviewFunction(post) {
+            var protocol = /^http[s]?:\/{2}/i;
+            var pattern = /(?:https?:\/{2})?(?:w{3}\.)?(?:\w+\.)+(com|fr|be|io|gov|net|tv|uk|ch|de|nl|lu)(?:\/[^\s]+)?/g;
+            //var pattern = /\.(jpeg|jpg|gif|png|bmp)$/
+            var split = post.split("_");
+
+            var url = "";
+            if (split[split.length - 1] === "imagepost") {
+                var parent = $("#" + post).parent();
+                var input = parent.find("input");
+                var text = input.val();
+                url = text;
+            }
+            else if (split[split.length - 1] === "backgroundpost") {
+                url = $("#backgroundpost").val();
+            }
+            else if (split[split.length - 1] === "logopost") {
+                var parent = $("#js-open-preview-logo").parent();
+                var input = parent.find("input");
+                var text = input.val();
+                url = text;
+            }
+
+
+            var preview = $("#previewModal");
+            var container = preview.find(".modal-body");
+
+            if (url.match(pattern)) {
+
+                if (!url.match(protocol)) {
+                    url = "http://" + url;
+                }
+
+                var image = preview.find("img");
+
+                if (image.length === 1) {
+                    if (image.attr("src") === url) {
+                        preview.modal("toggle");
+                        return;
+                    }
+                    image.attr("src", url);
+                } else {
+                    image = $("<img>");
+                    image.attr("src", url);
+                    image.addClass("img-fluid");
+                }
+
+                var loader = $("<div>");
+                loader.text("Loading...");
+
+                container.empty();
+                container.append(loader);
+                preview.modal("toggle");
+
+                image.on("load", function () {
+                    container.empty();
+                    container.append(image);
+                });
+
+                image.on("error", function () {
+
+                    var message = $("<div>");
+                    message.addClass("alert");
+                    message.addClass("alert-danger");
+                    message.text("Could not load the given image :(");
+
+                    container.empty();
+                    container.append(message);
+                });
+
+            } else {
+
+                var message = $("<div>");
+                message.addClass("alert");
+                message.addClass("alert-danger");
+                message.text("Please, enter a valid url for the image");
+
+                container.empty();
+                container.append(message);
+                preview.modal("toggle");
+            }
+        }
+
+        // Preview image button :
+        $("#js-open-preview").click(function () {
+
+            var protocol = /^http[s]?:\/{2}/i;
+            var pattern = /(?:https?:\/{2})?(?:w{3}\.)?(?:\w+\.)+(com|fr|be|io|gov|net|tv|uk|ch|de|nl|lu)(?:\/[^\s]+)?/g;
+
+            var url = $("#imagepost").val();
+            var preview = $("#previewModal");
+            var container = preview.find(".modal-body");
+
+            if (url.match(pattern)) {
+
+                if (!url.match(protocol)) {
+                    url = "http://" + url;
+                }
+
+                var image = preview.find("img");
+
+                if (image.length === 1) {
+                    if (image.attr("src") === url) {
+                        preview.modal("toggle");
+                        return;
+                    }
+                    image.attr("src", url);
+                } else {
+                    image = $("<img>");
+                    image.attr("src", url);
+                    image.addClass("img-fluid");
+                }
+
+                var loader = $("<div>");
+                loader.text("Loading...");
+
+                container.empty();
+                container.append(loader);
+                preview.modal("toggle");
+
+                image.on("load", function () {
+                    container.empty();
+                    container.append(image);
+                });
+
+                image.on("error", function () {
+
+                    var message = $("<div>");
+                    message.addClass("alert");
+                    message.addClass("alert-danger");
+                    message.text("Could not load the given image :(");
+
+                    container.empty();
+                    container.append(message);
+                });
+
+            } else {
+
+                var message = $("<div>");
+                message.addClass("alert");
+                message.addClass("alert-danger");
+                message.text("Please, enter a valid url for the image");
+
+                container.empty();
+                container.append(message);
+                preview.modal("toggle");
+            }
+        });
+
+
+        $(".js-counter textarea").on("keyup", function () {
+            var container = $(this).parent();
+            var text = $(this).val();
+            var count = text.length;
+
+            var counter = container.find(".counter");
+            counter.text(count);
+
+            var message = container.find(".alert");
+
+            if (count > 280) {
+                message.show();
+            } else {
+                message.hide();
+            }
+        });
+
+
         // This manage if a channel is selected or not:
         //  it hides/shows a tab for a channel
         //  it adds an information bullet to unavailable fields for each channel
@@ -221,12 +428,10 @@
             if ($(this).is(':checked')) {
                 //If the channel is selected
                 $(this).addClass('checked');
-                synchronize_fields(nameC);
                 for (var i = 0; i < split.length; i++) {
                     var field_id = $('#' + split[i].toLowerCase() + 'post').attr('id');
                     $("input[id='" + nameC + "_" + field_id + "']").prop('disabled', true);
                     $("textarea[id='" + nameC + "_" + field_id + "']").prop('disabled', true);
-
                     $("label[for='" + nameC + "_" + field_id + "']").append('<a href="#" data-toggle="popover" title="Unavailable field" data-content="This field is unavailable for channel ' + nameC + '"><i class="fas fa-exclamation-circle" style="color:orange"></i></a>');
 
                 }
@@ -244,6 +449,8 @@
                 $('#li_' + nameC).hide();
             }
         });
+
+        <!--Used by ICTV module-->
         {% for chan in l_chan %}
             {% set module_name = chan.module.split('.')[2].lower() %}
             {% set template = 'plugins/' + module_name + '/new.js'%}
@@ -253,5 +460,6 @@
 
     <script src="./static/js/date-init.js"></script>
     <script src="./static/js/status-checker.js"></script>
+    <script src="{{ url_for('static', filename='js/post_and_publishing_utils.js') }}" crossorigin="anonymous"></script>
 
 {% endblock %}
