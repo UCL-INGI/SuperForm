@@ -37,9 +37,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('stats.stats') }}">Stats</a>
                 </li>
-                <li class="nav-item {{ 'active' if request.endpoint == 'posts.records' else '' }}">
-                    <a class="nav-link" href="{{ url_for('posts.records') }}">Archives</a>
-                </li>
                 {% if session.admin %}
                     <li class="nav-item {{ 'active' if request.endpoint == 'authorizations.authorizations' else '' }}">
                         <a class="nav-link" href="{{ url_for('authorizations.authorizations') }}">Authorizations</a>

@@ -145,7 +145,7 @@ statusListener = {
                 forbidPublish: true
             }
         ]
-}
+};
 
 // for each fields, statusChecker launches checking function for every changes on theses fields.
 statusChecker = {
@@ -153,7 +153,7 @@ statusChecker = {
     _lengthContent: 0,
     _lengthURL: 0,
     _forbidPublish: true,
-    _pluginChecked: new Array(),
+    _pluginChecked: [],
     checking: function () {
     },
     //Getters
@@ -196,7 +196,7 @@ statusChecker = {
     checking: function (listener) {
         this.checking = listener;
     }
-}
+};
 
 
 /*
@@ -213,7 +213,7 @@ statusChecker.checking(function () {
         addStatusBox(plugin);
         statusListener[plugin].forEach(function (item, index2) {
             checkStatus(plugin, item);
-            if (typeof item["func"] != "undefined") {
+            if (typeof item["func"] !== "undefined") {
                 window[item["func"]](item["args"]);
             }
         });
@@ -250,7 +250,7 @@ function checkStatus(plugin, status) {
 *   @returns : true or false, based on the comparaison
 */
 function comparingValue(arg1, compare, arg2) {
-    var value
+    var value;
     switch (compare) {
         case 'LT' :
             value = (arg1 < arg2);
@@ -259,7 +259,7 @@ function comparingValue(arg1, compare, arg2) {
             value = (arg1 > arg2);
             break;
         case 'EQ' :
-            value = (arg1 == arg2);
+            value = (arg1 === arg2);
             break;
         case 'LEQ' :
             value = (arg1 <= arg2);
@@ -307,12 +307,12 @@ $('input.checkbox').change(function () {
     var hisClass = $(this).attr("class").split(" ");
     var plugin = hisClass[2].split(".")[2];
     if (isInArray(Object.keys(statusListener), plugin)) {
-        if (($(this).is(":checked")) && isInArray(statusChecker.pluginChecked, plugin) == false) {
+        if (($(this).is(":checked")) && isInArray(statusChecker.pluginChecked, plugin) === false) {
             var tb = statusChecker.pluginChecked;
             tb.push(plugin);
             statusChecker.pluginChecked = tb;
         }
-        else if ($(this).is(":checked") == false && isInArray(statusChecker.pluginChecked, plugin) == true) {
+        else if ($(this).is(":checked") === false && isInArray(statusChecker.pluginChecked, plugin) === true) {
             statusChecker.pluginChecked = removeFromArray(statusChecker.pluginChecked, plugin);
         }
     }
@@ -325,7 +325,7 @@ $("#titlepost").on('input', function () {
 
 // Content
 $("#descriptionpost").on('input', function () {
-    if (isInArray(statusChecker.pluginChecked, "twitter") && typeof tweets != 'undefined' && tweets.length > 1)
+    if (isInArray(statusChecker.pluginChecked, "twitter") && typeof tweets !== 'undefined' && tweets.length > 1)
         statusChecker.lengthContent = $(this).val().length + 280 * tweets.length;
     else
         statusChecker.lengthContent = $(this).val().length;
@@ -347,7 +347,7 @@ $("#linkurlpost").on('input', function () {
 */
 function addStatusBox(name) {
     var title = name.substring(0, 1).toUpperCase() + name.substring(1, name.length);
-    if ($("#status-" + name).length == 0) { // If it doesn't exist, create it
+    if ($("#status-" + name).length === 0) { // If it doesn't exist, create it
         $("#status-content").append("<ul class=\"list-group\" id=\"status-" + name + "\"><li class=\"list-group-item active\">" + title + "</li> </ul>");
     }
 }
@@ -367,7 +367,7 @@ function removeStatusBox(name) {
 *             id : the id tag of this text
 */
 function addStatusText(plugin, text, id) {
-    if ($("#" + id).length == 0) { // If it doesn't exist, create it
+    if ($("#" + id).length === 0) { // If it doesn't exist, create it
         $("#status-" + plugin).append("<li class=\"list-group-item\" id=\"" + plugin + "-" + id + "\">" + text + "</li>");
     }
 }
@@ -378,7 +378,7 @@ function addStatusText(plugin, text, id) {
 *             id : the id tag of this text
 */
 function removeStatusText(plugin, id) {
-    if ($("#" + id).length != 0) { // If it doesn't exist, create it
+    if ($("#" + id).length !== 0) { // If it doesn't exist, create it
         $("#status-" + plugin + "-" + id).remove();
     }
 }
@@ -394,7 +394,7 @@ function removeStatusText(plugin, id) {
 function isInArray(tb, value) {
     var isIn = false;
     tb.forEach(function (item, index) {
-        if (item.localeCompare(value) == 0)
+        if (item.localeCompare(value) === 0)
             isIn = true;
     });
     return isIn;
@@ -406,9 +406,9 @@ function isInArray(tb, value) {
 *  @returns : the array without the value
 */
 function removeFromArray(tb, value) {
-    var tb2 = new Array();
+    var tb2 = [];
     tb.forEach(function (item, index) {
-        if (item != value)
+        if (item !== value)
             tb2.push(item);
     });
     return tb2;
@@ -418,9 +418,9 @@ function removeFromArray(tb, value) {
 * This is a custom slice function but slice function standard bugs on IE browser
 */
 function rearrangeArray(tb) {
-    tb2 = new Array();
+    tb2 = [];
     tb.forEach(function (item, index) {
-        if (item.length != 0)
+        if (item.length !== 0)
             tb2.push(item);
     });
     return tb2;
@@ -429,7 +429,7 @@ function rearrangeArray(tb) {
 
 //  RENDER TWEET PART
 
-tweets = new Array();  // Array containing every tweets
+tweets = [];  // Array containing every tweets
 buttonTweet = false;   // button triggering or not the split view
 
 /*
@@ -453,7 +453,7 @@ function activateSplitTweet() {
 *   @returns : an array contains text splitted respecting the twitter length format
 */
 function splitTextForTweet(idOrClassInput) {
-    tb = new Array();
+    tb = [];
     for (var i = 0, charsLength = $(idOrClassInput).val().length; i < charsLength; i += 280) {
         tb.push($(idOrClassInput).val().substring(i, i + 280));
     }
@@ -465,17 +465,17 @@ function splitTextForTweet(idOrClassInput) {
 *   @params : target : the id or the class of the element that triggered this function
 */
 function manageTweet(target) {
-    if (buttonTweet == false) {
+    if (buttonTweet === false) {
         tweets = splitTextForTweet("#descriptionpost");
     }
     else if (target.length > 0) {
         tb = splitTextForTweet(target);
         index = 0;
-        if (target == '#descriptionpost')
+        if (target === '#descriptionpost')
             index = (tweets.length - 1);
         else
             index = (target.split('-')[1] - 1);
-        if (tb.length == 0) { //Check if the tweet is empty
+        if (tb.length === 0) { //Check if the tweet is empty
             unifyTweet();
             tweets = removeFromArray(tweets, tweets[index]);
             renderTweet();
@@ -494,7 +494,7 @@ function manageTweet(target) {
             tweets[index] = $(target).val();
         }
 
-        if (tweets.length == 1) {
+        if (tweets.length === 1) {
             activateSplitTweet() // Deactivate button
         }
     }
@@ -524,12 +524,12 @@ function renderTweet() {
         inputToAdd += '</textarea>';
         $(inputToAdd).insertBefore("#descriptionpost");
         addListenerTweet('.tweet-' + nbTweet);
-        while (tb.length != 0) {
+        while (tb.length !== 0) {
             nbTweet = nbTweet - 1;
             inputToAdd = '<textarea class="form-control tweet-' + nbTweet + '" rows="5" maxlength="' + LIMIT_CHAR_TWEET + '">'
             inputToAdd += tb.pop();
             inputToAdd += '</textarea>';
-            before = nbTweet + 1
+            before = nbTweet + 1;
             $(inputToAdd).insertBefore('.tweet-' + before);
             addListenerTweet('.tweet-' + nbTweet);
         }

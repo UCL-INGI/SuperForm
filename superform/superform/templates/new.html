@@ -175,28 +175,22 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="publishpost">Publish</label>
-                                    <div>
-                                        <label class="form-check-label">
-                                            {{ chan.name }}
-                                        </label>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <label for="publishpost">Channel</label>
+                                    </div>
+                                    <div class="card-body">
+                                        <img width="20" height="20"
+                                             src="static/logos/{{ chan.module.split('.')[2] }}_logo.png"
+                                             alt="logo"/> {{ chan.name }}
                                     </div>
                                 </div>
 
                                 <div class="card">
                                     <div class="card-header">Status</div>
-                                    <div class="card-body">Content</div>
+                                    <div class="card-body" id="status-content"></div>
                                 </div>
 
-                                <div class="card">
-                                    <div class="card-header">
-                                        <label for="publishpost">Channels</label>
-                                    </div>
-                                    <div class="card-body">
-                                        <span>{{ chan.name }}</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
