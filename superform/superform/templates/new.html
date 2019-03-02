@@ -422,6 +422,7 @@
             if ($(this).is(':checked')) {
                 //If the channel is selected
                 $(this).addClass('checked');
+                synchronize_fields(nameC);
                 for (var i = 0; i < split.length; i++) {
                     var field_id = $('#' + split[i].toLowerCase() + 'post').attr('id');
                     $("input[id='" + nameC + "_" + field_id + "']").prop('disabled', true);
