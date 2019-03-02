@@ -17,7 +17,6 @@ $("#publish, #unvalidate, #resubmit").click(function (event) {
     let title_max_length = 100000;
     let descr_max_length = 100000;
     if (mod != undefined) {
-        console.log(post_form_validations[mod]);
         if (post_form_validations[mod]['title_max_length'] != undefined) {
             title_max_length = post_form_validations[mod]['title_max_length'];
         }
@@ -102,4 +101,3 @@ $('.talktext').on('click', function () {
     current = number;
     updateFields();
 });
-

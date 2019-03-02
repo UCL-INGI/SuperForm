@@ -86,11 +86,6 @@ def index():
     if user is not None and user_id != -1:
         setattr(user, 'is_mod', is_moderator(user))
         chans = get_moderate_channels_for_user(user)
-        page = request.args.get("page")
-        if page is None or not page.isnumeric():
-            page = 1
-        else:
-            page = int(page)
 
         # AJOUTER Post.user_id == user_id dans posts DANS QUERY?
         posts_var = db.session.query(Post).filter(Post.user_id == user_id).order_by(Post.date_created.desc())

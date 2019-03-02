@@ -1,7 +1,7 @@
 # Gcal import
 from datetime import datetime, timedelta
 from flask import session
-from superform.plugins import gcal_plugin
+from superform.plugins import gcal
 from superform import app, db, User, Publishing, channels, Post
 from superform.models import Channel, db
 from googleapiclient.discovery import build
@@ -22,7 +22,7 @@ def setup_db(channel_name, channel_module):
     if not user:
         user = create_user(id=101, name="test101", first_name="utilisateur101",
                            email="utilisateur101.test@uclouvain.be")
-    gcal_plugin.generate_user_credentials(json.dumps(gcal_config), user.id)
+    gcal.generate_user_credentials(json.dumps(gcal_config), user.id)
     channel = create_channel(channel_name, channel_module, gcal_config)
 
     post = test_gcal.basic_post(user.id)
@@ -34,7 +34,7 @@ def setup_db(channel_name, channel_module):
 
 # We look first the number of post and then we publish a post and then we relook if the number of post is +1
 def test_GCAL_post(client):
-    user, channel, post, pub = setup_db(channel_name='test_gcal', channel_module='gcal_plugin')
+    user, channel, post, pub = setup_db(channel_name='test_gcal', channel_module='gcal')
     with app.test_request_context('/make_report/2017', data={'format': 'short'}):
         session["user_id"] = user.id  # Fix: the test_request_context created here doesn't contain the user_id
         k = stats.number_of_accepted()
@@ -48,7 +48,7 @@ def test_GCAL_post(client):
                                datefrompost=str_converter(pub.date_from),
                                dateuntilpost=str_converter(pub.date_until)))
 
-    creds = gcal_plugin.get_user_credentials(user.id)
+    creds = gcal.get_user_credentials(user.id)
     service = build('calendar', 'v3', credentials=creds)
     events = service.events().list(calendarId='primary', pageToken=None).execute()
 

@@ -64,16 +64,17 @@ def configure_channel(id):
         if c.config is not "":
             d = ast.literal_eval(c.config)
             setattr(c, "config_dict", d)
-            # TEAM06: addition for pdf feature
+            # TEAM 06: pdf custom config page
+            # TEAM 07 facebook/linkedin custom config page
             if str(m) == 'superform.plugins.pdf':
                 return pdf_plugin(id, c, config_fields)
-            # TEAM06: end addition
-        # TEAM 07 facebook/linkedin custom config page
-        try:
-            return clas.render_specific_config_page(c, config_fields)
-        except AttributeError:
-            return render_template("channel_configure.html", channel=c, config_fields=config_fields)
-        # TEAM 07
+            elif str(m) == 'superform.plugins.facebook' or str(m) == 'superform.plugins.linkedin':
+                return clas.render_specific_config_page(c, config_fields)
+            else:
+                return render_template("channel_configure.html", channel=c, config_fields=config_fields)
+            # TEAM 06: end addition
+            # TEAM 07
+
     str_conf = "{"
     cfield = 0
     for field in config_fields:

@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from flask import Blueprint, current_app, flash, url_for, request, redirect, session, render_template
 from importlib import import_module
 
-from plugins import gcal_plugin
+from plugins import gcal
 from superform.channels import valid_conf
 from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder
 from superform.users import get_moderate_channels_for_user
@@ -74,7 +74,7 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
                 return pub
             # END OF MODIFICATION
 
-        if is_gcal_channel(chan) and not gcal_plugin.is_valid(pub):
+        if is_gcal_channel(chan) and not gcal.is_valid(pub):
             return None
         if is_gcal_channel(chan):
             generate_google_user_credentials(chan)
@@ -108,7 +108,7 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
                 return pub
             # END OF MODIFICATION
 
-        if is_gcal_channel(chan) and not gcal_plugin.is_valid(pub):
+        if is_gcal_channel(chan) and not gcal.is_valid(pub):
             return None
         if is_gcal_channel(chan):
             generate_google_user_credentials(chan)
@@ -122,12 +122,12 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
 # TEAM2 gcal
 def is_gcal_channel(channel_id):
     c = db.session.query(Channel).filter(Channel.name == channel_id).first()
-    return c.module.endswith('gcal_plugin')
+    return c.module.endswith('gcal')
 
 
 def generate_google_user_credentials(channel_id):
     c = db.session.query(Channel).filter(Channel.name == channel_id).first()
-    gcal_plugin.generate_user_credentials(c.config)
+    gcal.generate_user_credentials(c.config)
 
 
 # TEAM2 gcal

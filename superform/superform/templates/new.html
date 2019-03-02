@@ -1,7 +1,11 @@
 {% extends "layout.html" %}
+{% import "macro/modal.html" as modal %}
 {% block title %}New Post{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}" crossorigin="anonymous">
+{% endblock %}
 {% block content %}
-    <h1>New Post</h1>
+    <h1 xmlns="http://www.w3.org/1999/html">New Post</h1>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" data-toggle="tab" href="#home">General</a>
@@ -36,7 +40,12 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="imagepost">Image</label><br>
-                                        <input type="file" name="imagepost" id="imagepost" class="form-control">
+                                        <div class="input-group">
+                                            <input type="text" name="imagepost" id="imagepost" class="form-control">
+                                            <button id="js-open-preview" type="button" class="btn btn-secondary">
+                                                Preview
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -67,11 +76,15 @@
                                     {% for chan in l_chan %}
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input id="chan_option_{{ chan.id }}" data-namechan="{{ chan.name }}"
+                                                <input id="chan_option_{{ chan.id }}"
+                                                       module-namechan="{{ chan.module }}"
+                                                       data-namechan="{{ chan.name }}"
                                                        data-unavailablefields="{{ chan.unavailablefields }}"
                                                        name="chan_option_{{ chan.id }}" type="checkbox"
-                                                       class="form-check-input checkbox"
-                                                       value="{{ chan.id }}">{{ chan.name }}
+                                                       class="form-check-input checkbox" value="{{ chan.id }}">
+                                                <img width="20" height="20"
+                                                     src="static/logos/{{ chan.module.split('.')[2] }}_logo.png"
+                                                     alt="logo"/> {{ chan.name }}
                                             </label>
                                         </div>
                                     {% endfor %}

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from superform.plugins import gcal_plugin
+from superform.plugins import gcal
 from superform import app, db, Publishing, channels, Post
 from superform.models import Channel, db, User
 from googleapiclient.discovery import build
@@ -18,7 +18,7 @@ def setup_db(channel_name, channel_module):
     if not user:
         user = create_user(id=100, name="test100", first_name="utilisateur100",
                            email="utilisateur100.test@uclouvain.be")
-    gcal_plugin.generate_user_credentials(json.dumps(gcal_config), user.id)
+    gcal.generate_user_credentials(json.dumps(gcal_config), user.id)
     channel = create_channel(channel_name, channel_module, gcal_config)
 
     post = basic_post(user.id)
@@ -67,14 +67,14 @@ def basic_publish(title=None, delta=timedelta(hours=1)):
     pub.date_from = datetime.now() + timedelta(days=1)
     pub.date_until = pub.date_from + delta
     pub.state = 0
-    pub.channel_id = 'gcal_plugin'
+    pub.channel_id = 'gcal'
     return pub
 
 
-# tries to publish an event by using the run function of the gcal_plugin and
+# tries to publish an event by using the run function of the gcal and
 # then will check if it was actually published by getting the list of all published events.
 def test_run_gcal(client):
-    user, channel, post, pub = setup_db(channel_name='test_gcal', channel_module='gcal_plugin')
+    user, channel, post, pub = setup_db(channel_name='test_gcal', channel_module='gcal')
     login(client, user.id)
     rv = client.post('/moderate/' + str(post.id) + '/' + str(channel.id),
                      data=dict(titlepost=pub.title,
@@ -84,7 +84,7 @@ def test_run_gcal(client):
                                datefrompost=str_converter(pub.date_from),
                                dateuntilpost=str_converter(pub.date_until)))
 
-    creds = gcal_plugin.get_user_credentials(user.id)
+    creds = gcal.get_user_credentials(user.id)
     service = build('calendar', 'v3', credentials=creds)
     events = service.events().list(calendarId='primary', pageToken=None).execute()
 
@@ -107,14 +107,14 @@ def test_run_gcal(client):
 
 def test_validity_title_gcal():
     pub = basic_publish(title='    ')
-    assert gcal_plugin.is_valid(pub) is False
+    assert gcal.is_valid(pub) is False
 
 
 def test_validity_datetime_gcal():
     pub = basic_publish(delta=timedelta(days=-1))
-    assert gcal_plugin.is_valid(pub) is False
+    assert gcal.is_valid(pub) is False
 
 
 def test_validity_gcal():
     pub = basic_publish()
-    assert gcal_plugin.is_valid(pub) == True
+    assert gcal.is_valid(pub) == True
