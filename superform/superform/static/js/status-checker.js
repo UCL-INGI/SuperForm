@@ -94,7 +94,7 @@ statusListener = {
                 forbidPublish: true
             }
         ],
-    LinkedIn:
+    linkedin:
         [
             {
                 type: "title",
@@ -235,7 +235,7 @@ function checkStatus(plugin, status) {
         return;
     }
 
-    if (comparingValue(value, status["compare"], status["value"])) {
+    if (comparingValue(value, status["compare"], Number(status["value"]))) {
         addStatusText(plugin, status["text"], status["type"] + "-" + status["compare"] + "-" + status["value"]);
         if (status["forbidPublish"])
             statusChecker.forbidPublish = true;

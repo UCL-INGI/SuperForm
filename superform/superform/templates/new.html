@@ -81,7 +81,7 @@
                                                        data-namechan="{{ chan.name }}"
                                                        data-unavailablefields="{{ chan.unavailablefields }}"
                                                        name="chan_option_{{ chan.id }}" type="checkbox"
-                                                       class="form-check-input checkbox" value="{{ chan.id }}">
+                                                       class="form-check-input checkbox {{ chan.module }}" value="{{ chan.id }}">
                                                 <img width="20" height="20"
                                                      src="static/logos/{{ chan.module.split('.')[2] }}_logo.png"
                                                      alt="logo"/> {{ chan.name }}
@@ -184,11 +184,6 @@
                                              src="static/logos/{{ chan.module.split('.')[2] }}_logo.png"
                                              alt="logo"/> {{ chan.name }}
                                     </div>
-                                </div>
-
-                                <div class="card">
-                                    <div class="card-header">Status</div>
-                                    <div class="card-body" id="status-content"></div>
                                 </div>
 
                             </div>
