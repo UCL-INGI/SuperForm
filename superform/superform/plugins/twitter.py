@@ -1,4 +1,7 @@
-# -*-coding: utf-8 -*
+# Important note: NEVER try to install the package twitter.
+# We are using python-twitter where import twitter is defined.
+# Installing the twitter package will just make this channel unusable.
+
 import json
 import twitter
 from twitter import twitter_utils
@@ -73,7 +76,7 @@ def run(publishing, channel_config):
                           access_token_key=json_data['access_token_key'],
                           access_token_secret=json_data['access_token_secret'])
         api.GetHelpConfiguration()
-    except BaseException  as e:
+    except BaseException as e:
         return "uncorrect credentials"
 
-    return (send_tweet(api, tweet, publishing.link_url))
+    return send_tweet(api, tweet, publishing.link_url)

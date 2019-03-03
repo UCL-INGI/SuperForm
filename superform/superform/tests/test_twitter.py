@@ -44,7 +44,7 @@ def test_run_with_empty_tweet():
                   "access_token_secret": ["Sd8Se0oRuffyBwyRBmkgyJlaFVeE8HqQPcQm5rx08S9dx"]}
     config = json.dumps(configdata)
     result = twitter.run(pub, config)
-    assert result == False
+    assert result is False
 
 
 # case where the value of the credentials are now false ( ex : Twitter has blocked the account)
@@ -107,7 +107,7 @@ def test_send_tweet_correct_tweet():
     config = json.dumps(configdata)
 
     result = twitter.run(pub, config)
-    assert result == True
+    assert result is True
 
 
 def randomword(length):
