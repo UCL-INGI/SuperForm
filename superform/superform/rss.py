@@ -10,20 +10,21 @@ rss_page = Blueprint('rss', __name__)
 
 
 @rss_page.route('/rss/<int:id>.xml', methods=["GET"])
+@login_required()
 def display_rss_feed(id):
     c = Channel.query.get(id)
-    if c is None:
+    if c is None or c.module != "superform.plugins.rss":
         return render_template("404.html")
     clas = get_instance_from_module_path('superform.plugins.rss')
     config_fields = clas.CONFIG_FIELDS
     d = {}  # ['channel_title', 'channel_description', 'channel_author']
-    if (c.config is not ""):
+    if c.config is not "":
         d = ast.literal_eval(c.config)
 
     Pubdb = db.session.query(Publishing).filter(Publishing.channel_id == id)
     items = []
     for Publi in Pubdb:
-        if Publi.state == 1 and Publi.date_from <= datetime.now() and Publi.date_until >= datetime.now():  # check if send
+        if Publi.state == 1 and Publi.date_from <= datetime.now() <= Publi.date_until:  # check if send
             author = db.session.query(Post).filter(Post.id == Publi.post_id).first()
             item1 = Item(
                 title=Publi.title,

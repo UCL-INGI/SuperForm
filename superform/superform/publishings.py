@@ -23,12 +23,14 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
     user_id = session.get("user_id", "") if session.get("logged_in", False) else -1
     # Team2 stat
 
+    # TEAM 10 twitter
     if "twitter" in chn.module:
         descr_post = form.get('tweets')
     elif form.get(chan + '_descriptionpost') is not None:
         descr_post = form.get(chan + '_descriptionpost')
     else:
         descr_post = post.description
+    # TEAM 10 twitter
 
     # TEAM 3 ictv
     if 'forge_link_url' in dir(plug):

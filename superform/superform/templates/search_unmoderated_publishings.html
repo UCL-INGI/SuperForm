@@ -110,7 +110,7 @@
             url: '/search_publishings',
             dataType: 'json',
             success: function (data) {
-                console.log(filterPublishings);
+                //console.log(filterPublishings);
                 //console.table(JSON.parse(data));
                 $("tbody.list-publishings").html(changeTablePublishings(data));
                 formattingTableForTwitter();

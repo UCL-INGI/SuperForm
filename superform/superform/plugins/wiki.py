@@ -34,7 +34,7 @@ import math
 FIELDS_UNAVAILABLE = []
 CONFIG_FIELDS = ["username", "password"]
 
-urlwiki = "http://kuretar-serveur.fr/deleteLundi/pmwiki-2.2.109/pmwiki.php"
+urlwiki = "http://localhost/pmwiki-2.2.109/pmwiki.php"
 
 
 def makeText(publishing, authid):
@@ -84,10 +84,15 @@ def run(publishing, channel_config):
     except BaseException  as e:
         return "error json decoder"
 
-    pageName = "News." + str(publishing.title).replace(" ", "")
+    pageName = "News." + str(publishing.title).replace(" ", "-")
     text = makeText(publishing, authid)
     data = {"n": pageName, "text": text, "action": "edit", "post": "1", 'authid': authid, "authpw": authpw,
             "basetime": math.floor(time.time())}
     # r2 = requests.post(urlwiki + "?n=Main.Essai_nono&action=edit&text=Hello%20World&post=1", data)
-
-    return requests.post(urlwiki, data)
+    try:
+        response = requests.post(urlwiki, data)
+    except requests.exceptions.ConnectionError:
+        return "Couldn't connect to server"
+    except requests.exceptions.MissingSchema:
+        return "Wrong base_url, please check the format again"
+    return response
