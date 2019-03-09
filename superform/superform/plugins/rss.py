@@ -1,6 +1,6 @@
 from flask import flash, Blueprint, redirect, url_for, request
 import re
-from superform.models import Publishing, db, Channel
+from superform.models import Publishing, db, Channel, StatusCode
 
 FIELDS_UNAVAILABLE = ['Publication Date']
 CONFIG_FIELDS = ['channel_title', 'channel_description', 'channel_author']
@@ -31,6 +31,7 @@ def authenticate(channel_id, publishing_id):
 def run(publishing, channel_config):
     publishing.state = 1
     db.session.commit()
+    return StatusCode.OK, None
 
 
 def saveExtraFields(channel, form):

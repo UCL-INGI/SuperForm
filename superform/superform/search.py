@@ -33,7 +33,7 @@ def search_publishings():
                                                              (Publishing.state == 0)) for c in chans)
 
         flattened_list_pubs = [y for x in pubs_per_chan for y in x]
-        print(str(flattened_list_pubs))
+        # print(str(flattened_list_pubs))
         for p in flattened_list_pubs:  # request.form['author'] in p.get_author() and
             if str(p.channel_id) in request.form.getlist('channels[]'):
                 row = {}
@@ -59,7 +59,7 @@ def search_post():
     user = User.query.get(session.get("user_id", "")) if session.get("logged_in", False) else None
     posts = []
     data = []
-    print(str(request.form))
+    # print(str(request.form))
     if user is not None:
         setattr(user, 'is_mod', is_moderator(user))
         posts = db.session.query(Post).filter((Post.user_id == session.get("user_id", "")) &

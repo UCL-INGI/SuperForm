@@ -5,6 +5,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}" crossorigin="anonymous">
 {% endblock %}
 {% block title %}Moderate{% endblock %}
+{% block messages %}
+    {% include "display_messages.html" %}
+{% endblock %}
 {% block content %}
     <h1>Moderate this publication</h1>
     {% if session.logged_in %}

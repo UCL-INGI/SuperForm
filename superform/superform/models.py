@@ -9,6 +9,12 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from superform.utils import str_converter
 
 
+# Returned while trying to run plugins
+class StatusCode(Enum):
+    OK = 0
+    ERROR = 1
+
+
 # ADRI standardize
 class State(Enum):
     INCOMPLETE = -1     # draft

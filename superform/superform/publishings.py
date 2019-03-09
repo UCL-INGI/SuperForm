@@ -6,7 +6,7 @@ from importlib import import_module
 
 from plugins import gcal
 from superform.channels import valid_conf
-from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder
+from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder, StatusCode
 from superform.users import get_moderate_channels_for_user
 from superform.utils import login_required, datetime_converter, str_converter, datetime_now, get_modules_names, \
     get_module_full_name, get_instance_from_module_path
@@ -190,11 +190,25 @@ def moderate_publishing(id, idc):
                 flash("Error : module don't implement can_edit or edit method")
                 db.session.commit()
         else:
-            # state is shared & validated
+            # try to run the plugin
+            try:
+                plug_exitcode = plugin.run(pub, c_conf)
+            except Exception as e:
+                # unexpected exception
+                flash("An unexpected error occurred while publishing, please contact an admin.", category='error')
+                import sys
+                print(str(e), file=sys.stderr)
+                return redirect(url_for('publishings.moderate_publishing', id=id, idc=idc))
+
+            if type(plug_exitcode) is tuple and len(plug_exitcode) >= 2 and plug_exitcode[0].value == StatusCode.ERROR.value:
+                # well known exception
+                flash(plug_exitcode[1], category='error')
+                return redirect(url_for('publishings.moderate_publishing', id=id, idc=idc))
+
+            # If we reach here, the publication was successfull
             pub.state = 1
             db.session.commit()
-            # running the plugin here
-            plugin.run(pub, c_conf)
+            flash("The publishing has successfully been published.", category='success')
 
         return redirect(url_for('index'))
 

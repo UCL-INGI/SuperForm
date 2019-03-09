@@ -3,6 +3,8 @@ import json
 
 from flask import url_for, current_app, render_template
 
+from models import StatusCode
+
 FIELDS_UNAVAILABLE = ['Title']
 
 CONFIG_FIELDS = ["access_token", "page"]
@@ -20,15 +22,11 @@ def run(publishing, channel_config):
     json_data = json.loads(channel_config)
     acc_tok = json_data['access_token']
     if 'page' not in json_data:
-        print("Invalid page")
-        # TODO should add log here
-        return
+        return StatusCode.ERROR, "Invalid page"
     page_id = json_data['page']
     page = get_page_from_id(acc_tok, page_id)
     if page is None:
-        print("Invalid page ID")
-        # TODO should add log here
-        return
+        return StatusCode.ERROR, "Invalid page ID"
     try:
         graph = facebook.GraphAPI(access_token=page['access_token'])
         # check token validity
@@ -37,9 +35,7 @@ def run(publishing, channel_config):
             current_app.config["FACEBOOK_APP_ID"],
             current_app.config["FACEBOOK_APP_SECRET"])
         if not debug['data']['is_valid']:
-            print("Invalid Access-Token")
-            # TODO should add log here
-            return
+            return StatusCode.ERROR, "Invalid Access-Token"
         # publish post
         graph.put_object(
             parent_object="me",
@@ -47,9 +43,8 @@ def run(publishing, channel_config):
             message=publishing.description,
             link=publishing.link_url)
     except facebook.GraphAPIError:
-        print("GraphAPIError")
-        # TODO should add log here
-        return
+        return StatusCode.ERROR, "GraphAPIError"
+    return StatusCode.OK, None
 
 
 def check_validity(channel_config):

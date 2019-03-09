@@ -31,6 +31,8 @@ import math
 #           --> mettre le mot de passe choisi dans le champ password. Pour l'instant on peut mettre ce qu'on veut dans le champs username
 
 # FIELDS_UNAVAILABLE = ['Title','Description']
+from models import StatusCode
+
 FIELDS_UNAVAILABLE = []
 CONFIG_FIELDS = ["username", "password"]
 
@@ -82,7 +84,7 @@ def run(publishing, channel_config):
         authpw = json_data[
             'password']  # à rajouter dans configuration de la channel sur superform sinon ne marche pas...
     except BaseException  as e:
-        return "error json decoder"
+        return StatusCode.ERROR, "Error when getting the configuration"
 
     pageName = "News." + str(publishing.title).replace(" ", "-")
     text = makeText(publishing, authid)
@@ -90,9 +92,9 @@ def run(publishing, channel_config):
             "basetime": math.floor(time.time())}
     # r2 = requests.post(urlwiki + "?n=Main.Essai_nono&action=edit&text=Hello%20World&post=1", data)
     try:
-        response = requests.post(urlwiki, data)
+        requests.post(urlwiki, data)
     except requests.exceptions.ConnectionError:
-        return "Couldn't connect to server"
+        return StatusCode.ERROR, "Couldn't connect to server"
     except requests.exceptions.MissingSchema:
-        return "Wrong base_url, please check the format again"
-    return response
+        return StatusCode.ERROR, "Wrong base_url, please check the format again"
+    return StatusCode.OK, None

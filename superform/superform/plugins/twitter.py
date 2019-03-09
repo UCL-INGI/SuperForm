@@ -6,6 +6,8 @@ import json
 import twitter
 from twitter import twitter_utils
 
+from models import StatusCode
+
 FIELDS_UNAVAILABLE = ['Title']
 CONFIG_FIELDS = ["consumer_key", "consumer_secret", "access_token_key", "access_token_secret"]
 
@@ -46,7 +48,7 @@ def send_tweet(api, tweet, url):
     tb_tweets.pop()
 
     if len(tb_tweets) < 1:
-        return False
+        return StatusCode.ERROR, "Empty tweet"
 
     if url:
         last_element = tb_tweets.pop()
@@ -59,15 +61,15 @@ def send_tweet(api, tweet, url):
 
     for t in tb_tweets:
         if not api.PostUpdate(status=t):
-            return False
-    return True
+            return StatusCode.ERROR, "Failed to publish this post on twitter."
+        return StatusCode.OK, None
 
 
 def run(publishing, channel_config):
     tweet = publishing.description
 
     if empty_tweet(tweet):
-        return False
+        return StatusCode.ERROR, "Empty tweet"
     try:
         json_data = json.loads(channel_config)
 
@@ -76,7 +78,7 @@ def run(publishing, channel_config):
                           access_token_key=json_data['access_token_key'],
                           access_token_secret=json_data['access_token_secret'])
         api.GetHelpConfiguration()
-    except BaseException as e:
-        return "uncorrect credentials"
+    except BaseException:
+        return StatusCode.ERROR, "Uncorrect credentials, please review your configuration"
 
     return send_tweet(api, tweet, publishing.link_url)

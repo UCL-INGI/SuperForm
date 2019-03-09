@@ -1,10 +1,10 @@
 import json
 from slackclient import SlackClient
+
+from models import StatusCode
 from superform.run_plugin_exception import RunPluginException
 
 FIELDS_UNAVAILABLE = []
-FILES_MANDATORY = ['Description']
-# list of field names that are not used by your module
 
 CONFIG_FIELDS = ['token', 'channel name']
 
@@ -13,35 +13,35 @@ CONFIG_FIELDS = ['token', 'channel name']
 
 def run(publishing, channel_config):
     json_data = json.loads(channel_config)
-    if 'token' in json_data and 'channel name' in json_data:
+    if not('token' in json_data and 'channel name' in json_data):
+        return StatusCode.ERROR, 'Please configure the channel first'
 
-        token = json_data['token']
-        name = json_data['channel name']
-        slack_client = SlackClient(token)
+    token = json_data['token']
+    name = json_data['channel name']
+    slack_client = SlackClient(token)
 
-        message = make_message(publishing)
+    message = make_message(publishing)
 
-        channels = slack_client.api_call(
-            "conversations.list", types=("public_channel", "private_channel")
-        )
-        if channels['ok']:
-            found = False
-            for channel in channels['channels']:
-                if channel['name'] == name:
-                    found = True
-                    channelid = channel['id']
-                    slack_client.api_call(
-                        "chat.postMessage",
-                        channel=channelid,
-                        text=message
-                    )
-            if not found:
-                raise RunPluginException("Channel not found, please review your configuration")
-        else:
-            print('oops')
-            raise RunPluginException("Channel not found, please review your configuration")
-    else:
-        raise RunPluginException('Please configure the channel first')
+    channels = slack_client.api_call(
+        "conversations.list", types=("public_channel", "private_channel")
+    )
+
+    if not(channels['ok']):
+        return StatusCode.ERROR, "Channel not found, please review your configuration"
+
+    found = False
+    for channel in channels['channels']:
+        if channel['name'] == name:
+            found = True
+            channelid = channel['id']
+            slack_client.api_call(
+                "chat.postMessage",
+                channel=channelid,
+                text=message
+            )
+    if not found:
+        return StatusCode.ERROR, "Channel not found, please review your configuration"
+    return StatusCode.OK, None
 
 
 def make_message(publishing):

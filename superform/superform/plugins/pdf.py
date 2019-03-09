@@ -22,7 +22,7 @@ import os, glob
 import time
 import webbrowser
 from reportlab.lib.pagesizes import letter, landscape, A4, A5, A3
-from superform.models import Channel, Post, db, Publishing
+from superform.models import Channel, Post, db, Publishing, StatusCode
 from threading import Timer
 
 FIELDS_UNAVAILABLE = []
@@ -47,16 +47,15 @@ def run(publishing, channel_config, debug=False):
     json_data = json.loads(channel_config)
     title = publishing.title
     body = publishing.description
-    if ('Logo' not in json_data and debug == False):
-        print("This channel is not configured yet")
-        return redirect(url_for('index'))
+    if 'Logo' not in json_data and debug is False:
+        return StatusCode.ERROR, "This channel is not configured yet"
     image = json_data['Logo']
     size = json_data['Format']
     datas = create_pdf(title, body, image, size)
 
     path = datas[0]
     outputFile = datas[1]
-    if (debug == False):
+    if debug == False:
         webbrowser.open_new_tab('file://' + path)
 
     data_folder = Path("superform/plugins/pdf")
@@ -66,14 +65,14 @@ def run(publishing, channel_config, debug=False):
     os.chdir(data_folder)
 
     for file in glob.glob("*.pdf"):
-        if (time.time() - os.stat(file).st_atime > 3600):
+        if time.time() - os.stat(file).st_atime > 3600:
             os.remove(file)
     os.chdir(current_dir)
 
-    if (path is not None and outputFile is not None):
-        return ["status_OK", outputFile, file_size]
+    if path is not None and outputFile is not None:
+        return StatusCode.OK, None
     else:
-        return ["status_KO", None, None]
+        return StatusCode.ERROR, "PDF not created"
 
 
 def export(post_id, idc):

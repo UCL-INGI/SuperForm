@@ -1,5 +1,5 @@
 from flask import session
-from superform.models import db, User
+from superform.models import db, User, StatusCode
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -90,6 +90,7 @@ def run(publishing, channel_config):
     service = build('calendar', 'v3', credentials=creds)
     event = generate_event(publishing)
     id = publish(event, service)
+    return StatusCode.OK, None
 
 
 def publish(event, service):
