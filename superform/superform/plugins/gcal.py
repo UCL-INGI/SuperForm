@@ -87,6 +87,8 @@ def generate_event(publishing):
 
 def run(publishing, channel_config):
     creds = get_user_credentials(publishing.user_id)
+    if not creds:
+        return StatusCode.ERROR, "Failed to get credentials"
     service = build('calendar', 'v3', credentials=creds)
     event = generate_event(publishing)
     id = publish(event, service)

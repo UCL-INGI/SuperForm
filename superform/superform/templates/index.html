@@ -142,7 +142,8 @@
                                 </div>
                                 <a class="btn btn-outline-primary" role="button"
                                    href="{{ url_for('posts.resubmit_publishing', id=item.publishing_id) }}">Resubmit</a>
-                                <a class="btn btn-outline-warning" role="button" href="#">Delete</a>
+                                <a href="{{ url_for('delete.delete', id=item.post_id) }}" class="btn btn-outline-warning"
+                                   role="button">Delete</a>
                             </div>
                         </div>
                     {% endfor %}

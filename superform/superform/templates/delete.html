@@ -161,14 +161,6 @@
                                     <td>
                                         <a href="{{ url_for('delete.delete_publishing', post_id=p.post_id, channel_id=p.channel.id, drafts=draft_pubs, unmoderated=unmoderated_pubs, posted=posted_pubs, has_draft=has_draft, has_unmoderated=has_unmoderated, has_posted=has_posted) }}"
                                            class="btn btn-outline-warning" role="button">Delete</a>
-                                        {% if c == "fb" %}
-                                            <div>
-                                                <fb:login-button class="fb_iframe_widget" scope="public_profile,email"
-                                                                 onlogin="checkLoginState();">
-                                                </fb:login-button>
-                                                <p id="status"></p>
-                                            </div>
-                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

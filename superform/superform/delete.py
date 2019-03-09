@@ -41,6 +41,11 @@ def delete(id):
                         unmoderated.append(pub)
                         has_unmoderated = True
 
+                    # The publishing has been refused
+                    elif pub.state == 3:
+                        unmoderated.append(pub)
+                        has_unmoderated = True
+
                     # The publishing has been posted
                     elif pub.state == 1:
 
@@ -100,7 +105,7 @@ def delete_post(id):
                     db.session.delete(post)
                     db.session.commit()
                 else:
-                    flash("At least one publishing remains, cannot delete post")
+                    flash("At least one publishing remains, cannot delete post", category='error')
             else:
                 # The user trying to delete the post is not the one who created it
                 flash("You don't have the rights to delete this post (not the creator)")
