@@ -55,84 +55,39 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
 
     latest_version_publishing = db.session.query(Publishing).filter(Publishing.post_id == post.id,
                                                                     Publishing.channel_id == chn.id).order_by(
-        Publishing.num_version.desc()).first()
+                                                                    Publishing.num_version.desc()).first()
+    version_number = 1 if latest_version_publishing is None else latest_version_publishing.num_version + 1
+
+    pub = Publishing(num_version=version_number, post_id=post.id, user_id=user_id, channel_id=chn.id,
+                     state=State.NOT_VALIDATED.value, title=title_post, description=descr_post,
+                     link_url=link_post, image_url=image_post,
+                     date_from=date_from, date_until=date_until)
+
+    # TEAM6: MODIFICATION FOR PDF
+    c = db.session.query(Channel).filter(Channel.id == pub.channel_id).first()
+    if c is not None:
+        plugin_name = c.module
+        # If it is a pdf chanel we don't need to save it, printing it would be enough
+        if str(plugin_name).endswith("pdf"):
+            c_conf = c.config
+            plugin = import_module(plugin_name)
+            plugin.run(pub, c_conf)
+            # Does not save the pdf posts
+            return pub
+    # TEAM6: END OF MODIFICATION
+
+    db.session.add(pub)
+    db.session.commit()
 
     if latest_version_publishing is None:
-        pub = Publishing(post_id=post.id, user_id=user_id, channel_id=chn.id, state=State.NOT_VALIDATED.value,
-                         title=title_post, description=descr_post,
-                         link_url=link_post, image_url=image_post,
-                         date_from=date_from, date_until=date_until)
-
-        c = db.session.query(Channel).filter(Channel.id == pub.channel_id).first()
-        if c is not None:
-            plugin_name = c.module
-            # If it is a pdf chanel we don't need to save it, printing it would be enough
-            # TEAM6: MODIFICATION FOR PDF
-            if str(plugin_name).endswith("pdf"):
-                c_conf = c.config
-                plugin = import_module(plugin_name)
-                plugin.run(pub, c_conf)
-                # Does not save the pdf posts
-                return pub
-            # END OF MODIFICATION
-
-        if is_gcal_channel(chan) and not gcal.is_valid(pub):
-            return None
-        if is_gcal_channel(chan):
-            generate_google_user_credentials(chan)
-
-        db.session.add(pub)
-        db.session.commit()
-
         user_comment = ""
         date_user_comment = str_converter(datetime_now())
         comm = Comment(publishing_id=pub.publishing_id, user_comment=user_comment,
                        date_user_comment=date_user_comment)
-
         db.session.add(comm)
-        db.session.commit()
-    else:
-        pub = Publishing(num_version=latest_version_publishing.num_version + 1, post_id=post.id, user_id=user_id,
-                         channel_id=chn.id, state=State.NOT_VALIDATED.value, title=title_post, description=descr_post,
-                         link_url=link_post, image_url=image_post,
-                         date_from=date_from, date_until=date_until)
-
-        c = db.session.query(Channel).filter(Channel.id == pub.channel_id).first()
-        if c is not None:
-            plugin_name = c.module
-            # If it is a pdf chanel we don't need to save it, printing it would be enough
-            # TEAM6: MODIFICATION FOR PDF
-            if str(plugin_name).endswith("pdf"):
-                c_conf = c.config
-                plugin = import_module(plugin_name)
-                plugin.run(pub, c_conf)
-                # Does not save the pdf posts
-                return pub
-            # END OF MODIFICATION
-
-        if is_gcal_channel(chan) and not gcal.is_valid(pub):
-            return None
-        if is_gcal_channel(chan):
-            generate_google_user_credentials(chan)
-
-        db.session.add(pub)
         db.session.commit()
 
     return pub
-
-
-# TEAM2 gcal
-def is_gcal_channel(channel_id):
-    c = db.session.query(Channel).filter(Channel.name == channel_id).first()
-    return c.module.endswith('gcal')
-
-
-def generate_google_user_credentials(channel_id):
-    c = db.session.query(Channel).filter(Channel.name == channel_id).first()
-    gcal.generate_user_credentials(c.config)
-
-
-# TEAM2 gcal
 
 
 @pub_page.route('/moderate/<int:id>/<string:idc>', methods=["GET", "POST"])
@@ -190,6 +145,11 @@ def moderate_publishing(id, idc):
                 flash("Error : module don't implement can_edit or edit method")
                 db.session.commit()
         else:
+            # TEAM6 gcal Moved the acquisition of the credentials here since it makes more sense
+            if plugin_name.endswith('gcal'):
+                gcal.generate_user_credentials(c_conf)
+            # TEAM6 gcal
+
             # try to run the plugin
             try:
                 plug_exitcode = plugin.run(pub, c_conf)
