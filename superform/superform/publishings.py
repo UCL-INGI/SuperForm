@@ -45,17 +45,19 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
     if form.get(chan + 'datefrompost') is '':
         date_from = str_converter(date.today())
     else:
-        date_from = datetime_converter(form.get(chan + '_datefrompost')) if datetime_converter(
+        date_from = datetime_converter(form.get(chan + '_datefrompost')) if form.get(
+            chan + '_datefrompost') is not None and datetime_converter(
             form.get(chan + '_datefrompost')) is not None else post.date_from
     if form.get(chan + 'dateuntilpost') is '':
         date_until = str_converter(date.today() + timedelta(days=7))
     else:
-        date_until = datetime_converter(form.get(chan + '_dateuntilpost')) if datetime_converter(
+        date_until = datetime_converter(form.get(chan + '_dateuntilpost')) if form.get(
+            chan + '_datefrompost') is not None and datetime_converter(
             form.get(chan + '_dateuntilpost')) is not None else post.date_until
 
     latest_version_publishing = db.session.query(Publishing).filter(Publishing.post_id == post.id,
                                                                     Publishing.channel_id == chn.id).order_by(
-                                                                    Publishing.num_version.desc()).first()
+        Publishing.num_version.desc()).first()
     version_number = 1 if latest_version_publishing is None else latest_version_publishing.num_version + 1
 
     pub = Publishing(num_version=version_number, post_id=post.id, user_id=user_id, channel_id=chn.id,
@@ -160,7 +162,8 @@ def moderate_publishing(id, idc):
                 print(str(e), file=sys.stderr)
                 return redirect(url_for('publishings.moderate_publishing', id=id, idc=idc))
 
-            if type(plug_exitcode) is tuple and len(plug_exitcode) >= 2 and plug_exitcode[0].value == StatusCode.ERROR.value:
+            if type(plug_exitcode) is tuple and len(plug_exitcode) >= 2 and plug_exitcode[
+                0].value == StatusCode.ERROR.value:
                 # well known exception
                 flash(plug_exitcode[1], category='error')
                 return redirect(url_for('publishings.moderate_publishing', id=id, idc=idc))

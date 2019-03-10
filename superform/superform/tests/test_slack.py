@@ -10,7 +10,7 @@ json_data = open(os.path.dirname(os.path.abspath(__file__)) + '/../config.json')
 data = json.load(json_data)
 
 cha_conf = json.dumps({"token": data["BOT_TOKEN"],
-                       "channel name": "bot-channel"})
+                       "channel name": "testing-bot"})
 
 
 class Publish(Publishing):
@@ -87,16 +87,15 @@ def test_run_regular():
     slack_master = SlackClient(data["BOT_TOKEN"])
     slack_user = SlackClient(data["OTHER_TOKEN"])
     run(new_publish, cha_conf)
-    for channel in slack_user.api_call("conversations.list")['channels']:
+    call = slack_user.api_call("conversations.list")
+    assert call['ok']
+    for channel in call['channels']:
         if channel['name'] == "testing-bot":
             channelid = channel['id']
-    res = slack_user.api_call("channels.history",
-                              channel=channelid)
-
+    res = slack_user.api_call("conversations.history", channel=channelid)
+    assert res['ok']
     assert res["messages"][0]['text'] == make_message(new_publish)
     count = 0
-    res = slack_user.api_call("channels.history",
-                              channel=channelid)
     while count < len(res["messages"]):
         msg_ts = res["messages"][count]['ts']
         slack_master.api_call("chat.delete", ts=msg_ts, channel=channelid, as_user=True)
@@ -110,16 +109,15 @@ def test_run_no_title():
     slack_master = SlackClient(data["BOT_TOKEN"])
     slack_user = SlackClient(data["OTHER_TOKEN"])
     run(new_publish, cha_conf)
-    for channel in slack_user.api_call("conversations.list")['channels']:
+    call = slack_user.api_call("conversations.list")
+    assert call['ok']
+    for channel in call['channels']:
         if channel['name'] == "testing-bot":
             channelid = channel['id']
-    res = slack_user.api_call("channels.history",
-                              channel=channelid)
-
+    res = slack_user.api_call("conversations.history", channel=channelid)
+    assert res['ok']
     assert res["messages"][0]['text'] == make_message(new_publish)
     count = 0
-    res = slack_user.api_call("channels.history",
-                              channel=channelid)
     while count < len(res["messages"]):
         msg_ts = res["messages"][count]['ts']
         slack_master.api_call("chat.delete", ts=msg_ts, channel=channelid, as_user=True)
@@ -133,16 +131,15 @@ def test_run_no_content():
     slack_master = SlackClient(data["BOT_TOKEN"])
     slack_user = SlackClient(data["OTHER_TOKEN"])
     run(new_publish, cha_conf)
-    for channel in slack_user.api_call("conversations.list")['channels']:
+    call = slack_user.api_call("conversations.list")
+    assert call['ok']
+    for channel in call['channels']:
         if channel['name'] == "testing-bot":
             channelid = channel['id']
-    res = slack_user.api_call("channels.history",
-                              channel=channelid)
-
+    res = slack_user.api_call("conversations.history", channel=channelid)
+    assert res['ok']
     assert res["messages"][0]['text'] == make_message(new_publish)
     count = 0
-    res = slack_user.api_call("channels.history",
-                              channel=channelid)
     while count < len(res["messages"]):
         msg_ts = res["messages"][count]['ts']
         slack_master.api_call("chat.delete", ts=msg_ts, channel=channelid, as_user=True)

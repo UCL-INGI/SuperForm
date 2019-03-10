@@ -45,26 +45,12 @@ def number_of_accepted():
                                                Publishing.state == 1).count()
 
 
-def number_of_archived():
-    return db.session.query(Publishing).filter(Publishing.user_id == session.get("user_id", ""),
-                                               Publishing.state == State.ARCHIVED).count()
-
-
 def accepted_user_posts(User_id):
     return db.session.query(Publishing).filter(Publishing.user_id == User_id, Publishing.state == 1).count()
 
 
 def waiting_user_posts(User_id):
     return db.session.query(Publishing).filter(Publishing.user_id == User_id, Publishing.state == 0).count()
-
-
-def archived_user_posts(User_id):
-    """
-
-    :return:
-    """
-    return db.session.query(Publishing).filter(Publishing.user_id == User_id,
-                                               Publishing.state == State.ARCHIVED).count()
 
 
 def total_user_posts(User_id):

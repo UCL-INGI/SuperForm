@@ -70,7 +70,7 @@ def run(publishing, channel_config, debug=False):
     os.chdir(current_dir)
 
     if path is not None and outputFile is not None:
-        return StatusCode.OK, None
+        return StatusCode.OK, outputFile, file_size
     else:
         return StatusCode.ERROR, "PDF not created"
 

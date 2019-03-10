@@ -1,8 +1,6 @@
 import json
-from slackclient import SlackClient
-
 from models import StatusCode
-from superform.run_plugin_exception import RunPluginException
+from slackclient import SlackClient
 
 FIELDS_UNAVAILABLE = []
 
@@ -23,7 +21,7 @@ def run(publishing, channel_config):
     message = make_message(publishing)
 
     channels = slack_client.api_call(
-        "conversations.list", types=("public_channel", "private_channel")
+        "conversations.list", types="public_channel, private_channel"
     )
 
     if not(channels['ok']):

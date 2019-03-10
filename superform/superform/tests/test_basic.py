@@ -81,7 +81,7 @@ def write_to_db(obj):
 def test_index_not_logged_in(client):
     rv = client.get('/', follow_redirects=True)
     assert rv.status_code == 200
-    assert "You are not logged in." in rv.data.decode()
+    assert "assets/uclouvain.png" in rv.data.decode()  # Had to modify the test since index page has been modified.
 
 
 def test_other_pages_not_logged_in(client):
@@ -109,7 +109,7 @@ def test_log_out(client):
     assert rv2.status_code == 200
     rv2 = client.get('/logout', follow_redirects=True)
     assert rv2.status_code == 200
-    assert "You are not logged in." in rv2.data.decode()
+    assert "assets/uclouvain.png" in rv2.data.decode()  # Had to modify the test since index page has been modified.
 
 
 def test_new_post(client):

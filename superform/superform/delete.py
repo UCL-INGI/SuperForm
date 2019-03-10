@@ -4,10 +4,6 @@ from superform.utils import login_required
 from superform.models import db, Post, Publishing, User, Channel
 from superform.users import is_moderator
 
-from superform.run_plugin_exception import RunPluginException
-
-import json
-
 delete_page = Blueprint('delete', __name__)
 
 
