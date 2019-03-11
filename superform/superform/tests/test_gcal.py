@@ -117,4 +117,4 @@ def test_validity_datetime_gcal():
 
 def test_validity_gcal():
     pub = basic_publish()
-    assert gcal.is_valid(pub) == True
+    assert gcal.is_valid(pub) is True

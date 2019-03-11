@@ -9,7 +9,7 @@ import json
 import pytest
 
 from superform import app, db, Publishing, channels
-from superform.models import Channel, db
+from superform.models import Channel, db, StatusCode
 from superform.plugins import wiki
 
 FIELDS_UNAVAILABLE = []
@@ -57,14 +57,10 @@ def test_uncorrect_config():
     pub.state = 1
     pub.channel_id = 'Wiki'
     bad_json = json.dumps({"hello": ["coucou"]})
-    try:
-        answer = wiki.run(pub, bad_json)
-        assert answer == "error json decoder"
-    except BaseException as e:
-        # print(type(e))
-        # print(e)
-        # This could be a connection error, you need a live server to run this test successfully
-        raise (e)
+
+    answer = wiki.run(pub, bad_json)
+    assert answer[0].value == StatusCode.ERROR.value
+    assert answer[1] == "Error when getting the configuration"  # should not be "Couldn't connect to server"
 
 
 def test_correct_wiki_post():
@@ -81,11 +77,6 @@ def test_correct_wiki_post():
 
     config_str = json.dumps(config)
 
-    try:
-        answer = wiki.run(pub, config_str)
-        assert answer.status_code == 200
-    except BaseException as e:
-        # print(type(e))
-        # print(e)
-        # This could be a connection error, you need a live server to run this test successfully
-        raise (e)
+    answer = wiki.run(pub, config_str)
+    assert answer[0].value == StatusCode.OK.value
+    assert answer[1].status_code == 200

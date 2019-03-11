@@ -92,9 +92,9 @@ def run(publishing, channel_config):
             "basetime": math.floor(time.time())}
     # r2 = requests.post(urlwiki + "?n=Main.Essai_nono&action=edit&text=Hello%20World&post=1", data)
     try:
-        requests.post(urlwiki, data)
+        response = requests.post(urlwiki, data)
     except requests.exceptions.ConnectionError:
         return StatusCode.ERROR, "Couldn't connect to server"
     except requests.exceptions.MissingSchema:
         return StatusCode.ERROR, "Wrong base_url, please check the format again"
-    return StatusCode.OK, None
+    return StatusCode.OK, response
