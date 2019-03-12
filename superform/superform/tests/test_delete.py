@@ -3,14 +3,24 @@ import tempfile
 import pytest
 
 from superform import app, db
-from superform.models import Post, Publishing
+from superform.models import Post, Channel, Publishing, User
 from superform.utils import datetime_converter
+from superform.tests.test_basic import create_user, create_channel
+
+
+def clear_data(session):
+    meta = db.metadata
+    for table in reversed(meta.sorted_tables):
+        session.execute(table.delete())
+    session.commit()
 
 
 @pytest.fixture
 def client():
     app.app_context().push()
-    db_fd, app.config['DATABASE'] = tempfile.mkstemp()
+
+    db_fd, database = tempfile.mkstemp()
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///"+database+".db"
     app.config['TESTING'] = True
     client = app.test_client()
 
@@ -19,14 +29,15 @@ def client():
 
     yield client
 
+    clear_data(db.session)
     os.close(db_fd)
-    os.unlink(app.config['DATABASE'])
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///superform.db"
 
 
 def login(client, login):
     with client as c:
         with c.session_transaction() as sess:
-            if login is not "myself":
+            if login == "myself":
                 sess["admin"] = True
             else:
                 sess["admin"] = False
@@ -36,6 +47,9 @@ def login(client, login):
             sess["name"] = "myname_gen"
             sess["email"] = "hello@genemail.com"
             sess['user_id'] = login
+
+    create_user(id=login, name="testdelete", first_name="utilisateurdelete", email="utilisateurdelete.test@uclouvain.be")
+    create_channel("test_delete", "mail", {'sender': 'noOne', 'receiver': 'noOne'})
 
 
 def test_delete_post(client):
@@ -149,7 +163,7 @@ def test_delete_not_author(client):
 
     deleted_post = db.session.query(Post).filter_by(id=id_post).first()
 
-    assert deleted_post is None
+    assert deleted_post is not None
 
     db.session.delete(p)
     db.session.commit()

@@ -2,6 +2,7 @@ import os
 import sys
 import tempfile
 import datetime
+import requests
 import string
 import random
 import json
@@ -64,6 +65,13 @@ def test_uncorrect_config():
 
 
 def test_correct_wiki_post():
+    # verify that the server is on
+    try:
+        response = requests.post(wiki.urlwiki, None)
+    except requests.exceptions.ConnectionError:
+        assert False, "Can't connect to the pmwiki server."
+    assert response.status_code == 200
+
     config = {'username': ['superform'], 'password': ['superform']}
     pub = Publishing()
     pub.date_from = '13.02.02'
