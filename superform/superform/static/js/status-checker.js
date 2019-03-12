@@ -143,6 +143,13 @@ statusListener = {
                 value: "0",
                 text: "You need a title for the publication",
                 forbidPublish: true
+            },
+            {
+                type: "title",
+                compare: "GT",
+                value: "0",
+                text: "The URL of your wiki post will be 'News.' + your title (special characters removed)",
+                forbidPublish: false
             }
         ]
 };

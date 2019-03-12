@@ -9,7 +9,7 @@ import json
 from flask import url_for, redirect, render_template
 from reportlab.pdfgen import canvas
 import json, time
-from flask import current_app, request
+from flask import current_app, flash, request
 from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
@@ -51,11 +51,16 @@ def run(publishing, channel_config, debug=False):
         return StatusCode.ERROR, "This channel is not configured yet"
     image = json_data['Logo']
     size = json_data['Format']
-    datas = create_pdf(title, body, image, size)
+    try:
+        datas = create_pdf(title, body, image, size)
+    except OSError:
+        return StatusCode.ERROR, "A pdf file with the same name is already opened."
+    except BaseException:
+        return StatusCode.ERROR, "An unknown error occured whie creating the pdf."
 
     path = datas[0]
     outputFile = datas[1]
-    if debug == False:
+    if debug is False:
         webbrowser.open_new_tab('file://' + path)
 
     data_folder = Path("superform/plugins/pdf")
@@ -80,18 +85,20 @@ def export(post_id, idc):
         Channel.id == idc).first()
     if pdf_Channel is not None:
         channel_config = pdf_Channel.config
+    else:
+        flash("PDF channel not found", category='success')
+        return redirect(url_for('index'))
     myPost = db.session.query(Post).filter(
         Post.id == post_id).first()
     myPub = Publishing()
     myPub.description = myPost.description
     myPub.title = myPost.title
-    run(myPub, channel_config)
+    code = run(myPub, channel_config)
 
-    # TODO get the post information
-    # db.session... TODO
-    # pub = {'description': post.description, 'title': post.title} TODO
-    # config = TODO
-    # run(publishing = pub, channel_config = config)
+    if code[0].value != StatusCode.OK.value:
+        flash(code[1], category='error')
+    else:
+        flash("The PDF has successfully been generated.", category='success')
     return redirect(url_for('index'))
 
 

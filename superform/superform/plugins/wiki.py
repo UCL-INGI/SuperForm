@@ -83,10 +83,10 @@ def run(publishing, channel_config):
             'username']  # à rajouter dans configuration de la channel sur superform sinon ne marche pas...
         authpw = json_data[
             'password']  # à rajouter dans configuration de la channel sur superform sinon ne marche pas...
-    except BaseException  as e:
+    except BaseException:
         return StatusCode.ERROR, "Error when getting the configuration"
 
-    pageName = "News." + str(publishing.title).replace(" ", "-")
+    pageName = "News." + format_title(str(publishing.title))
     text = makeText(publishing, authid)
     data = {"n": pageName, "text": text, "action": "edit", "post": "1", 'authid': authid, "authpw": authpw,
             "basetime": math.floor(time.time())}
@@ -97,4 +97,23 @@ def run(publishing, channel_config):
         return StatusCode.ERROR, "Couldn't connect to server"
     except requests.exceptions.MissingSchema:
         return StatusCode.ERROR, "Wrong base_url, please check the format again"
+    if response.status_code != 200:
+        return StatusCode.ERROR, "PmWiki couldn't process your request. The new was not published."
     return StatusCode.OK, response
+
+
+def format_title(title):
+    """
+    Format the title to fit the url
+    :param title: title
+    :return: formatted title
+    """
+    import re
+    delimiters = "-", " ", ",", ";", ".", "\\", "/", "<", ">", "@", "?", "=", "+", "%", "*", "`", "\"", "\n", "&", "#", "_"
+    pattern = '|'.join(map(re.escape, delimiters))
+    split = re.split(pattern, title)
+    formatted_title = ""
+    for m in split:
+        formatted_title += m
+
+    return formatted_title

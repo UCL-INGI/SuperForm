@@ -142,7 +142,8 @@
                                 </div>
                                 <a class="btn btn-outline-primary" role="button"
                                    href="{{ url_for('posts.resubmit_publishing', id=item.publishing_id) }}">Resubmit</a>
-                                <a href="{{ url_for('delete.delete', id=item.post_id) }}" class="btn btn-outline-warning"
+                                <a href="{{ url_for('delete.delete', id=item.post_id) }}"
+                                   class="btn btn-outline-warning"
                                    role="button">Delete</a>
                             </div>
                         </div>
@@ -169,54 +170,71 @@
     {% endif %}
 
     <!-- Team06: Export to PDF feature -->
-    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form method="post">
-                    <input type="hidden" name="@action" value="export">
-                    <input id="post-id" type="hidden" name="id" value="">
-                    <input id="chan-id" type="hidden" name="idc" value="">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Export to PDF</h5>
-                        <button type="button" class="close"
-                                data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Which template would you like to use ?</p>
-                    </div>
-                    <!--<form class="form-inline" method="post">-->
-                    <input type="hidden" name="@action" value="templates">
-                    <label class="sr-only" for="inlineFormInputText">Username</label>
-                    <label class="sr-only"
-                           for="inlineFormCustomSelectTemplate">Template</label>
-                    <div class="input-group mr-sm-2">
-                        <select name="template" class="custom-select"
-                                id="inlineFormCustomSelectTemplate">
-                            <option selected disabled>Choose a template...</option>
-                            {% for template in templates %}
-                                <option value="{{ template.id }}">{{ template.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <!--</form>-->
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-info">Export to pdf
-                        </button>
-                        <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal">Cancel
-                        </button>
-                    </div>
-                </form>
+    {% if templates.count() > 0 %}
+        <div class="modal fade" id="exportModal" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form method="post">
+                        <input type="hidden" name="@action" value="export">
+                        <input id="post-id" type="hidden" name="id" value="">
+                        <input id="chan-id" type="hidden" name="idc" value="">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Export to PDF</h5>
+                            <button type="button" class="close"
+                                    data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Which template would you like to use ?</p>
+                        </div>
+                        <!--<form class="form-inline" method="post">-->
+                        <input type="hidden" name="@action" value="templates">
+                        <label class="sr-only" for="inlineFormInputText">Username</label>
+                        <label class="sr-only"
+                               for="inlineFormCustomSelectTemplate">Template</label>
+                        <div class="input-group mr-sm-2">
+                            <select name="template" class="custom-select"
+                                    id="inlineFormCustomSelectTemplate">
+                                <option value="0" selected disabled>Choose a template...</option>
+                                {% for template in templates %}
+                                    <option value="{{ template.id }}">{{ template.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!--</form>-->
+                        <div class="modal-footer">
+                            <button id="ExportPDF" disabled type="submit" class="btn btn-info">Export to pdf
+                            </button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 
 {% endblock %}
 
 {% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#inlineFormCustomSelectTemplate').val("0");
+
+            $('#inlineFormCustomSelectTemplate').change(function () {
+                var selectVal = $('#inlineFormCustomSelectTemplate').val();
+                if (Number(selectVal) < 0) {
+                    $('#ExportPDF').prop("disabled", true);
+                } else {
+                    $('#ExportPDF').prop("disabled", false);
+                }
+            })
+
+        });
+    </script>
     <script>
         $('#exportModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
