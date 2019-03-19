@@ -5,7 +5,7 @@ from flask import Blueprint, url_for, current_app, request, redirect, session, r
 from superform.publishings import create_a_publishing, get_post_form_validations
 from superform.users import channels_available_for_user
 from superform.utils import login_required, datetime_converter, str_converter, get_instance_from_module_path, \
-    get_modules_names, get_module_full_name, datetime_now, str_converter_with_hour
+    get_modules_names, get_module_full_name, datetime_now, str_converter_with_hour, str_time_converter, time_converter
 from superform.models import db, Post, Publishing, Channel, Comment, State, AlchemyEncoder
 
 from importlib import import_module
@@ -21,18 +21,28 @@ def create_a_post(form):  # called in publish_from_new_post() & new_post()
     link_post = form.get('linkurlpost')
     image_post = form.get('imagepost')
 
-    # set default date if no date was chosen
+    # set default date if none was chosen
     if form.get('datefrompost') is '':
-        date_from = str_converter(date.today())
+        date_from = date.today()
     else:
         date_from = datetime_converter(form.get('datefrompost'))
     if form.get('dateuntilpost') is '':
-        date_until = str_converter(date.today() + timedelta(days=7))
+        date_until = date.today() + timedelta(days=7)
     else:
         date_until = datetime_converter(form.get('dateuntilpost'))
 
+    # set default hour if none was chosen
+    if form.get('starthour') is '':
+        start_hour = time_converter("00:00")
+    else:
+        start_hour = time_converter(form.get('starthour'))
+    if form.get('endhour') is '':
+        end_hour = time_converter("23:59")
+    else:
+        end_hour = time_converter(form.get('endhour'))
+
     p = Post(user_id=user_id, title=title_post, description=descr_post, link_url=link_post, image_url=image_post,
-             date_from=date_from, date_until=date_until)
+             date_from=date_from, date_until=date_until, start_hour=start_hour, end_hour=end_hour)
     db.session.add(p)
     db.session.commit()
     return p
@@ -69,7 +79,6 @@ def new_post():
                                date=default_date)
     else:
         # Save as draft
-        # FIXME Maybe refactor the code so that this part is not too confusing?
         create_a_post(request.form)
         flash("The post was successfully saved as draft", category='success')
         return redirect(url_for('index'))
@@ -113,6 +122,8 @@ def create_a_resubmit_publishing(pub, chn, form):
     image_post = form.get('imagepost')
     date_from = datetime_converter(form.get('datefrompost'))
     date_until = datetime_converter(form.get('dateuntilpost'))
+    start_hour = time_converter(form.get('starthour'))
+    end_hour = time_converter(form.get('endhour'))
 
     latest_version_publishing = db.session.query(Publishing).filter(Publishing.post_id == pub.post_id,
                                                                     Publishing.channel_id == chn.id).order_by(
@@ -121,7 +132,7 @@ def create_a_resubmit_publishing(pub, chn, form):
     new_pub = Publishing(num_version=latest_version_publishing.num_version + 1, post_id=pub.post_id, channel_id=chn.id,
                          state=State.NOT_VALIDATED.value, user_id=user_id, title=title_post, description=descr_post,
                          link_url=link_post, image_url=image_post,
-                         date_from=date_from, date_until=date_until)
+                         date_from=date_from, date_until=date_until, start_hour=start_hour, end_hour=end_hour)
     return new_pub
 
 

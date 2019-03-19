@@ -65,6 +65,8 @@ function updateFields() {
     $('#imagepost_old').val(pubs[current].image_url);
     $('#datefrompost_old').val(pubs[current].date_from);
     $('#dateuntilpost_old').val(pubs[current].date_until);
+    $('#starthour_old').val(pubs[current].start_hour);
+    $('#endhour_old').val(pubs[current].end_hour);
     $('#current_date').text(coms[current].date_user_comment);
 
     if (current == 0) {

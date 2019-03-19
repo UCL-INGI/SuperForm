@@ -4,7 +4,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from datetime import datetime
-from superform.utils import str_converter
+from superform.utils import str_converter, str_time_converter
 import json
 
 FIELDS_UNAVAILABLE = ['Image']
@@ -68,11 +68,11 @@ def generate_event(publishing):
             }
         ],
         'start': {
-            'dateTime': str_converter(publishing.date_from) + ':00Z',
+            'dateTime': str_converter(publishing.date_from) + "T" + str_time_converter(publishing.start_hour) + ':00Z',
             'timeZone': 'Europe/Zurich',
         },
         'end': {
-            'dateTime': str_converter(publishing.date_until) + ':00Z',
+            'dateTime': str_converter(publishing.date_until) + "T" + str_time_converter(publishing.end_hour) + ':00Z',
             'timeZone': 'Europe/Zurich',
         },
         'reminders': {

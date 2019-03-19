@@ -55,6 +55,10 @@ class Post(db.Model):
     image_url = db.Column(db.Text)
     date_from = db.Column(db.DateTime)
     date_until = db.Column(db.DateTime)
+    # TEAM2: Google calendar
+    start_hour = db.Column(db.DateTime)
+    end_hour = db.Column(db.DateTime)
+    # TEAM2: Google calendar
 
     publishings = db.relationship("Publishing", backref="post", lazy=True)
 
@@ -110,6 +114,10 @@ class Publishing(db.Model):
     image_url = db.Column(db.Text)
     date_from = db.Column(db.DateTime)
     date_until = db.Column(db.DateTime)
+    # TEAM2: Google calendar
+    start_hour = db.Column(db.DateTime)
+    end_hour = db.Column(db.DateTime)
+    # TEAM2: Google calendar
     
     UniqueConstraint(num_version, post_id, channel_id, name='unicity_publishing_numvers')
     __table_args__ = ({"sqlite_autoincrement": True},)

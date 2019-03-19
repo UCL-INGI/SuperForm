@@ -1,8 +1,3 @@
-from flask import Flask, render_template, session, request, redirect, url_for
-# For search
-from flask import request, url_for
-import json
-#
 import importlib
 import pkgutil
 
@@ -20,7 +15,7 @@ from superform.models import db, User, Post, Publishing, Channel, State, Comment
 from superform.posts import posts_page
 from superform.search import search_page
 from superform.publishings import pub_page
-from superform.users import get_moderate_channels_for_user, is_moderator, channels_available_for_user
+from superform.users import get_moderate_channels_for_user, is_moderator
 from superform.plugins.pdf import export
 from superform.plugins._linkedin_callback import linkedin_page
 from superform.plugins._facebook_callback import facebook_page

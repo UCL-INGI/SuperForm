@@ -9,7 +9,7 @@ from superform.channels import valid_conf
 from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder, StatusCode
 from superform.users import get_moderate_channels_for_user
 from superform.utils import login_required, datetime_converter, str_converter, datetime_now, get_modules_names, \
-    get_module_full_name, get_instance_from_module_path, str_converter_with_hour
+    str_converter_with_hour, time_converter, str_time_converter
 
 pub_page = Blueprint('publishings', __name__)
 
@@ -43,17 +43,26 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
     image_post = form.get(chan + '_imagepost') if form.get(chan + '_imagepost') is not None else post.image_url
 
     if form.get(chan + 'datefrompost') is '':
-        date_from = str_converter(date.today())
+        date_from = date.today()
     else:
         date_from = datetime_converter(form.get(chan + '_datefrompost')) if form.get(
-            chan + '_datefrompost') is not None and datetime_converter(
-            form.get(chan + '_datefrompost')) is not None else post.date_from
+            chan + '_datefrompost') is not None else post.date_from
     if form.get(chan + 'dateuntilpost') is '':
-        date_until = str_converter(date.today() + timedelta(days=7))
+        date_until = date.today() + timedelta(days=7)
     else:
         date_until = datetime_converter(form.get(chan + '_dateuntilpost')) if form.get(
-            chan + '_datefrompost') is not None and datetime_converter(
-            form.get(chan + '_dateuntilpost')) is not None else post.date_until
+            chan + '_datefrompost') is not None else post.date_until
+
+    if form.get(chan + 'starthour') is '':
+        start_hour = time_converter("00:00")
+    else:
+        start_hour = datetime_converter(form.get(chan + '_starthour')) if form.get(
+            chan + '_start_hour') is not None else post.start_hour
+    if form.get(chan + 'dateuntilpost') is '':
+        end_hour = time_converter("23:59")
+    else:
+        end_hour = datetime_converter(form.get(chan + '_endhour')) if form.get(
+            chan + '_endhour') is not None else post.end_hour
 
     latest_version_publishing = db.session.query(Publishing).filter(Publishing.post_id == post.id,
                                                                     Publishing.channel_id == chn.id).order_by(
@@ -63,7 +72,7 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
     pub = Publishing(num_version=version_number, post_id=post.id, user_id=user_id, channel_id=chn.id,
                      state=State.NOT_VALIDATED.value, title=title_post, description=descr_post,
                      link_url=link_post, image_url=image_post,
-                     date_from=date_from, date_until=date_until)
+                     date_from=date_from, date_until=date_until, start_hour=start_hour, end_hour=end_hour)
 
     # TEAM6: MODIFICATION FOR PDF
     c = db.session.query(Channel).filter(Channel.id == pub.channel_id).first()
@@ -111,6 +120,8 @@ def moderate_publishing(id, idc):
         Publishing.num_version.desc()).first()
     pub.date_from = str_converter(pub.date_from)
     pub.date_until = str_converter(pub.date_until)
+    pub.start_hour = str_time_converter(pub.start_hour)
+    pub.end_hour = str_time_converter(pub.end_hour)
 
     plugin_name = chn.module
     c_conf = chn.config
@@ -131,6 +142,8 @@ def moderate_publishing(id, idc):
         pub.image_url = request.form.get('imagepost')
         pub.date_from = datetime_converter(request.form.get('datefrompost'))
         pub.date_until = datetime_converter(request.form.get('dateuntilpost'))
+        pub.start_hour = datetime_converter(request.form.get('starthour'))
+        pub.end_hour = datetime_converter(request.form.get('endhour'))
 
         if pub.state == 66:  # EDITION
             try:
