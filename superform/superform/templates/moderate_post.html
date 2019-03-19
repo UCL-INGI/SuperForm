@@ -42,19 +42,37 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="datefrompost">Publication Date</label><br>
-                                <input id="datefrompost" name="datefrompost" type="datetime-local" class="form-control"
+                                <input id="datefrompost" name="datefrompost" type="date" class="form-control"
                                        value="{{ pub.date_from }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateuntilpost">Publication Until</label><br>
-                                <input id="dateuntilpost" name="dateuntilpost" type="datetime-local"
+                                <input id="dateuntilpost" name="dateuntilpost" type="date"
                                        class="form-control"
                                        value="{{ pub.date_until }}">
                             </div>
                         </div>
                     </div>
+                    {% if channel.module == "superform.plugins.gcal" %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="heuredebut_old">Starting time</label><br>
+                                    <input disabled type="time" id="heuredebut_old" class="form-control"
+                                           value="{{ pub.hour_start }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="heurefin_old">Ending time</label><br>
+                                    <input disabled type="time" id="heurefin_old" class="form-control"
+                                           value="{{ pub.hour_end }}">
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
                 <div id="old_pub" class="col-md-4">
                     <div class="form-group">

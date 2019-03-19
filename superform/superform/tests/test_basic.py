@@ -151,9 +151,7 @@ def test_forbidden(client):
 
 
 def test_date_converters():
-    t = datetime_converter("2017-06-02T09:00")
-    assert t.minute == 0
-    assert t.hour == 9
+    t = datetime_converter("2017-06-02")
     assert t.day == 2
     assert t.month == 6
     assert t.year == 2017

@@ -1,13 +1,9 @@
-import datetime
 import os
 import tempfile
 
 import pytest
 
-from superform.models import Authorization, Channel, User
-from superform import app, db, Post, Publishing
-from superform.utils import datetime_converter, str_converter, get_module_full_name
-from superform.users import is_moderator, get_moderate_channels_for_user, channels_available_for_user
+from superform import app, db, Post
 
 
 @pytest.fixture

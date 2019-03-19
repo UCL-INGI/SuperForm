@@ -9,7 +9,7 @@ from superform.channels import valid_conf
 from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder, StatusCode
 from superform.users import get_moderate_channels_for_user
 from superform.utils import login_required, datetime_converter, str_converter, datetime_now, get_modules_names, \
-    get_module_full_name, get_instance_from_module_path
+    get_module_full_name, get_instance_from_module_path, str_converter_with_hour
 
 pub_page = Blueprint('publishings', __name__)
 
@@ -83,7 +83,7 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
 
     if latest_version_publishing is None:
         user_comment = ""
-        date_user_comment = str_converter(datetime_now())
+        date_user_comment = str_converter_with_hour(datetime_now())
         comm = Comment(publishing_id=pub.publishing_id, user_comment=user_comment,
                        date_user_comment=date_user_comment)
         db.session.add(comm)
@@ -210,7 +210,7 @@ def unvalidate_publishing(id):
     print('mod_com', moderator_comment)
 
     comm = db.session.query(Comment).filter(Comment.publishing_id == pub.publishing_id).first()
-    date_moderator_comment = str_converter(datetime_now())
+    date_moderator_comment = str_converter_with_hour(datetime_now())
     if comm:
         comm.moderator_comment = moderator_comment
         comm.date_moderator_comment = date_moderator_comment

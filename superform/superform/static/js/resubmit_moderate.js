@@ -3,7 +3,7 @@ update_img_link(document.getElementsByClassName('row')[0].getAttribute("module-n
 update_img_link(document.getElementsByClassName('row')[0].getAttribute("module-namechan").split('.')[2], "imagepost_old");
 
 $("#yes_button_moderate").click(function () {
-    $("#modalResubmitModerate").modal("hide")
+    $("#modalResubmitModerate").modal("hide");
     data_ok = true;
     $("#unvalidate, #resubmit").click();
 });
@@ -56,7 +56,7 @@ if (pubs.length > 1) {
     $('#prev_button').removeClass('disabled');
     current = pubs.length - 1;
 }
-updateFields()
+updateFields();
 
 function updateFields() {
     $('#titlepost_old').val(pubs[current].title);

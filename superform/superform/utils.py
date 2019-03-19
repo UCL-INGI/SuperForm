@@ -21,25 +21,27 @@ def datetime_now():
     return datetime.now()
 
 
-# TEAM2: Google calendar: added hours
-def hour_converter(stri):
-    return datetime.strptime(stri, "%H:%M")
+def str_converter(datet):
+    return datetime.strftime(datet, "%Y-%m-%d")
 
 
 def datetime_converter(stri):
-    try:
-        # Team2 gcal
-        return datetime.strptime(stri, "%Y-%m-%dT%H:%M")
-    except ValueError:
-        # ADRI Give a default hour if hour is not precised
-        date = datetime.strptime(stri + 'T12:00', "%Y-%m-%dT%H:%M")
-        return date
+    return datetime.strptime(stri, "%Y-%m-%d")
 
 
-def str_converter(datet):
-    return datetime.strftime(datet, "%Y-%m-%dT%H:%M")
+# TEAM8: Non-validation
+def str_converter_with_hour(datet):
+    return datetime.strftime(datet, "%Y-%m-%d %H:%M")
+# TEAM8
 
 
+# TEAM2: Google calendar: added hours
+def str_time_converter(datet):
+    return datetime.strftime(datet, "%H:%M")
+
+
+def time_converter(stri):
+    return datetime.strptime(stri, "%H:%M")
 # TEAM2: Google calendar
 
 
