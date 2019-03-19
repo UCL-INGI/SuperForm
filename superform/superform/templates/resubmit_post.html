@@ -25,82 +25,41 @@
                         <input type="text" name="linkurlpost" id="linkurlpost" class="form-control"
                                value="{{ pub.link_url }}">
                     </div>
-                    {% if channel.module == "superform.plugins.gcal" %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="datedebut">Starting date</label><br>
-                                    <input type="date" name="datedebut" id="datedebut" class="form-control"
-                                           value="{{ pub.date_start }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="heuredebut">Starting time</label><br>
-                                    <input type="time" name="heuredebut" id="heuredebut" class="form-control"
-                                           value="{{ pub.hour_start }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="datefin">Ending date</label><br>
-                                    <input type="date" name="datefin" id="datefin" class="form-control"
-                                           value="{{ pub.date_end }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="heurefin">Ending time</label><br>
-                                    <input type="time" name="heurefin" id="heurefin" class="form-control"
-                                           value="{{ pub.hour_end }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="location">Location</label><br>
-                            <input type="text" name="location" id="location" class="form-control"
-                                   value="{{ pub.location }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="color">Color</label><br>
-                            <input type="text" name="color" id="color" class="form-control" value="{{ pub.color_id }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="visibility">Visibility</label><br>
-                            <input type="text" name="visibility" id="visibility" class="form-control"
-                                   value="{{ pub.visibility }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="availability">Availability</label><br>
-                            <input type="text" name="availability" id="availability" class="form-control"
-                                   value="{{ pub.availability }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="guests">Guests emails</label><br>
-                            <input type="text" name="guests" id="guests" class="form-control" value="{{ pub.guests }}">
-                        </div>
-                    {% endif %}
                     <div class="form-group">
                         <label for="imagepost">Image</label><br>
                         <input type="file" name="imagepost" id="imagepost" class="form-control"
                                value="{{ pub.image_url }}">
                     </div>
-                    {% if channel.module != "superform.plugins.gcal" %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="datefrompost">Publication Date</label><br>
+                                <input id="datefrompost" name="datefrompost" type="date" class="form-control"
+                                       value="{{ pub.date_from }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateuntilpost">Publication Until</label><br>
+                                <input id="dateuntilpost" name="dateuntilpost" type="date" class="form-control"
+                                       value="{{ pub.date_until }}">
+                            </div>
+                        </div>
+                    </div>
+                    {% if channel.module == "superform.plugins.gcal" %}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="datefrompost">Publication Date</label><br>
-                                    <input id="datefrompost" name="datefrompost" type="date" class="form-control"
-                                           value="{{ pub.date_from }}">
+                                    <label for="starthour">Starting time</label><br>
+                                    <input type="time" name="starthour" id="starthour" class="form-control"
+                                           value="{{ pub.start_hour }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="dateuntilpost">Publication Until</label><br>
-                                    <input id="dateuntilpost" name="dateuntilpost" type="date" class="form-control"
-                                           value="{{ pub.date_until }}">
+                                    <label for="endhour">Ending time</label><br>
+                                    <input type="time" name="endhour" id="endhour" class="form-control"
+                                           value="{{ pub.end_hour }}">
                                 </div>
                             </div>
                         </div>
@@ -121,79 +80,40 @@
                         <input disabled type="text" id="linkurlpost_old" class="form-control"
                                value="{{ pub.link_url }}">
                     </div>
+                    <div class="form-group">
+                        <label for="imagepost_old">Image</label><br>
+                        <input disabled type="file" id="imagepost_old" class="form-control" value="{{ pub.image_url }}">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="datefrompost_old">Publication Date</label><br>
+                                <input disabled id="datefrompost_old" type="date" class="form-control"
+                                       value="{{ pub.date_from }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateuntilpost_old">Publication Until</label><br>
+                                <input disabled id="dateuntilpost_old" type="date" class="form-control"
+                                       value="{{ pub.date_until }}">
+                            </div>
+                        </div>
+                    </div>
                     {% if channel.module == "superform.plugins.gcal" %}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="datefrompost_old">Starting date</label><br>
-                                    <input disabled type="date" id="datefrompost_old" class="form-control"
-                                           value="{{ pub.date_start }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
                                     <label for="starthour_old">Starting time</label><br>
-                                    <input disabled type="time" id="starthour_old" class="form-control"
+                                    <input disabled id="starthour_old" type="time" class="form-control"
                                            value="{{ pub.start_hour }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="dateuntilpost_old">Ending date</label><br>
-                                    <input disabled type="date" id="dateuntilpost_old" class="form-control"
-                                           value="{{ pub.date_end }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="endhour_old">Ending time</label><br>
-                                    <input disabled type="time" id="endhour_old" class="form-control"
+                                    <input disabled id="endhour_old" type="time" class="form-control"
                                            value="{{ pub.end_hour }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="location_old">Location</label><br>
-                            <input type="text" id="location_old" class="form-control" value="{{ pub.location }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="color_old">Color</label><br>
-                            <input type="text" id="color_old" class="form-control" value="{{ pub.color_id }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="visibility_old">Visibility</label><br>
-                            <input type="text" id="visibility_old" class="form-control" value="{{ pub.visibility }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="availability_old">Availability</label><br>
-                            <input type="text" id="availability_old" class="form-control"
-                                   value="{{ pub.availability }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="guests">Guests emails</label><br>
-                            <input type="text" id="guests_old" class="form-control" value="{{ pub.guests }}">
-                        </div>
-                    {% endif %}
-                    <div class="form-group">
-                        <label for="imagepost_old">Image</label><br>
-                        <input disabled type="file" id="imagepost_old" class="form-control" value="{{ pub.image_url }}">
-                    </div>
-                    {% if channel.module != "superform.plugins.gcal" %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="datefrompost_old">Publication Date</label><br>
-                                    <input disabled id="datefrompost_old" type="date" class="form-control"
-                                           value="{{ pub.date_from }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="dateuntilpost_old">Publication Until</label><br>
-                                    <input disabled id="dateuntilpost_old" type="date" class="form-control"
-                                           value="{{ pub.date_until }}">
                                 </div>
                             </div>
                         </div>

@@ -1,5 +1,6 @@
 start = new Date();
-end = new Date(start.getTime()); //+7 jours
+end = new Date(start.getTime());
+end.setDate(end.getDate() + 7); //+7 jours
 datefrom = start.toISOString();
 dateuntil = end.toISOString();
 $('#datefrompost').val(datefrom.substring(0, 10));

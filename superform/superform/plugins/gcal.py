@@ -4,7 +4,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from datetime import datetime
-from superform.utils import str_converter, str_time_converter
+from superform.utils import str_converter, str_time_converter, datetime_converter
 import json
 
 FIELDS_UNAVAILABLE = ['Image']
@@ -68,11 +68,11 @@ def generate_event(publishing):
             }
         ],
         'start': {
-            'dateTime': str_converter(publishing.date_from) + "T" + str_time_converter(publishing.start_hour) + ':00Z',
+            'dateTime': build_full_date_from(publishing),
             'timeZone': 'Europe/Zurich',
         },
         'end': {
-            'dateTime': str_converter(publishing.date_until) + "T" + str_time_converter(publishing.end_hour) + ':00Z',
+            'dateTime': build_full_date_until(publishing),
             'timeZone': 'Europe/Zurich',
         },
         'reminders': {
@@ -85,10 +85,22 @@ def generate_event(publishing):
     }
 
 
+def build_full_date_from(publishing):
+    return str_converter(publishing.date_from) + "T" + str_time_converter(publishing.start_hour) + ':00Z'
+
+
+def build_full_date_until(publishing):
+    return str_converter(publishing.date_until) + "T" + str_time_converter(publishing.end_hour) + ':00Z'
+
+
 def run(publishing, channel_config):
     creds = get_user_credentials(publishing.user_id)
     if not creds:
         return StatusCode.ERROR, "Failed to get credentials"
+    if len(publishing.title.strip()) == 0:
+        return StatusCode.ERROR, "Bad Title"
+    if not timerange_valid(publishing):
+        return StatusCode.ERROR, "The specified time range is empty."
     service = build('calendar', 'v3', credentials=creds)
     event = generate_event(publishing)
     id = publish(event, service)
@@ -109,7 +121,12 @@ def delete(id):
     """
 
 
-def is_valid(pub):
+def full_datetime_converter(stri):
+    return datetime.strptime(stri, "%Y-%m-%dT%H:%M:%SZ")
+
+
+def timerange_valid(pub):
     # must have a date_from / date_until with hour and date
     now = datetime.now()
-    return len(pub.title.strip()) != 0 and now <= pub.date_from <= pub.date_until
+    return now <= full_datetime_converter(build_full_date_from(pub)) <= full_datetime_converter(
+        build_full_date_until(pub))

@@ -56,12 +56,12 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
     if form.get(chan + 'starthour') is '':
         start_hour = time_converter("00:00")
     else:
-        start_hour = datetime_converter(form.get(chan + '_starthour')) if form.get(
+        start_hour = time_converter(form.get(chan + '_starthour')) if form.get(
             chan + '_start_hour') is not None else post.start_hour
     if form.get(chan + 'dateuntilpost') is '':
         end_hour = time_converter("23:59")
     else:
-        end_hour = datetime_converter(form.get(chan + '_endhour')) if form.get(
+        end_hour = time_converter(form.get(chan + '_endhour')) if form.get(
             chan + '_endhour') is not None else post.end_hour
 
     latest_version_publishing = db.session.query(Publishing).filter(Publishing.post_id == post.id,
@@ -104,6 +104,12 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
 @pub_page.route('/moderate/<int:id>/<string:idc>', methods=["GET", "POST"])
 @login_required()
 def moderate_publishing(id, idc):
+    pub = db.session.query(Publishing).filter(Publishing.post_id == id, Publishing.channel_id == idc).order_by(
+        Publishing.num_version.desc()).first()
+    if pub.state != State.NOT_VALIDATED.value:
+        flash("This publication has already been moderated", category='info')
+        return redirect(url_for('index'))
+
     chn = db.session.query(Channel).filter(Channel.id == idc).first()
     """ FROM THIS : 
     SHOULD BE IN THE if request.method == 'GET' (BUT pub.date_from = str_converter(pub.date_from) PREVENT US)"""
@@ -116,8 +122,6 @@ def moderate_publishing(id, idc):
     """TO THIS"""
     pub_versions = json.dumps(pub_versions, cls=AlchemyEncoder)
     pub_comments_json = json.dumps(pub_comments, cls=AlchemyEncoder)
-    pub = db.session.query(Publishing).filter(Publishing.post_id == id, Publishing.channel_id == idc).order_by(
-        Publishing.num_version.desc()).first()
     pub.date_from = str_converter(pub.date_from)
     pub.date_until = str_converter(pub.date_until)
     pub.start_hour = str_time_converter(pub.start_hour)
@@ -142,8 +146,8 @@ def moderate_publishing(id, idc):
         pub.image_url = request.form.get('imagepost')
         pub.date_from = datetime_converter(request.form.get('datefrompost'))
         pub.date_until = datetime_converter(request.form.get('dateuntilpost'))
-        pub.start_hour = datetime_converter(request.form.get('starthour'))
-        pub.end_hour = datetime_converter(request.form.get('endhour'))
+        pub.start_hour = time_converter(request.form.get('starthour'))
+        pub.end_hour = time_converter(request.form.get('endhour'))
 
         if pub.state == 66:  # EDITION
             try:

@@ -31,15 +31,9 @@ def create_a_post(form):  # called in publish_from_new_post() & new_post()
     else:
         date_until = datetime_converter(form.get('dateuntilpost'))
 
-    # set default hour if none was chosen
-    if form.get('starthour') is '':
-        start_hour = time_converter("00:00")
-    else:
-        start_hour = time_converter(form.get('starthour'))
-    if form.get('endhour') is '':
-        end_hour = time_converter("23:59")
-    else:
-        end_hour = time_converter(form.get('endhour'))
+    # set hour to a default value since form doesn't provide one
+    start_hour = time_converter("00:00")
+    end_hour = time_converter("23:59")
 
     p = Post(user_id=user_id, title=title_post, description=descr_post, link_url=link_post, image_url=image_post,
              date_from=date_from, date_until=date_until, start_hour=start_hour, end_hour=end_hour)
@@ -168,6 +162,8 @@ def resubmit_publishing(id):
         pub_comments_json = json.dumps(pub_comments, cls=AlchemyEncoder)
         pub.date_from = str_converter(pub.date_from)
         pub.date_until = str_converter(pub.date_until)
+        pub.start_hour = str_time_converter(pub.start_hour)
+        pub.end_hour = str_time_converter(pub.end_hour)
 
         post_form_validations = get_post_form_validations()
 
