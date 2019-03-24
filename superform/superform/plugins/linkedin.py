@@ -2,6 +2,8 @@ import requests
 import json
 from flask import url_for, current_app, render_template, redirect
 
+from superform.models import StatusCode
+
 FIELDS_UNAVAILABLE = ['Publication Date', 'Publication Until', 'Title']
 
 CONFIG_FIELDS = ["access_token", "page"]
@@ -17,14 +19,10 @@ def render_specific_config_page(c, config_fields):
 def run(publishing, channel_config):
     json_data = json.loads(channel_config)
     if 'page' not in json_data:
-        print("Invalid page id")
-        # TODO should add log here
-        return
+        return StatusCode.ERROR, "Invalid page id"
     page_id = json_data['page']
     if 'access_token' not in json_data:
-        print("Invalid acces_token.")
-        # TODO should add log here
-        return
+        return StatusCode.ERROR, "Invalid acces_token."
     access_token = json_data['access_token']
     page = get_page_from_id(access_token, page_id)
     headers = {'Authorization': 'Bearer ' + access_token, 'Host': 'api.linkedin.com', 'Connection': 'Keep-Alive',
@@ -44,8 +42,8 @@ def run(publishing, channel_config):
                              headers=headers,
                              data=data)
     if response.status_code != 201:
-        print("Linked In publish failed")
-    return
+        return StatusCode.ERROR, "Linked In publish failed"
+    return StatusCode.OK, None
 
 
 def createRequestCodeLinkedIn(app_key, state):
