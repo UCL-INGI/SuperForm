@@ -8,17 +8,32 @@
         .spin {
             animation: spin 1s infinite linear;
         }
+
         @-moz-keyframes spin {
-            from { -moz-transform: rotate(0deg); }
-            to { -moz-transform: rotate(360deg); }
+            from {
+                -moz-transform: rotate(0deg);
+            }
+            to {
+                -moz-transform: rotate(360deg);
+            }
         }
+
         @-webkit-keyframes spin {
-            from { -webkit-transform: rotate(0deg); }
-            to { -webkit-transform: rotate(360deg); }
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+            }
         }
+
         @keyframes spin {
-            from {transform:rotate(0deg);}
-            to {transform:rotate(360deg);}
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Adjustments */
@@ -27,21 +42,26 @@
         .jumbotron i {
             margin: 5px;
         }
+
         #tabs {
             padding: 2rem;
         }
+
         #buttons,
         #selector {
             margin-top: 2rem;
             margin-bottom: 2rem;
         }
+
         .field:not(:last-child) {
             margin-bottom: 1rem;
         }
+
         .field-body {
             margin-top: 1rem;
             margin-bottom: 1rem;
         }
+
         #channels a:hover,
         .list-group-item:hover,
         .dropdown-item:hover {
@@ -61,7 +81,8 @@
                 <div class="col-md-4">
                     <div class="sticky-top">
                         <h2>Channels</h2>
-                        <div id="selector" class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical"></div>
+                        <div id="selector" class="nav flex-column nav-pills" role="tablist"
+                             aria-orientation="vertical"></div>
                         <button id="add" class="btn btn-outline-primary" type="button">Add</button>
                         <button id="delete" class="btn btn-outline-danger" type="button">Delete</button>
                     </div>
@@ -90,7 +111,6 @@
         var layout_url = "{{ url_for('static', filename='form/layout.json') }}";
         var data_url = "{{ url_for('edit.create_data_json', post_id=post_id) }}";
         var server_url = "{{ url_for('edit.publish_edit_post', post_id=post_id) }}";
-        var split_url = "{{ url_for('api.get_split')}}";
     </script>
     <script src="{{ url_for('static', filename='js/form.js') }}"></script>
 {% endblock %}

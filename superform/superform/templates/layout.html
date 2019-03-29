@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        {% block head %}
+<head>
+    {% block head %}
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,72 +9,73 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome.min.css') }}">
-        <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
+        <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}"/>
         {% block stylesheet %}{% endblock %}
+
         <title>{% block title %}{% endblock %} - Superform</title>
-        {% endblock %}
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-paper-plane"></i>
-                Superform
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                    <li class="nav-item {{ 'active' if request.endpoint == 'index' else '' }}">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+        <i class="fas fa-paper-plane"></i>
+        Superform
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
+            aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item {{ 'active' if request.endpoint == 'index' else '' }}">
+                <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            {% if session.logged_in %}
+                <li class="nav-item {{ 'active' if request.endpoint == 'posts.new_post' else '' }}">
+                    <a class="nav-link" href="{{ url_for('posts.new_post') }}">New post</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('stats.stats') }}">Stats</a>
+                </li>
+                {% if session.admin %}
+                    <li class="nav-item {{ 'active' if request.endpoint == 'authorizations.authorizations' else '' }}">
+                        <a class="nav-link" href="{{ url_for('authorizations.authorizations') }}">Authorizations</a>
                     </li>
-                    {% if session.logged_in %}
-                        <li class="nav-item {{ 'active' if request.endpoint == 'posts.new_post' else '' }}">
-                            <a class="nav-link" href="{{ url_for('posts.new_post')}}">New post</a>
-                        </li>
-                        <li class="nav-item {{ 'active' if request.endpoint == 'posts.records' else '' }}">
-                            <a class="nav-link" href="{{ url_for('posts.records')}}">Archives</a>
-                        </li>
-                        {% if session.admin %}
-                            <li class="nav-item {{ 'active' if request.endpoint == 'authorizations.authorizations' else '' }}">
-                                <a class="nav-link" href="{{ url_for('authorizations.authorizations') }}">Authorizations</a>
-                            </li>
-                            <li class="nav-item {{ 'active' if request.endpoint == 'channels.channel_list' else '' }}">
-                                <a class="nav-link" href="{{ url_for('channels.channel_list') }}">Channels</a>
-                            </li>
-                        {% endif %}
-                        <li class="nav-item {{ 'active' if request.endpoint == 'publishings.moderate' else '' }}">
-                                <a class="nav-link" href="{{ url_for('publishings.moderate') }}">
-                                    Moderate
-                                    <span class="badge badge-secondary">
-                                        {{ session.notification }}
-                                    </span>
-                                </a>
-                            </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ session.first_name }} {{ session.name }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="{{ url_for('authentication.logout') }}">Logout</a>
-                            </div>
-                        </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('authentication.login') }}">Login</a>
+                    <li class="nav-item {{ 'active' if request.endpoint == 'channels.channel_list' else '' }}">
+                        <a class="nav-link" href="{{ url_for('channels.channel_list') }}">Channels</a>
                     </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
-        <div class="container-fluid">
-            {% block content %}{% endblock %}
-        </div>
-        <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        {% block scripts %}{% endblock %}
-    </body>
+                {% endif %}
+                <li class="nav-item {{ 'active' if request.endpoint == 'publishings.moderate' else '' }}">
+                    <a class="nav-link" href="{{ url_for('publishings.moderate') }}">
+                        Moderate
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        {{ session.first_name }} {{ session.name }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{{ url_for('authentication.logout') }}">Logout</a>
+                    </div>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('authentication.login') }}">Login</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<div class="container-fluid">
+    {% block messages %}{% endblock %}
+    {% block content %}{% endblock %}
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
 </html>

@@ -1,10 +1,10 @@
 from flask import Blueprint, current_app, url_for, request, make_response, redirect, session, render_template
-from flask_sqlalchemy import SQLAlchemy
 
 from onelogin.saml2.auth import OneLogin_Saml2_Auth
 from onelogin.saml2.utils import OneLogin_Saml2_Utils
 
-from superform.models import db, User
+from superform.models import db, User, Publishing
+from superform.users import get_moderate_channels_for_user
 
 authentication_page = Blueprint('authentication', __name__)
 
@@ -59,6 +59,17 @@ def callback():
         session["name"] = user.name
         session["email"] = user.email
         session["admin"] = user.admin
+
+        # To do : create function to avoid duplication with pub_page '/moderate'
+        # if user.admin:
+        #     chans = get_moderate_channels_for_user(user)
+        #     pubs_per_chan = (
+        #     db.session.query(Publishing).filter((Publishing.channel_id == c.id) & (Publishing.state == 0)) for c in
+        #     chans)
+        #     flattened_list_pubs = [y for x in pubs_per_chan for y in x]
+        #     session["notification"] = len(flattened_list_pubs)
+        # else:
+        #     session["notification"] = 0
 
         # Redirect to desired url
         self_url = OneLogin_Saml2_Utils.get_self_url(prepare_saml_request(request))

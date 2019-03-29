@@ -1,0 +1,6 @@
+debug:
+  autologin: yes
+database_uri: sqlite:///tmp/ictv_database.sqlite  # You may want to move the database to a persistent directory
+client:
+  root_password: ''
+  authorized_keys: ''

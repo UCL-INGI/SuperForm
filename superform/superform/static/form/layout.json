@@ -1,0 +1,105 @@
+{
+  "default": {
+    "fields": [
+      {
+        "name": "title",
+        "label": "Title",
+        "required": true,
+        "type": "input[\"text\"]"
+      },
+      {
+        "name": "description",
+        "label": "Description",
+        "required": false,
+        "type": "textarea"
+      },
+      {
+        "name": "link_url",
+        "label": "Link",
+        "required": false,
+        "type": "input[\"text\"]"
+      },
+      {
+        "name": "image_url",
+        "label": "Image",
+        "required": false,
+        "type": "input[\"text\"]"
+      },
+      {
+        "name": "date_from",
+        "label": "Publication Date",
+        "required": false,
+        "type": "input[\"date\"]"
+      },
+      {
+        "name": "date_until",
+        "label": "Publication Until",
+        "required": false,
+        "type": "input[\"date\"]"
+      }
+    ]
+  },
+  "channels": [
+    {
+      "module": "superform.plugins.twitter",
+      "icon": "fab fa-twitter",
+      "disabled_fields": [
+        "title"
+      ],
+      "additional_fields": []
+    },
+    {
+      "module": "superform.plugins.ICTV",
+      "icon": "fas fa-tv",
+      "disabled_fields": [
+        "link_url"
+      ],
+      "additional_fields": [
+        {
+          "name": "subtitle",
+          "label": "Subtitle",
+          "required": false,
+          "type": "input[\"text\"]"
+        },
+        {
+          "name": "logo",
+          "label": "Logo",
+          "required": false,
+          "type": "input[\"text\"]"
+        },
+        {
+          "name": "duration",
+          "label": "Duration (in seconds)",
+          "required": true,
+          "type": "input[\"number\"]"
+        }
+      ]
+    },
+    {
+      "module": "superform.plugins.linkedin",
+      "icon": "fab fa-linkedin",
+      "disabled_fields": [],
+      "additional_fields": []
+    },
+    {
+      "module": "superform.plugins.mail",
+      "icon": "fas fa-envelope",
+      "disabled_fields": [
+        "image_url"
+      ],
+      "additional_fields": []
+    },
+    {
+      "module": "superform.plugins.gcal",
+      "icon": "fas fa-calendar",
+      "disabled_fields": [],
+      "additional_fields": []
+    },
+    {
+      "module": "superform.plugins.slack",
+      "icon": "fas fa-calendar",
+      "disabled_fields": [],
+      "additional_fields": []
+    }
+  ]
+}

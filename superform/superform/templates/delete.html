@@ -1,0 +1,182 @@
+{% extends "layout.html" %}
+{% block title %}Delete{% endblock %}
+{% block content %}
+
+    <h1>Delete Post</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger"><strong>Warning!: </strong>{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if session.logged_in %}
+
+        <div class="row">
+            <div class="col-md-12">
+                {% if has_draft %}
+                    <h2>Drafts</h2>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>
+                                Channel
+                            </th>
+                            <th>
+                                Subject
+                            </th>
+                            <th>
+                                Body
+                            </th>
+                            <th>
+                                Author
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        {% for p in draft_pubs %}
+                            <tr>
+                                <td>
+                                    {{ p.channel.name }}
+                                </td>
+                                <td>
+                                    {{ p.title }}
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col">{{ p.description }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ p.get_author() }}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('delete.delete_publishing', post_id=p.post_id, channel_id=p.channel.id, drafts=draft_pubs, unmoderated=unmoderated_pubs, posted=posted_pubs, has_draft=has_draft, has_unmoderated=has_unmoderated, has_posted=has_posted) }}"
+                                       class="btn btn-outline-warning" role="button">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                {% if has_unmoderated %}
+                    <h2>Unmoderated</h2>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>
+                                Channel
+                            </th>
+                            <th>
+                                Subject
+                            </th>
+                            <th>
+                                Body
+                            </th>
+                            <th>
+                                Author
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        {% for p in unmoderated_pubs %}
+                            <tr>
+                                <td>
+                                    {{ p.channel.name }}
+                                </td>
+                                <td>
+                                    {{ p.title }}
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col">{{ p.description }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ p.get_author() }}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('delete.delete_publishing', post_id=p.post_id, channel_id=p.channel.id, drafts=draft_pubs, unmoderated=unmoderated_pubs, posted=posted_pubs, has_draft=has_draft, has_unmoderated=has_unmoderated, has_posted=has_posted) }}"
+                                       class="btn btn-outline-warning" role="button">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                {% if has_posted %}
+                    {% if user.is_mod %}
+                        <h2>Posted Publishings</h2>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Channel
+                                </th>
+                                <th>
+                                    Subject
+                                </th>
+                                <th>
+                                    Body
+                                </th>
+                                <th>
+                                    Author
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for (p, c) in posted_pubs %}
+                                <tr>
+                                    <td>
+                                        {{ p.channel.name }}
+                                    </td>
+                                    <td>
+                                        {{ p.title }}
+                                    </td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col">{{ p.description }}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {{ p.get_author() }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('delete.delete_publishing', post_id=p.post_id, channel_id=p.channel.id, drafts=draft_pubs, unmoderated=unmoderated_pubs, posted=posted_pubs, has_draft=has_draft, has_unmoderated=has_unmoderated, has_posted=has_posted) }}"
+                                           class="btn btn-outline-warning" role="button">Delete</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <p>Your are not logged in.</p>
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="../../static/js/JavaScript_Facebook_SDK.js">
+    </script>
+{% endblock %}

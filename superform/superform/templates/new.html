@@ -80,7 +80,8 @@
                                                        data-namechan="{{ chan.name }}"
                                                        data-unavailablefields="{{ chan.unavailablefields }}"
                                                        name="chan_option_{{ chan.id }}" type="checkbox"
-                                                       class="form-check-input checkbox" value="{{ chan.id }}">
+                                                       class="form-check-input checkbox {{ chan.module }}"
+                                                       value="{{ chan.id }}">
                                                 <img width="20" height="20"
                                                      src="static/logos/{{ chan.module.split('.')[2] }}_logo.png"
                                                      alt="logo"/> {{ chan.name }}
@@ -89,6 +90,12 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
+
+                            <div class="card">
+                                <div class="card-header">Status</div>
+                                <div class="card-body" id="status-content"></div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -109,32 +116,9 @@
                                             {% if not "Description" in chan.unavailablefields %}
                                                 <div class="form-group">
                                                     <label for="{{ chan.name }}_descriptionpost">Description</label><br>
-                                                    {% if chan.plugin_name == 'superform.plugins.twitter' %}
-                                                        <div class="js-counter">
-                                                            <div class="alert alert-danger" style="display: none">
-                                                                Warning : Your message will be split in several part
-                                                            </div>
-                                                            <textarea class="form-control" rows="5"
-                                                                      id="{{ chan.name }}_descriptionpost"
-                                                                      name="{{ chan.name }}_descriptionpost"></textarea>
-                                                            <div class="row">
-                                                                <div class="col-6">
-                                                                    Numbers of Characters : <span
-                                                                        class="counter">?</span>
-                                                                </div>
-                                                                <div class="col-6" style="text-align: right">
-                                                                    <button id="js-twitter-open-preview" type="button"
-                                                                            class="btn btn-secondary">
-                                                                        Preview Tweets
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    {% else %}
-                                                        <textarea class="form-control" rows="5"
-                                                                  id="{{ chan.name }}_descriptionpost"
-                                                                  name="{{ chan.name }}_descriptionpost"></textarea>
-                                                    {% endif %}
+                                                    <textarea class="form-control" rows="5"
+                                                              id="{{ chan.name }}_descriptionpost"
+                                                              name="{{ chan.name }}_descriptionpost"></textarea>
                                                 </div>
                                             {% endif %}
                                             {% if not "Link" in chan.unavailablefields %}
@@ -151,37 +135,12 @@
                                                         <input type="text" name="{{ chan.name }}_imagepost"
                                                                id="{{ chan.name }}_imagepost" class="form-control">
                                                         <button id="js-open-preview-image" type="button"
-                                                                class="btn btn-secondary" onclick="PreviewFunction('{{ chan.name }}_imagepost')">
+                                                                class="btn btn-secondary"
+                                                                onclick="PreviewFunction('{{ chan.name }}_imagepost')">
                                                             Preview
                                                         </button>
                                                     </div>
                                                 </div>
-                                            {% endif %}
-                                            {% if chan.module == "superform.plugins.ICTV" %}
-                                                <div class="form-group">
-                                                    <label for="{{ chan.name }}_subtitle">Subtitle</label><br>
-                                                    <input type="text" name="{{ chan.name }}_subtitle"
-                                                           id="{{ chan.name }}_subtitle" class="form-control">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="{{ chan.name }}_logo">Logo</label><br>
-                                                    <div class="input-group">
-                                                        <input type="url" name="{{ chan.name }}_logo"
-                                                               id="{{ chan.name }}_logo" class="form-control" >
-                                                        <button id="js-open-preview-logo" type="button"
-                                                                class="btn btn-secondary" onclick="PreviewFunction('{{ chan.name }}_logopost')">
-                                                            Preview
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="{{ chan.name }}_duration">Duration(in seconds)</label><br>
-                                                    <input type="number" name="{{ chan.name }}_duration"
-                                                           id="{{ chan.name }}_duration" min="-1" value="5">
-                                                </div>
-
-
                                             {% endif %}
 
                                             <div class="row">
@@ -199,14 +158,40 @@
                                                         <label for="{{ chan.name }}_dateuntilpost">Publication
                                                             Until</label><br>
                                                         <input id="{{ chan.name }}_dateuntilpost"
-                                                               name="{{ chan.name }}_dateuntilpost" type="date"
+                                                               name="{{ chan.name }}_dateuntilpost"
+                                                               type="date"
                                                                class="form-control" value="{{ date.until }}">
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% if extra_forms[chan.name]!=None %}
-                                                {% include extra_forms[chan.name] %} <!-- include extra form if necessary -->
+
+                                            <!--Gcal hours-->
+                                            {% if chan.module == "superform.plugins.gcal" %}
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="{{ chan.name }}_starthour">Starting
+                                                                hour</label><br>
+                                                            <input type="time" name="{{ chan.name }}_starthour"
+                                                                   id="{{ chan.name }}_starthour" class="form-control" value="00:00">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="{{ chan.name }}_endhour">Ending
+                                                                hour</label><br>
+                                                            <input type="time" name="{{ chan.name }}_endhour"
+                                                                   id="{{ chan.name }}_endhour" class="form-control" value="23:59">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             {% endif %}
+
+                                            <!--Used by ICTV module-->
+                                            {% set module_name = chan.module.split('.')[2].lower() %}
+                                            {% set template = 'plugins/' + module_name + '/new.html' %}
+                                            {% include template ignore missing %}
+
                                         </div>
                                     </div>
                                 </div>
@@ -214,12 +199,15 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-header">
-                                        <label for="publishpost">Channels</label>
+                                        <label for="publishpost">Channel</label>
                                     </div>
                                     <div class="card-body">
-                                        <span>{{ chan.name }}</span>
+                                        <img width="20" height="20"
+                                             src="static/logos/{{ chan.module.split('.')[2] }}_logo.png"
+                                             alt="logo"/> {{ chan.name }}
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -242,24 +230,19 @@
         </form>
 
         <!-- Modals -->
-
         {% call modal.modal_block(id='previewModal', title='Image preview') %}
             <div>Preview</div>
         {% endcall %}
 
-        {% call modal.modal_block(id='previewTweetsModal', title='Tweets preview') %}
-            <div>Modal</div>
-        {% endcall %}
-
     {% else %}
-        Your are not logged in.
+        You are not logged in.
     {% endif %}
 
 {% endblock %}
 
 {% block scripts %}
     <script type="text/javascript">
-        var post_form_validations = {{ post_form_validations|tojson }}
+        var post_form_validations = {{ post_form_validations|tojson }};
     </script>
     <script>
         function PreviewFunction(post) {
@@ -267,26 +250,23 @@
             var pattern = /(?:https?:\/{2})?(?:w{3}\.)?(?:\w+\.)+(com|fr|be|io|gov|net|tv|uk|ch|de|nl|lu)(?:\/[^\s]+)?/g;
             //var pattern = /\.(jpeg|jpg|gif|png|bmp)$/
             var split = post.split("_");
-            console.log(split)
-            console.log(post)
 
-            if (split[split.length-1] == "imagepost") {
-                var parent = $("#"+post).parent();
+            var url = "";
+            if (split[split.length - 1] === "imagepost") {
+                var parent = $("#" + post).parent();
                 var input = parent.find("input");
                 var text = input.val();
-                var url = text;
+                url = text;
             }
-            else if (split[split.length-1] == "backgroundpost") {
-                var url = $("#backgroundpost").val();
+            else if (split[split.length - 1] === "backgroundpost") {
+                url = $("#backgroundpost").val();
             }
-            else if(split[split.length-1] == "logopost") {
+            else if (split[split.length - 1] === "logopost") {
                 var parent = $("#js-open-preview-logo").parent();
                 var input = parent.find("input");
                 var text = input.val();
-                var url = text;
+                url = text;
             }
-            console.log(url)
-
 
 
             var preview = $("#previewModal");
@@ -347,61 +327,6 @@
                 preview.modal("toggle");
             }
         }
-
-
-        // Preview tweet button :
-        var address = "{{ url_for('api.get_split')}}";
-
-        $("#js-twitter-open-preview").click(function () {
-
-            var parent = $("#js-twitter-open-preview").parent().parent().parent();
-            var textarea = parent.find("textarea");
-            var text = textarea.val();
-            console.log(parent)
-            console.log(textarea)
-            console.log(text)
-
-            $.getJSON(address, {
-                "descr": text
-            }, function (json) {
-
-                var preview = $("#previewTweetsModal");
-                var container = preview.find(".modal-body");
-
-                if (typeof json["tweetpreview"] === 'undefined') {
-                    var message = $("<div>");
-                    message.addClass("alert");
-                    message.addClass("alert-danger");
-                    message.text("Error");
-                    container.append(message);
-                    preview.modal("toggle");
-                    return;
-                }
-                if (json["tweetpreview"].length === 0) {
-                    var message = $("<div>");
-                    message.addClass("alert");
-                    message.addClass("alert-danger");
-                    message.text("Error");
-                    container.append(message);
-                    preview.modal("toogle");
-                    return;
-                }
-
-                var tweets = $("<ul>");
-                tweets.addClass("list-group list-group-flush");
-                for (var k = 0; k < json["tweetpreview"].length; k++) {
-                    var tweet = $("<li>");
-                    tweet.addClass("list-group-item");
-                    tweet.text(json["tweetpreview"][k]);
-                    tweets.append(tweet);
-                }
-
-                var container = preview.find(".modal-body");
-                container.empty();
-                container.append(tweets);
-                preview.modal("toggle");
-            });
-        });
 
         // Preview image button :
         $("#js-open-preview").click(function () {
@@ -488,29 +413,38 @@
         });
 
 
-
         // This manage if a channel is selected or not:
         //  it hides/shows a tab for a channel
         //  it adds an information bullet to unavailable fields for each channel
+        function synchronize_fields(chan_name) {
+            $('#' + chan_name + '_titlepost').val(($('#titlepost')).val());
+            $('#' + chan_name + '_descriptionpost').val(($('#descriptionpost')).val());
+            $('#' + chan_name + '_linkurlpost').val(($('#linkurlpost')).val());
+            $('#' + chan_name + '_imagepost').val(($('#imagepost')).val());
+            $('#' + chan_name + '_datefrompost').val(($('#datefrompost')).val());
+            $('#' + chan_name + '_dateuntilpost').val(($('#dateuntilpost')).val());
+        }
+
         $('input.checkbox').change(function () {
             var nbselected = $('input.checkbox:checked').length;
-            if (nbselected == 0) {
+            if (nbselected === 0) {
                 $("#publish-button").prop('disabled', true);
             } else {
                 $("#publish-button").prop('disabled', false);
             }
 
-            nameC = $(this).attr('data-namechan');
-            fields = $(this).attr('data-unavailablefields');
-            split = fields.split(',');
+            var nameC = $(this).attr('data-namechan');
+            var fields = $(this).attr('data-unavailablefields');
+            var split = fields.split(',');
             if ($(this).is(':checked')) {
                 //If the channel is selected
                 $(this).addClass('checked');
+                synchronize_fields(nameC);
                 for (var i = 0; i < split.length; i++) {
-                    $("input[id='" + nameC + "_" + $('#' + split[i].toLowerCase() + 'post').attr('id') + "']").prop('disabled', true);
-                    $("textarea[id='" + nameC + "_" + $('#' + split[i].toLowerCase() + 'post').attr('id') + "']").prop('disabled', true);
-
-                    $("label[for='" + nameC + "_" + $('#' + split[i].toLowerCase() + 'post').attr('id') + "']").append('<a href="#" data-toggle="popover" title="Unavailable field" data-content="This field is unavailable for channel ' + nameC + '"><i class="fas fa-exclamation-circle" style="color:orange"></i></a>');
+                    var field_id = $('#' + split[i].toLowerCase() + 'post').attr('id');
+                    $("input[id='" + nameC + "_" + field_id + "']").prop('disabled', true);
+                    $("textarea[id='" + nameC + "_" + field_id + "']").prop('disabled', true);
+                    $("label[for='" + nameC + "_" + field_id + "']").append('<a href="#" data-toggle="popover" title="Unavailable field" data-content="This field is unavailable for channel ' + nameC + '"><i class="fas fa-exclamation-circle" style="color:orange"></i></a>');
 
                 }
                 $('[data-toggle="popover"]').popover();
@@ -519,75 +453,25 @@
                 //If the channel is not selected
                 $(this).removeClass('checked');
                 for (var i = 0; i < split.length; i++) {
-                    $("input[id='" + nameC + "_" + $('#' + split[i].toLowerCase() + 'post').attr('id') + "']").prop('disabled', false);
-                    $("textarea[id='" + nameC + "_" + $('#' + split[i].toLowerCase() + 'post').attr('id') + "']").prop('disabled', false);
-                    $("label[for='" + nameC + "_" + $('#' + split[i].toLowerCase() + 'post').attr('id') + "'] > a").remove();
+                    var field_id = $('#' + split[i].toLowerCase() + 'post').attr('id');
+                    $("input[id='" + nameC + "_" + field_id + "']").prop('disabled', false);
+                    $("textarea[id='" + nameC + "_" + field_id + "']").prop('disabled', false);
+                    $("label[for='" + nameC + "_" + field_id + "'] > a").remove();
                 }
                 $('#li_' + nameC).hide();
             }
         });
-        // From here, I copy a field ONCE from general to all the equivalent fields of each channel
-        //It works but it's not really sexy to rewrite this for all fields of general tab
 
-        $('#titlepost').on("change", function (event) {
-            text = ($(this).val());
-            //This is a subselect of input that match with the regex .*titlepost
-            $('input')
-                .filter(function () {
-                    return this.id.match(/.*titlepost/);
-                })
-                .val(text);
-        });
-        $('#descriptionpost').on("change", function (event) {
-            text = ($(this).val());
-            //This is a subselect of input that match with the regex .*descriptionpost
-            $('textarea')
-                .filter(function () {
-                    return this.id.match(/.*descriptionpost/);
-                })
-                .val(text);
-            $(".js-counter textarea").trigger('keyup')
-        });
-        $('#linkurlpost').on("change", function (event) {
-            text = ($(this).val());
-            //This is a subselect of input that match with the regex .*linkurlpost
-            $('input')
-                .filter(function () {
-                    return this.id.match(/.*linkurlpost/);
-                })
-                .val(text);
-        });
-        $('#imagepost').on("change", function (event) {
-            text = ($(this).val());
-            //This is a subselect of input that match with the regex .*imagepost
-            $('input')
-                .filter(function () {
-                    return this.id.match(/.*imagepost/);
-                })
-                .val(text);
-        });
-
-
-
-        $('#dateuntilpost').on("change", function (event) {
-            text = ($(this).val());
-            //This is a subselect of input that match with the regex .*dateuntilpost
-            $('input')
-                .filter(function () {
-                    return this.id.match(/.*dateuntilpost/);
-                })
-                .val(text);
-        });
-        $('#datefrompost').on("change", function (event) {
-            text = ($(this).val());
-            //This is a subselect of input that match with the regex .*datefrompost
-            $('input')
-                .filter(function () {
-                    return this.id.match(/.*datefrompost/);
-                })
-                .val(text);
-        });
+        <!--Used by ICTV module-->
+        {% for chan in l_chan %}
+            {% set module_name = chan.module.split('.')[2].lower() %}
+            {% set template = 'plugins/' + module_name + '/new.js'%}
+            {% include template ignore missing %}
+        {% endfor %}
     </script>
+
+    <script src="./static/js/date-init.js"></script>
+    <script src="./static/js/status-checker.js"></script>
     <script src="{{ url_for('static', filename='js/post_and_publishing_utils.js') }}" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/post.js') }}" crossorigin="anonymous"></script>
+
 {% endblock %}

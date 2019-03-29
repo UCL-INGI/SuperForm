@@ -62,7 +62,7 @@ function createInput(field) {
     }
 
     if (typeof component !== 'undefined') {
-        container.children().each(function() {
+        container.children().each(function () {
             if (!$(this).hasClass("form-check")) {
                 $(this).addClass("form-control");
             }
@@ -344,7 +344,7 @@ function addTab(tabs, selector, fieldset) {
     a.attr("aria-controls", id);
     a.attr("aria-selected", "false");
     a.text(name);
-    a.on("click", function() {
+    a.on("click", function () {
         updateHeader(name);
     });
 
@@ -377,10 +377,10 @@ function addToList(list, content, onclick) {
 function addRestoreFeature(fieldset) {
     var name = fieldset.attr("name");
     if (name === "General") {
-        fieldset.find(".form-control").each(function() {
+        fieldset.find(".form-control").each(function () {
             var input = $(this);
             var component = input.parents(".field");
-            addOptionToComponent(component, "Restore", function() {
+            addOptionToComponent(component, "Restore", function () {
                 for (var key in data.default.fields) {
                     if (input.attr("name") === key) {
                         input.val(data.default.fields[key]);
@@ -391,10 +391,10 @@ function addRestoreFeature(fieldset) {
             });
         });
     } else {
-        fieldset.find(".form-control").each(function() {
+        fieldset.find(".form-control").each(function () {
             var input = $(this);
             var component = input.parents(".field");
-            addOptionToComponent(component, "Restore", function() {
+            addOptionToComponent(component, "Restore", function () {
                 for (var k = 0; k < data.channels.length; k++) {
                     if (fieldset.attr("name") === data.channels[k].name) {
                         for (var key in data.channels[k].fields) {
@@ -439,7 +439,7 @@ function showImagePreview(container, src) {
 function addImagePreviewFeature(fieldset) {
     var input = fieldset.find("input[name=\"image_url\"]");
     var component = input.parents(".field");
-    addOptionToComponent(component, "Image preview", function() {
+    addOptionToComponent(component, "Image preview", function () {
         var modal = $("#picture_modal");
         showImagePreview(modal, input.val());
     });
@@ -454,7 +454,7 @@ function showTweetPreview(container, text) {
 
     $.getJSON(split_url, {
         "descr": text
-    }, function(json) {
+    }, function (json) {
         var tweets = json.tweetpreview;
         if (tweets !== 'undefined') {
             var ul = $("<ul>");
@@ -469,7 +469,7 @@ function showTweetPreview(container, text) {
             body.empty();
             body.append(ul);
         }
-    }).fail(function() {
+    }).fail(function () {
         var content = $("<div>");
         content.text("Error while loading the tweet preview");
         var message = createErrorMessage(content);
@@ -488,7 +488,7 @@ function addTweetPreviewFeature(fieldset) {
                 if (data.channels[k].module === "superform.plugins.twitter") {
                     var input = fieldset.find("[name=\"description\"]");
                     var component = input.parents(".field");
-                    addOptionToComponent(component, "Tweet Preview", function() {
+                    addOptionToComponent(component, "Tweet Preview", function () {
                         var modal = $("#twitter_modal");
                         showTweetPreview(modal, input.val());
                     })
@@ -499,19 +499,19 @@ function addTweetPreviewFeature(fieldset) {
 }
 
 function addCopyFeature(fieldset) {
-    fieldset.find(".form-control").each(function() {
+    fieldset.find(".form-control").each(function () {
 
         var input = $(this);
         var component = input.parents(".field");
 
-        addOptionToComponent(component, "Copy to...", function() {
+        addOptionToComponent(component, "Copy to...", function () {
 
             var container = $("#copy_to_modal");
             var body = container.find(".modal-body");
             var name = input.attr("name");
             var list = createList();
 
-            $(".form-control[name=\"" + name + "\"]").each(function() {
+            $(".form-control[name=\"" + name + "\"]").each(function () {
                 var parent = $(this).parents("fieldset");
                 if (parent.attr("name") !== fieldset.attr("name")) {
 
@@ -528,7 +528,7 @@ function addCopyFeature(fieldset) {
                     div.append(field.val());
                     content.append(div);
 
-                    addToList(list, content, function() {
+                    addToList(list, content, function () {
                         field.val(input.val());
                         $(this).remove();
                         if (container.find(".list-group-item").length === 0) {
@@ -546,14 +546,14 @@ function addCopyFeature(fieldset) {
             container.modal();
         });
 
-        addOptionToComponent(component, "Copy from...", function() {
+        addOptionToComponent(component, "Copy from...", function () {
 
             var container = $("#copy_from_modal");
             var body = container.find(".modal-body");
             var name = input.attr("name");
             var list = createList();
 
-            $(".form-control[name=\"" + name + "\"]").each(function() {
+            $(".form-control[name=\"" + name + "\"]").each(function () {
                 var parent = $(this).parents("fieldset");
                 if (parent.attr("name") !== fieldset.attr("name")) {
 
@@ -570,7 +570,7 @@ function addCopyFeature(fieldset) {
                     div.append(field.val());
                     content.append(div);
 
-                    addToList(list, content, function() {
+                    addToList(list, content, function () {
                         input.val(field.val());
                         container.modal("toggle");
                     });
@@ -589,7 +589,7 @@ function addCopyFeature(fieldset) {
 
 function retrieveFormData() {
     var data = [];
-    $("fieldset").each(function() {
+    $("fieldset").each(function () {
         var array = $(this).serializeArray();
         var fields = {};
         for (var k = 0; k < array.length; k++) {
@@ -641,7 +641,7 @@ function displayLogs(logs, message) {
     }, 800);
 }
 
-$("#validate").click(function() {
+$("#validate").click(function () {
 
     var button = $(this);
     button.attr("disabled", true);
@@ -654,26 +654,26 @@ $("#validate").click(function() {
     var form = $(this).parents("form");
     if (form.get(0).checkValidity()) {
         $.post(server_url, retrieveFormData())
-            .done(function() {
+            .done(function () {
                 var content = $("<div>");
                 content.append("The fields has been saved !");
                 var message = createSuccessMessage(content);
                 displayLogs(logs, message);
                 button.attr("disabled", false);
-            }).fail(function(error) {
-                var content = $("<div>");
-                content.append("An error has occurred !");
-                var message = createErrorMessage(content);
-                displayLogs(logs, message);
-                button.attr("disabled", false);
-            });
+            }).fail(function (error) {
+            var content = $("<div>");
+            content.append("An error has occurred !");
+            var message = createErrorMessage(content);
+            displayLogs(logs, message);
+            button.attr("disabled", false);
+        });
     } else {
 
         var content = $("<div>");
         content.append("Some field are incomplete !");
 
         var message = createErrorMessage(content);
-        message.find("button.close").on("click", function() {
+        message.find("button.close").on("click", function () {
             form.removeClass("was-validated");
         });
         form.addClass("was-validated");
@@ -682,7 +682,7 @@ $("#validate").click(function() {
     }
 });
 
-$("#add").on("click", function() {
+$("#add").on("click", function () {
 
     var container = $("#channels_modal");
     var list = createList();
@@ -693,7 +693,7 @@ $("#add").on("click", function() {
         if (channel.state < 0) {
             var fieldset = $("fieldset[name=\"" + channel.name + "\"]");
             if (fieldset.length === 0) {
-                addToList(list, channel.name, function() {
+                addToList(list, channel.name, function () {
                     var name = $(this).text();
                     for (var i = 0; i < data.channels.length; i++) {
                         if (data.channels[i].name === name) {
@@ -720,7 +720,7 @@ $("#add").on("click", function() {
     container.modal();
 });
 
-$("#delete").on("click", function() {
+$("#delete").on("click", function () {
 
     var container = $("#channels_modal");
     var list = createList();
@@ -731,7 +731,7 @@ $("#delete").on("click", function() {
         if (channel.state < 0) {
             var fieldset = $("fieldset[name=\"" + channel.name + "\"]");
             if (fieldset.length > 0) {
-                addToList(list, channel.name, function() {
+                addToList(list, channel.name, function () {
                     var name = $(this).text();
                     var id = name.replace(/\s/g, "_");
                     var link = $("#" + id);
@@ -761,13 +761,13 @@ $("#delete").on("click", function() {
 var layout;
 var data;
 
-$(document).ready(function() {
-    $.get(layout_url, function(json) {
+$(document).ready(function () {
+    $.get(layout_url, function (json) {
         layout = json;
-    }).done(function() {
-        $.get(data_url, function(json) {
+    }).done(function () {
+        $.get(data_url, function (json) {
             data = json;
-        }).done(function() {
+        }).done(function () {
 
             var tabs = $("#tabs");
             var selector = $("#selector");
@@ -799,7 +799,7 @@ $(document).ready(function() {
 
             $("#content").show();
 
-        }).fail(function() {
+        }).fail(function () {
             var content = $("<div>");
             content.text("Error while loading the data of the post");
             var message = createErrorMessage(content);
@@ -808,7 +808,7 @@ $(document).ready(function() {
             container.append(message);
             container.show();
         });
-    }).fail(function() {
+    }).fail(function () {
         var content = $("<div>");
         content.text("Error while loading the layout");
         var message = createErrorMessage(content);

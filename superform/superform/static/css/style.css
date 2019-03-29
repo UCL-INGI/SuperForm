@@ -1,12 +1,12 @@
-.btn_a.disabled{
+.btn_a.disabled {
     cursor: auto;
 }
 
-.btn_a{
+.btn_a {
     cursor: pointer;
 }
 
-.btn_a.disabled i{
+.btn_a.disabled i {
     color: grey;
 }
 

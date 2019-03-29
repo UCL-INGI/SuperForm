@@ -27,7 +27,7 @@ def authorizations():
             user_id = request.form.get('username' + str(i))
 
             if user_id is not "":
-                channel_id = request.form.get('channel_id'+str(i))
+                channel_id = request.form.get('channel_id' + str(i))
 
                 permission = request.form.get('permission' + str(i))
 
@@ -36,21 +36,22 @@ def authorizations():
                 db.session.add(a)
             i = i + 1
 
-        edit_list = [[elem,elem.split('#')] for elem in request.form if elem.startswith("permission_edit")]
+        edit_list = [[elem, elem.split('#')] for elem in request.form if elem.startswith("permission_edit")]
 
         for e in edit_list:
             auth = request.form.get(e[0])
             chan_id = e[1][2]
-            user= e[1][1]
+            user = e[1][1]
             a = Authorization.query.filter(Authorization.user_id == user, Authorization.channel_id == chan_id).first()
             a.permission = auth
         db.session.commit()
         return redirect(url_for('authorizations.authorizations'))
 
+
 @authorizations_page.route("/delete_auto/<string:id>/<string:cid>")
 @login_required()
-def delete_authorization(id,cid):
-    auth = Authorization.query.filter(Authorization.user_id==id,Authorization.channel_id==cid).first()
+def delete_authorization(id, cid):
+    auth = Authorization.query.filter(Authorization.user_id == id, Authorization.channel_id == cid).first()
     db.session.delete(auth)
     db.session.commit()
     return redirect(url_for('authorizations.authorizations'))

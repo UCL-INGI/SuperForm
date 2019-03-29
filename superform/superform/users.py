@@ -11,15 +11,26 @@ def channels_available_for_user(userid):
     for auth in auths:
         chans.append(db.session.query(Channel).get(auth.channel_id))
 
+    # TEAM6: ADDITION FOR PDF FEATURE
+    pdf_chans = db.session.query(Channel).filter(Channel.module == "superform.plugins.pdf")
+    if pdf_chans is not None:
+        for chan in pdf_chans:
+            if chan not in chans:
+                chans.append(chan)
+    # END OF ADDITION
     return chans
 
 
 def get_moderate_channels_for_user(u):
+    if u is None:
+        return []
     auth = Authorization.query.filter(Authorization.user_id == u.id, Authorization.permission == 2)
     chan = [Channel.query.get(a.channel_id) for a in auth]
     return chan
 
 
 def is_moderator(user):
+    if user is None:
+        return False
     auth = Authorization.query.filter(Authorization.user_id == user.id, Authorization.permission == 2)
     return auth.count() > 0

@@ -1,17 +1,16 @@
 import os
 from flask import Blueprint, json, jsonify, request, redirect, render_template, session
-
-from posts import create_a_publishing, pre_validate_post
-from superform.utils import login_required, datetime_converter
 import json
+from superform.utils import login_required, datetime_converter
 from superform.models import db, Post, Publishing, Channel, User
 from superform.users import channels_available_for_user
 
 from datetime import date, timedelta
 
-#from users import channels_available_for_user
+# from users import channels_available_for_user
 
 edit_page = Blueprint('edit', __name__)
+
 
 @edit_page.route('/edit/<int:post_id>', methods=['GET'])
 @login_required()
@@ -23,6 +22,7 @@ def edit_post(post_id):
     :return: The template of the html edition page
     """
     return render_template('edit.html', post_id=post_id)
+
 
 @edit_page.route('/edit/publish_edit_post/<int:post_id>', methods=['POST'])
 @login_required()
@@ -38,7 +38,8 @@ def publish_edit_post(post_id):
 
     current_user_id = session.get("user_id", "")
 
-    post = db.session.query(Post).filter(Post.id == post_id, Post.user_id == current_user_id).first()  # retrieve old post
+    post = db.session.query(Post).filter(Post.id == post_id,
+                                         Post.user_id == current_user_id).first()  # retrieve old post
     pubs = db.session.query(Publishing).filter(Publishing.post_id == post_id).all()  # retrieve old publishings
     list_of_channels = channels_available_for_user(current_user_id)
     list_of_channels_name = list()
@@ -96,7 +97,7 @@ def publish_edit_post(post_id):
                             if (k == 'date_from') and (fields.get(k) is ''):
                                 setattr(pub, k, date.today())
                             elif (k == 'date_until') and (fields.get(k) is ''):
-                                setattr(pub, k, date.today()+timedelta(days=7))
+                                setattr(pub, k, date.today() + timedelta(days=7))
                             elif k in {'date_from', 'date_until', 'date_start', 'date_end'}:
                                 setattr(pub, k, datetime_converter(fields.get(k)))
                             else:
@@ -182,9 +183,9 @@ def create_a_publishing_edit(post, chn, data):
     make the publishing
     :return: the publishing
     """
-    validate = pre_validate_post(chn, post)
-    if validate == -1 or validate == 0:
-        return validate
+    # validate = pre_validate_post(chn, post)
+    # if validate == -1 or validate == 0:
+    #     return validate
 
     field = data.get('fields')
     title_post = field.get('title') if (field.get('title') is not None) else post.title

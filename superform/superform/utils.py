@@ -11,7 +11,9 @@ def login_required(admin_required=False):
                 return render_template("403.html"), 403
             else:
                 return f(*args, **kwargs)
+
         return decorated_function
+
     return decorator
 
 
@@ -19,30 +21,45 @@ def datetime_now():
     return datetime.now()
 
 
-def datetime_converter(stri):
-    return datetime.strptime(stri, "%Y-%m-%d")
-
-
 def str_converter(datet):
     return datetime.strftime(datet, "%Y-%m-%d")
 
 
+def datetime_converter(stri):
+    return datetime.strptime(stri, "%Y-%m-%d")
+
+
+# TEAM8: Non-validation
 def str_converter_with_hour(datet):
-    return datetime.strftime(datet, "%Y-%m-%d %H:%M:%S")
+    return datetime.strftime(datet, "%Y-%m-%d %H:%M")
+# TEAM8
+
+
+# TEAM2: Google calendar: added hours
+def str_time_converter(datet):
+    return datetime.strftime(datet, "%H:%M")
+
+
+def time_converter(stri):
+    return datetime.strptime(stri, "%H:%M")
+# TEAM2: Google calendar
 
 
 def get_instance_from_module_path(module_p):
-    module_p=module_p.replace(".","/")
+    import os
+    module_p = module_p.replace(".", os.sep)  # use the os file path separator
     import importlib.util
-    spec = importlib.util.spec_from_file_location("module.name", module_p+".py")
+    spec = importlib.util.spec_from_file_location("module.name", module_p + ".py")
     foo = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(foo)
     return foo
 
+
 def get_modules_names(modules_keys):
     return [m.split('.')[2] for m in modules_keys]
 
+
 def get_module_full_name(module_name):
     for m in current_app.config["PLUGINS"].keys():
-        if(m.split('.')[2] == module_name):
+        if m.split('.')[2] == module_name:
             return m
