@@ -29,6 +29,13 @@ def run(publishing, channel_config):
                'x-li-format': 'json', "Content-Type": "application/json"}
     if publishing.link_url == "" and publishing.image_url == "":
         data = {"comment": publishing.description, "visibility": {"code": "anyone"}}
+    elif publishing.link_url == "":
+        data = {"comment": publishing.description, "content": {"title": "",
+                                                               "description": "",
+                                                               "submitted-url": publishing.image_url,
+                                                               "submitted-image-url": publishing.image_url},
+                "visibility": {"code": "anyone"}}
+
     else:
         data = {"comment": publishing.description, "content": {"title": "",
                                                                "description": "",

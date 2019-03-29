@@ -100,14 +100,14 @@ statusListener = {
                 type: "title",
                 compare: "GT",
                 value: "0",
-                text: "The title will appear above the description",
+                text: "The title will be not displayed",
                 forbidPublish: false
             },
             {
                 type: "link",
                 compare: "GT",
                 value: "0",
-                text: "The link may provide a background image",
+                text: "As a link is provided, the picture will be the background image of the link",
                 forbidPublish: false
             }
         ],
