@@ -2,72 +2,7 @@
 {% import "macro/modal.html" as modal %}
 {% block title %}Edit Post{% endblock %}
 {% block stylesheet %}
-    <style>
-        /* Animation */
-
-        .spin {
-            animation: spin 1s infinite linear;
-        }
-
-        @-moz-keyframes spin {
-            from {
-                -moz-transform: rotate(0deg);
-            }
-            to {
-                -moz-transform: rotate(360deg);
-            }
-        }
-
-        @-webkit-keyframes spin {
-            from {
-                -webkit-transform: rotate(0deg);
-            }
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Adjustments */
-
-        .jumbotron span,
-        .jumbotron i {
-            margin: 5px;
-        }
-
-        #tabs {
-            padding: 2rem;
-        }
-
-        #buttons,
-        #selector {
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .field:not(:last-child) {
-            margin-bottom: 1rem;
-        }
-
-        .field-body {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        #channels a:hover,
-        .list-group-item:hover,
-        .dropdown-item:hover {
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css') }}" crossorigin="anonymous">
 {% endblock %}
 {% block content %}
     <div id="content" class="container" style="display:none">
