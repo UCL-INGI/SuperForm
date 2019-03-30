@@ -73,7 +73,7 @@ class Post(db.Model):
         else:
             # check if all the publications from a post are archived
             for pub in self.publishings:
-                if pub.state != 2:
+                if pub.state != State.PUBLISHED.value:
                     # state 2 is archived.
                     return False
             return True

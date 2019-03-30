@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, json, jsonify, request, redirect, render_template, session
 import json
 from superform.utils import login_required, datetime_converter
-from superform.models import db, Post, Publishing, Channel, User
+from superform.models import db, Post, Publishing, Channel, State
 from superform.users import channels_available_for_user
 
 from datetime import date, timedelta
@@ -35,16 +35,14 @@ def publish_edit_post(post_id):
     :return: An http error/sucess code
     """
     data = request.get_json(force=True)
-
     current_user_id = session.get("user_id", "")
-
     post = db.session.query(Post).filter(Post.id == post_id,
                                          Post.user_id == current_user_id).first()  # retrieve old post
+    if post is None:
+        return render_template('403.html'), 403
     pubs = db.session.query(Publishing).filter(Publishing.post_id == post_id).all()  # retrieve old publishings
     list_of_channels = channels_available_for_user(current_user_id)
     list_of_channels_name = list()
-    if post is None:
-        return redirect('/403')
 
     for pub in pubs:
         p = (db.session.query(Channel).filter((Channel.id == pub.channel_id))).first()
@@ -58,7 +56,7 @@ def publish_edit_post(post_id):
         name = d.get('name')
         fields = d.get('fields')
 
-        if d.get('name') == 'General':
+        if name == 'General':
             keys = fields.keys()
             for k in keys:
                 if (k == 'date_from') and (fields.get(k) is ''):
@@ -84,7 +82,7 @@ def publish_edit_post(post_id):
                     can_edit = plugin.can_edit(pub, chan.config)
                 except AttributeError:
                     can_edit = False
-                if pub.state == 1 and can_edit:
+                if pub.state == State.VALIDATED.value and can_edit:
                     """
                     We use the state 66 to indicate if a post who is already publish, is edited.
                     Don't use this state for anything else !!!
@@ -183,10 +181,6 @@ def create_a_publishing_edit(post, chn, data):
     make the publishing
     :return: the publishing
     """
-    # validate = pre_validate_post(chn, post)
-    # if validate == -1 or validate == 0:
-    #     return validate
-
     field = data.get('fields')
     title_post = field.get('title') if (field.get('title') is not None) else post.title
     descr_post = field.get('description') if field.get('description') is not None else post.description
@@ -208,11 +202,15 @@ def create_a_publishing_edit(post, chn, data):
         subtitle = field.get('subtitle')
         duration = field.get('duration')
 
-        pub = Publishing(post_id=post.id, channel_id=chn.id, state=0, title=title_post, description=descr_post,
+        pub = Publishing(user_id=session.get("user_id", ""), post_id=post.id, channel_id=chn.id,
+                         state=State.NOT_VALIDATED.value, title=title_post,
+                         description=descr_post,
                          link_url=link_post, image_url=image_post,
                          date_from=date_from, date_until=date_until, logo=logo, subtitle=subtitle, duration=duration)
     else:
-        pub = Publishing(post_id=post.id, channel_id=chn.id, state=0, title=title_post, description=descr_post,
+        pub = Publishing(user_id=session.get("user_id", ""), post_id=post.id, channel_id=chn.id,
+                         state=State.NOT_VALIDATED.value, title=title_post,
+                         description=descr_post,
                          link_url=link_post, image_url=image_post,
                          date_from=date_from, date_until=date_until)
 
