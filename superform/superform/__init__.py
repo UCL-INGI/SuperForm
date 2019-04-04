@@ -16,7 +16,7 @@ from superform.search import search_page
 from superform.publishings import pub_page
 from superform.users import get_moderate_channels_for_user, is_moderator
 from superform.plugins.pdf import export
-from superform.plugins.rss import rss_page
+from superform.plugins._rss_page import rss_page
 from superform.plugins._linkedin_callback import linkedin_page
 from superform.plugins._facebook_callback import facebook_page
 
