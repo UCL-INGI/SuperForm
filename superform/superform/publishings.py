@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from flask import Blueprint, current_app, flash, url_for, request, redirect, session, render_template
 from importlib import import_module
 
-from plugins import gcal
+from superform.plugins import gcal
 from superform.channels import valid_conf
 from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder, StatusCode
 from superform.users import get_moderate_channels_for_user

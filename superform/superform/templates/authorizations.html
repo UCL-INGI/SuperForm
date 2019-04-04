@@ -96,7 +96,7 @@
 
         $('.add').on('click', function () {
             var nbinput = ($('input').length) / 2;
-            var chanid = $(this).data("channelid")
+            var chanid = $(this).data("channelid");
             $(this).parent().parent().parent().append('<tr><td><input type="hidden" name="channel_id' + nbinput + '" value="' + chanid + '"><input class="form-control" type="text" placeholder="Username" name="username' + nbinput + '"></td><td><select class="form-control" id="sel1"name="permission' + nbinput + '">\n' +
                 '{% for permission in permissions %}\n'+
                     '<option value="{{ permission.value }}">{{ permission }}</option>\n'

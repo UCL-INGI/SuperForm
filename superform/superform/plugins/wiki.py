@@ -4,6 +4,8 @@ import time
 import datetime
 import math
 
+from superform.models import StatusCode
+
 # liens utiles :
 
 # à propos de python et des requêtes http :
@@ -29,9 +31,6 @@ import math
 #               Copy the sample-config.php file (in the docs/ directory) to local/config.php and use it as a starting point.
 #       * Configurer la channel wiki sur superform :
 #           --> mettre le mot de passe choisi dans le champ password. Pour l'instant on peut mettre ce qu'on veut dans le champs username
-
-# FIELDS_UNAVAILABLE = ['Title','Description']
-from models import StatusCode
 
 FIELDS_UNAVAILABLE = []
 CONFIG_FIELDS = ["username", "password"]

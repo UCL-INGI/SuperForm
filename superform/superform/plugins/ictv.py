@@ -3,7 +3,7 @@ from requests import get, post, exceptions
 import datetime
 from time import time
 
-from models import StatusCode
+from superform.models import StatusCode
 
 FIELDS_UNAVAILABLE = ['ictv_data_form']
 

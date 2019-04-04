@@ -5,9 +5,9 @@ from smtplib import SMTPException
 from flask import current_app
 import json
 
-# list of field names that are not used by your module
-from models import StatusCode
+from superform.models import StatusCode
 
+# list of field names that are not used by your module
 FIELDS_UNAVAILABLE = ["Image"]
 
 # This lets the manager of your module enter data that are used to communicate with other services.
