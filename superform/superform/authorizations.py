@@ -26,7 +26,7 @@ def authorizations():
         while i <= (round(len(request.form) / 3)):
             user_id = request.form.get('username' + str(i))
 
-            if user_id is not "":
+            if user_id is not "" and user_id is not None:
                 channel_id = request.form.get('channel_id' + str(i))
 
                 permission = request.form.get('permission' + str(i))
