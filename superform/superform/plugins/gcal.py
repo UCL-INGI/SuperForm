@@ -52,7 +52,7 @@ def get_full_config(channel_config):
                     "token_uri": "https://oauth2.googleapis.com/token",
                     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                     "client_secret": "q7R6LdbzsaWwUU9XdaQRcZjY",
-                    "redirect_uris": ["https://tfe-lezaack.info.ucl.ac.be/callback_gc/"],
+                    "redirect_uris": ["https://tfe-lezaack.info.ucl.ac.be/callback_gc"],
                     "javascript_origins": ["https://tfe-lezaack.info.ucl.ac.be"]}}
 
 # def get_full_config(channel_config):
