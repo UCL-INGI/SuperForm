@@ -30,7 +30,7 @@ def generate_user_credentials(channel_config, user_id=None):
     if not creds:
         channel_config = get_full_config(json.loads(channel_config))
         flow = InstalledAppFlow.from_client_config(channel_config, scopes=[SCOPES])
-        creds = flow.run_local_server(host='localhost', port=8080,
+        creds = flow.run_local_server(host='urn:ietf:wg:oauth:2.0:oob', port=8080,
                                       authorization_prompt_message='Please visit this URL: {url}',
                                       success_message='The auth flow is complete, you may close this window.',
                                       open_browser=True)

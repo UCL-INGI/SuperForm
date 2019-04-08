@@ -6,7 +6,7 @@ import json
 import twitter
 from twitter import twitter_utils
 
-from models import StatusCode
+from superform.models import StatusCode
 
 FIELDS_UNAVAILABLE = ['Title']
 CONFIG_FIELDS = ["consumer_key", "consumer_secret", "access_token_key", "access_token_secret"]

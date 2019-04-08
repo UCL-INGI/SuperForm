@@ -3,6 +3,7 @@ import requests
 import time
 import datetime
 import math
+from superform.models import StatusCode
 
 # liens utiles :
 
@@ -31,12 +32,11 @@ import math
 #           --> mettre le mot de passe choisi dans le champ password. Pour l'instant on peut mettre ce qu'on veut dans le champs username
 
 # FIELDS_UNAVAILABLE = ['Title','Description']
-from models import StatusCode
 
 FIELDS_UNAVAILABLE = []
 CONFIG_FIELDS = ["username", "password"]
 
-urlwiki = "http://localhost/pmwiki-2.2.109/pmwiki.php"
+urlwiki = "http://lezaack-wiki.info.ucl.ac.be/"
 
 
 def makeText(publishing, authid):

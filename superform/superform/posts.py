@@ -61,7 +61,7 @@ def new_post():
     if request.method == "GET":  # when clicking on the new post tab
         ictv_data = None
         if len(ictv_chans) != 0:
-            from plugins.ictv import process_ictv_channels
+            from superform.plugins.ictv import process_ictv_channels
             ictv_data = process_ictv_channels(ictv_chans)
 
         # set default date

@@ -21,12 +21,12 @@ def authorizations():
                 Authorization.permission == Permission.AUTHOR.value).all()
         return render_template("authorizations.html", rw_channels=rw_channels, ro_channels=ro_channels,
                                permissions=Permission)
-    elif request.method == "POST":
+    elif request.method == "POST":        
         i = 1
         while i <= (round(len(request.form) / 3)):
             user_id = request.form.get('username' + str(i))
 
-            if user_id is not "":
+            if user_id is not "" and user_id is not None:
                 channel_id = request.form.get('channel_id' + str(i))
 
                 permission = request.form.get('permission' + str(i))

@@ -1,5 +1,5 @@
 import json
-from models import StatusCode
+from superform.models import StatusCode
 from slackclient import SlackClient
 
 FIELDS_UNAVAILABLE = []

@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from flask import Blueprint, current_app, flash, url_for, request, redirect, session, render_template
 from importlib import import_module
 
-from plugins import gcal
+from superform.plugins import gcal
 from superform.channels import valid_conf
 from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder, StatusCode
 from superform.users import get_moderate_channels_for_user
@@ -146,8 +146,10 @@ def moderate_publishing(id, idc):
         pub.image_url = request.form.get('imagepost')
         pub.date_from = datetime_converter(request.form.get('datefrompost'))
         pub.date_until = datetime_converter(request.form.get('dateuntilpost'))
-        pub.start_hour = time_converter(request.form.get('starthour'))
-        pub.end_hour = time_converter(request.form.get('endhour'))
+        pub.start_hour = time_converter(request.form.get('starthour')) if request.form.get(
+            'starthour') is not None else time_converter("00:00")
+        pub.end_hour = time_converter(request.form.get('endhour')) if request.form.get(
+            'endhour') is not None else time_converter("23:59")
 
         if pub.state == 66:  # EDITION
             try:

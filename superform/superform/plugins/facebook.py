@@ -3,7 +3,7 @@ import json
 
 from flask import url_for, current_app, render_template
 
-from models import StatusCode
+from superform.models import StatusCode
 
 FIELDS_UNAVAILABLE = ['Title']
 
