@@ -3,7 +3,6 @@ import requests
 import time
 import datetime
 import math
-
 from superform.models import StatusCode
 
 # liens utiles :
@@ -35,7 +34,7 @@ from superform.models import StatusCode
 FIELDS_UNAVAILABLE = []
 CONFIG_FIELDS = ["username", "password"]
 
-urlwiki = "http://localhost/pmwiki-2.2.109/pmwiki.php"
+urlwiki = "http://lezaack-wiki.info.ucl.ac.be/"
 
 
 def makeText(publishing, authid):
