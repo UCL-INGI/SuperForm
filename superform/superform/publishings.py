@@ -166,11 +166,6 @@ def moderate_publishing(id, idc):
                 flash("Error : module don't implement can_edit or edit method")
                 db.session.commit()
         else:
-            # TEAM6 gcal Moved the acquisition of the credentials here since it makes more sense
-            if plugin_name.endswith('gcal'):
-                gcal.generate_user_credentials(c_conf)
-            # TEAM6 gcal
-
             # try to run the plugin
             try:
                 plug_exitcode = plugin.run(pub, c_conf)
@@ -186,6 +181,10 @@ def moderate_publishing(id, idc):
                 # well known exception
                 flash(plug_exitcode[1], category='error')
                 return redirect(url_for('publishings.moderate_publishing', id=id, idc=idc))
+            if type(plug_exitcode) is tuple and len(plug_exitcode) >= 2 and plug_exitcode[
+                0].value == StatusCode.URL.value:
+                # redirect URL
+                return plug_exitcode[1]
 
             # If we reach here, the publication was successfull
             pub.state = 1

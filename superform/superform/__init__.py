@@ -19,6 +19,7 @@ from superform.plugins.pdf import export
 from superform.plugins._rss_page import rss_page
 from superform.plugins._linkedin_callback import linkedin_page
 from superform.plugins._facebook_callback import facebook_page
+from superform.plugins._gcal_callback import gcal_page
 
 app = Flask(__name__)
 app.config.from_json("config.json")
@@ -31,6 +32,7 @@ app.register_blueprint(delete_page)
 app.register_blueprint(edit_page)
 app.register_blueprint(facebook_page)
 app.register_blueprint(linkedin_page)
+app.register_blueprint(gcal_page)
 app.register_blueprint(posts_page)
 app.register_blueprint(pub_page)
 app.register_blueprint(rss_page)
