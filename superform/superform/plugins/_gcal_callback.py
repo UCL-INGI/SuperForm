@@ -1,8 +1,9 @@
 import json
 from google_auth_oauthlib.flow import Flow
 from flask import Blueprint, flash, request, session, url_for, redirect
-from superform.models import db, User
+from superform.models import Channel, db, User
 from superform.utils import login_required
+from superform.plugins.gcal import get_full_config
 
 gcal_page = Blueprint('gcal_callback', __name__)
 
@@ -11,9 +12,12 @@ gcal_page = Blueprint('gcal_callback', __name__)
 @login_required(admin_required=True)
 def callback_gc():
     state = session['state']
+    id = session['gcal_cb_pub_id']
+    idc = session['gcal_cb_channel_id']
     scope = 'https://www.googleapis.com/auth/calendar'
-    channel_config = get_full_config()
-    flow = Flow.from_client_config(channel_config, scopes=scope, state=state)
+    channel = db.session.query(Channel).filter(Channel.id == idc).first()
+    client_config = get_full_config(json.loads(channel.config))
+    flow = Flow.from_client_config(client_config, scopes=scope, state=state)
 
     flow.redirect_uri = url_for('gcal_callback.callback_gc', _external=True)
 
@@ -22,17 +26,8 @@ def callback_gc():
     creds = flow.credentials
     set_user_credentials(creds)
     flash("Gcal credentials saved.", category='success')
-    return redirect(url_for("index"))
-
-
-def get_full_config():
-    return {"web": {"client_id": "444134070785-m1oq8vmcbmkblej8prp2tuo036oasaim.apps.googleusercontent.com",
-                    "project_id": "superform-232211", "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                    "token_uri": "https://oauth2.googleapis.com/token",
-                    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                    "client_secret": "q7R6LdbzsaWwUU9XdaQRcZjY",
-                    "redirect_uris": ["https://tfe-lezaack.info.ucl.ac.be/callback_gc"],
-                    "javascript_origins": ["https://tfe-lezaack.info.ucl.ac.be"]}}
+    # return redirect(url_for('index'))
+    return redirect(url_for("publishings.moderate_publishing", id=id, idc=idc))
 
 
 def set_user_credentials(creds):

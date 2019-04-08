@@ -13,7 +13,6 @@ from superform.utils import str_converter
 class StatusCode(Enum):
     OK = 0
     ERROR = 1
-    URL = 2
 
 
 # ADRI standardize

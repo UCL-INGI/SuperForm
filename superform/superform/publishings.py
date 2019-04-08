@@ -4,9 +4,9 @@ from datetime import date, timedelta
 from flask import Blueprint, current_app, flash, url_for, request, redirect, session, render_template
 from importlib import import_module
 
-from superform.plugins import gcal
 from superform.channels import valid_conf
 from superform.models import db, User, Publishing, Channel, Comment, State, AlchemyEncoder, StatusCode
+from superform.plugins.gcal import get_user_credentials, generate_user_credentials
 from superform.users import get_moderate_channels_for_user
 from superform.utils import login_required, datetime_converter, str_converter, datetime_now, get_modules_names, \
     str_converter_with_hour, time_converter, str_time_converter
@@ -111,6 +111,16 @@ def moderate_publishing(id, idc):
         return redirect(url_for('index'))
 
     chn = db.session.query(Channel).filter(Channel.id == idc).first()
+    plugin_name = chn.module
+    c_conf = chn.config
+    plugin = import_module(plugin_name)
+    notconfig = not valid_conf(c_conf, plugin.CONFIG_FIELDS)
+
+    # TEAM6 gcal Moved the acquisition of the credentials here since it makes more sense
+    if plugin_name.endswith('gcal') and get_user_credentials() is None:
+        return generate_user_credentials(c_conf, id, idc)  # Return the user to Google's authorization page
+    # TEAM6 gcal
+
     """ FROM THIS : 
     SHOULD BE IN THE if request.method == 'GET' (BUT pub.date_from = str_converter(pub.date_from) PREVENT US)"""
     pub_versions = db.session.query(Publishing).filter(Publishing.post_id == id, Publishing.channel_id == idc). \
@@ -126,11 +136,6 @@ def moderate_publishing(id, idc):
     pub.date_until = str_converter(pub.date_until)
     pub.start_hour = str_time_converter(pub.start_hour)
     pub.end_hour = str_time_converter(pub.end_hour)
-
-    plugin_name = chn.module
-    c_conf = chn.config
-    plugin = import_module(plugin_name)
-    notconfig = not valid_conf(c_conf, plugin.CONFIG_FIELDS)
 
     if request.method == "GET" or notconfig:
         """SHOULD PREPARE THE pub_versions AND pub_comments"""
@@ -181,10 +186,6 @@ def moderate_publishing(id, idc):
                 # well known exception
                 flash(plug_exitcode[1], category='error')
                 return redirect(url_for('publishings.moderate_publishing', id=id, idc=idc))
-            if type(plug_exitcode) is tuple and len(plug_exitcode) >= 2 and plug_exitcode[
-                0].value == StatusCode.URL.value:
-                # redirect URL
-                return plug_exitcode[1]
 
             # If we reach here, the publication was successfull
             pub.state = 1
