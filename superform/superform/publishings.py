@@ -42,23 +42,23 @@ def create_a_publishing(post, chn, form):  # called in publish_from_new_post()
 
     image_post = form.get(chan + '_imagepost') if form.get(chan + '_imagepost') is not None else post.image_url
 
-    if form.get(chan + 'datefrompost') is '':
+    if form.get(chan + '_datefrompost') is '':
         date_from = date.today()
     else:
         date_from = datetime_converter(form.get(chan + '_datefrompost')) if form.get(
             chan + '_datefrompost') is not None else post.date_from
-    if form.get(chan + 'dateuntilpost') is '':
+    if form.get(chan + '_dateuntilpost') is '':
         date_until = date.today() + timedelta(days=7)
     else:
         date_until = datetime_converter(form.get(chan + '_dateuntilpost')) if form.get(
             chan + '_datefrompost') is not None else post.date_until
 
-    if form.get(chan + 'starthour') is '':
+    if form.get(chan + '_starthour') is '':
         start_hour = time_converter("00:00")
     else:
         start_hour = time_converter(form.get(chan + '_starthour')) if form.get(
-            chan + '_start_hour') is not None else post.start_hour
-    if form.get(chan + 'dateuntilpost') is '':
+            chan + '_starthour') is not None else post.start_hour
+    if form.get(chan + '_endhour') is '':
         end_hour = time_converter("23:59")
     else:
         end_hour = time_converter(form.get(chan + '_endhour')) if form.get(
