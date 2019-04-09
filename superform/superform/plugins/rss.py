@@ -2,7 +2,7 @@ import re
 
 from superform.models import db, StatusCode
 
-FIELDS_UNAVAILABLE = ['Publication Date']
+FIELDS_UNAVAILABLE = ['Publication Date',  'Publication Until']
 CONFIG_FIELDS = ['channel_title', 'channel_description', 'channel_author']
 
 

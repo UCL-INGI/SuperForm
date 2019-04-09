@@ -27,6 +27,11 @@ function createInput(field) {
             component.attr("type", "url");
             container.append(component);
             break;
+        case "input[\"time\"]":
+            component = $("<input>");
+            component.attr("type", "time");
+            container.append(component);
+            break;
         case "textarea":
             component = $("<textarea>");
             component.attr("rows", 5);
@@ -185,7 +190,10 @@ function createBadge(state) {
             span.text("Validated");
             return span;
         case 2:
-            span.text("Archived");
+            span.text("Published");
+            return span;
+        case 3:
+            span.text("Refused");
             return span;
     }
     return span;
@@ -620,7 +628,7 @@ function updateHeader(name) {
                         var p = $("<p>");
                         p.addClass("lead");
                         var span = $("<span>");
-                        span.text(layout.channels[j].module);
+                        //span.text(layout.channels[j].module);
                         p.append(createIcon(layout.channels[j].icon));
                         p.append(span);
                         p.append(createBadge(data.channels[i].state));

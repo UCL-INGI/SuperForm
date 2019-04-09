@@ -41,19 +41,34 @@
   },
   "channels": [
     {
-      "module": "superform.plugins.twitter",
-      "icon": "fab fa-twitter",
-      "disabled_fields": [
-        "title"
-      ],
+      "module": "superform.plugins.facebook",
+      "icon": "fab fa-facebook",
+      "disabled_fields": ["title"],
       "additional_fields": []
     },
     {
-      "module": "superform.plugins.ICTV",
+      "module": "superform.plugins.gcal",
+      "icon": "far fa-calendar-alt",
+      "disabled_fields": ["image_url"],
+      "additional_fields": [
+        {
+          "name": "start_hour",
+          "label": "Starting hour",
+          "required": true,
+          "type": "input[\"time\"]"
+        },
+        {
+          "name": "end_hour",
+          "label": "Ending hour",
+          "required": true,
+          "type": "input[\"time\"]"
+        }
+      ]
+    },
+    {
+      "module": "superform.plugins.ictv",
       "icon": "fas fa-tv",
-      "disabled_fields": [
-        "link_url"
-      ],
+      "disabled_fields": [],
       "additional_fields": [
         {
           "name": "subtitle",
@@ -78,26 +93,36 @@
     {
       "module": "superform.plugins.linkedin",
       "icon": "fab fa-linkedin",
-      "disabled_fields": [],
+      "disabled_fields": ["date_from", "date_until"],
       "additional_fields": []
     },
     {
       "module": "superform.plugins.mail",
       "icon": "fas fa-envelope",
-      "disabled_fields": [
-        "image_url"
-      ],
+      "disabled_fields": ["image_url"],
       "additional_fields": []
     },
     {
-      "module": "superform.plugins.gcal",
-      "icon": "fas fa-calendar",
-      "disabled_fields": [],
+      "module": "superform.plugins.rss",
+      "icon": "fas fa-rss-square",
+      "disabled_fields": ["date_from", "date_until"],
       "additional_fields": []
     },
     {
       "module": "superform.plugins.slack",
-      "icon": "fas fa-calendar",
+      "icon": "fab fa-slack-hash",
+      "disabled_fields": [],
+      "additional_fields": []
+    },
+    {
+      "module": "superform.plugins.twitter",
+      "icon": "fab fa-twitter",
+      "disabled_fields": ["title"],
+      "additional_fields": []
+    },
+    {
+      "module": "superform.plugins.wiki",
+      "icon": "fab fa-wikipedia-w",
       "disabled_fields": [],
       "additional_fields": []
     }
