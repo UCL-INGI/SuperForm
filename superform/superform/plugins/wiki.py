@@ -6,7 +6,9 @@ import math
 from superform.models import StatusCode
 
 # liens utiles :
-
+# urlwiki = "http://localhost/pmwiki-2.2.109/pmwiki.php"
+# urlwiki = "http://lezaack-wiki.info.ucl.ac.be/"
+#
 # à propos de python et des requêtes http :
 # http://dridk.me/python-requests.html
 # http://docs.python-requests.org/en/master/api/ --> API de requests
@@ -32,9 +34,7 @@ from superform.models import StatusCode
 #           --> mettre le mot de passe choisi dans le champ password. Pour l'instant on peut mettre ce qu'on veut dans le champs username
 
 FIELDS_UNAVAILABLE = []
-CONFIG_FIELDS = ["username", "password"]
-
-urlwiki = "http://lezaack-wiki.info.ucl.ac.be/"
+CONFIG_FIELDS = ["url", "username", "password"]
 
 
 def makeText(publishing, authid):
@@ -75,20 +75,14 @@ def makeText(publishing, authid):
 
 
 def run(publishing, channel_config):
-    try:
-        json_data = json.loads(channel_config)
-        authid = json_data[
-            'username']  # à rajouter dans configuration de la channel sur superform sinon ne marche pas...
-        authpw = json_data[
-            'password']  # à rajouter dans configuration de la channel sur superform sinon ne marche pas...
-    except BaseException:
-        return StatusCode.ERROR, "Error when getting the configuration"
-
+    json_data = json.loads(channel_config)  # Get the config
+    authid = json_data['username']
+    authpw = json_data['password']
+    urlwiki = json_data['url']
     pageName = "News." + format_title(str(publishing.title))
     text = makeText(publishing, authid)
     data = {"n": pageName, "text": text, "action": "edit", "post": "1", 'authid': authid, "authpw": authpw,
             "basetime": math.floor(time.time())}
-    # r2 = requests.post(urlwiki + "?n=Main.Essai_nono&action=edit&text=Hello%20World&post=1", data)
     try:
         response = requests.post(urlwiki, data)
     except requests.exceptions.ConnectionError:
