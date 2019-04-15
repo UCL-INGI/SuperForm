@@ -59,17 +59,7 @@ def callback():
         session["name"] = user.name
         session["email"] = user.email
         session["admin"] = user.admin
-
-        # To do : create function to avoid duplication with pub_page '/moderate'
-        # if user.admin:
-        #     chans = get_moderate_channels_for_user(user)
-        #     pubs_per_chan = (
-        #     db.session.query(Publishing).filter((Publishing.channel_id == c.id) & (Publishing.state == 0)) for c in
-        #     chans)
-        #     flattened_list_pubs = [y for x in pubs_per_chan for y in x]
-        #     session["notification"] = len(flattened_list_pubs)
-        # else:
-        #     session["notification"] = 0
+        session["moderator"] = len(get_moderate_channels_for_user(user)) > 0
 
         # Redirect to desired url
         self_url = OneLogin_Saml2_Utils.get_self_url(prepare_saml_request(request))

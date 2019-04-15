@@ -45,11 +45,13 @@
                         <a class="nav-link" href="{{ url_for('channels.channel_list') }}">Channels</a>
                     </li>
                 {% endif %}
-                <li class="nav-item {{ 'active' if request.endpoint == 'publishings.moderate' else '' }}">
-                    <a class="nav-link" href="{{ url_for('publishings.moderate') }}">
-                        Moderate
-                    </a>
-                </li>
+                {% if session.moderator %}
+                    <li class="nav-item {{ 'active' if request.endpoint == 'publishings.moderate' else '' }}">
+                        <a class="nav-link" href="{{ url_for('publishings.moderate') }}">
+                            Moderate
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
