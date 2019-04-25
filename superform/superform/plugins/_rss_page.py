@@ -1,8 +1,10 @@
 import ast
 import io
+import os
 
 from datetime import datetime
-from flask import Blueprint, render_template, send_file
+from flask import Blueprint, render_template, send_from_directory
+from pathlib import Path
 from rfeed import *
 from superform.models import db, Channel, Post, Publishing
 from superform.utils import login_required, get_instance_from_module_path
@@ -46,19 +48,11 @@ def display_rss_feed(id):
         items=items)
 
     generated_file = feed.rss()
+    file_name = str(c.id) + ".xml"
+    file_path = Path("superform/plugins/rss" + file_name)
+    if Path(file_path).exists():
+        os.remove(file_path)
+    with open(file_path, "w+") as file:
+        file.write(generated_file)
 
-    proxy = io.StringIO()
-    proxy.write(generated_file)
-
-    mem = io.BytesIO()
-    mem.write(proxy.getvalue().encode('utf-8'))
-
-    mem.seek(0)
-    proxy.close()
-
-    return send_file(
-        mem,
-        as_attachment=True,
-        attachment_filename='feed.xml',
-        mimetype='text/xml'
-    )
+    return send_from_directory("plugins/rss/", file_name, as_attachment=True, attachment_filename="feed.xml")

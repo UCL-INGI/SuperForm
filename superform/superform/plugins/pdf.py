@@ -91,7 +91,7 @@ def export(post_id, idc):
         flash(code[1], category='error')
         return redirect(url_for('index'))
     else:
-        #flash("The PDF has successfully been generated.", category='success')
+        # flash("The PDF has successfully been generated.", category='success')
         return send_from_directory("plugins/pdf/", code[1], as_attachment=True, attachment_filename=code[1])
 
 
