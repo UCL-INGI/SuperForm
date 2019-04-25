@@ -49,10 +49,11 @@ def display_rss_feed(id):
 
     generated_file = feed.rss()
     file_name = str(c.id) + ".xml"
-    file_path = Path("superform/plugins/rss" + file_name)
+    file_path = Path("superform/plugins/rss/" + file_name)
     if Path(file_path).exists():
         os.remove(file_path)
     with open(file_path, "w+") as file:
         file.write(generated_file)
+    file.close()
 
     return send_from_directory("plugins/rss/", file_name, as_attachment=True, attachment_filename="feed.xml")
