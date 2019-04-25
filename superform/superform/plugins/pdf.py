@@ -4,26 +4,20 @@ date: December 2018
 Plugin for the PDF feature
 """
 
+import glob
 import json
-
-from flask import url_for, redirect, render_template
-from reportlab.pdfgen import canvas
-import json, time
-from flask import current_app, flash, request
-from reportlab.lib.enums import TA_JUSTIFY
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import Paragraph
-from pathlib import Path
-import os, glob
+import os
 import time
 import webbrowser
-from reportlab.lib.pagesizes import letter, landscape, A4, A5, A3
+
+from flask import flash, redirect, render_template, send_file, send_from_directory, url_for
+from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.platypus import SimpleDocTemplate, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import Paragraph
+from pathlib import Path
+from reportlab.lib.pagesizes import A4, A5, A3
 from superform.models import Channel, Post, db, Publishing, StatusCode
-from threading import Timer
 
 FIELDS_UNAVAILABLE = []
 
@@ -60,8 +54,6 @@ def run(publishing, channel_config, debug=False):
 
     path = datas[0]
     outputFile = datas[1]
-    if debug is False:
-        webbrowser.open_new_tab('file://' + path)
 
     data_folder = Path("superform/plugins/pdf")
     file_to_delete = Path("superform/plugins/pdf/" + outputFile)
@@ -97,9 +89,10 @@ def export(post_id, idc):
 
     if code[0].value != StatusCode.OK.value:
         flash(code[1], category='error')
+        return redirect(url_for('index'))
     else:
-        flash("The PDF has successfully been generated.", category='success')
-    return redirect(url_for('index'))
+        #flash("The PDF has successfully been generated.", category='success')
+        return send_from_directory("plugins/pdf/", code[1], as_attachment=True, attachment_filename=code[1])
 
 
 def create_pdf(titre, corps, image="UCL", size=A4):
