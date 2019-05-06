@@ -8,6 +8,11 @@ from superform.utils import login_required
 lists_page = Blueprint('lists', __name__)
 
 
+def get_all_posts(user):
+    posts = db.session.query(Post).filter(Post.user_id == user.id).order_by(desc(Post.id))
+    return posts
+
+
 def get_publications(user):
     if user is None:
         return []
@@ -53,3 +58,10 @@ def unmoderated_publishings():
     user = User.query.get(session.get("user_id", "")) if session.get("logged_in", False) else None
     return render_template("lists.html", title="Unmoderated publishings", user=user,
                            my_publishings=get_publications(user), state=State.NOT_VALIDATED.value, states=State)
+
+
+@lists_page.route('/all_my_posts', methods=["GET"])
+@login_required()
+def all_posts():
+    user = User.query.get(session.get("user_id", "")) if session.get("logged_in", False) else None
+    return render_template("lists.html", title="All my posts", user=user, posts=get_all_posts(user))

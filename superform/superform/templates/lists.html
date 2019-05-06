@@ -16,9 +16,11 @@
                         <th>
                             #
                         </th>
-                        <th>
-                            Channel
-                        </th>
+                        {% if my_publishings %}
+                            <th>
+                                Channel
+                            </th>
+                        {% endif %}
                         <th>
                             Subject
                         </th>
@@ -42,16 +44,40 @@
                                     {{ item.title }}
                                 </td>
                                 <td>
-                                    {% if state == states.REFUSED.value %}
-                                        <a href="{{ url_for('posts.resubmit_publishing', id=item.publishing_id) }}"
-                                           class="btn btn-outline-primary" role="button">Resubmit</a>
+                                    {% if to_moderate %}
+                                        <a href="{{ url_for('publishings.moderate_publishing',id=item.post_id,idc=item.channel_id) }}"
+                                           class="btn btn-outline-primary" role="button">Moderate</a>
+                                    {% else %}
+                                        {% if state == states.REFUSED.value %}
+                                            <a href="{{ url_for('posts.resubmit_publishing', id=item.publishing_id) }}"
+                                               class="btn btn-outline-primary" role="button">Rework</a>
+                                        {% endif %}
                                     {% endif %}
-                                    <a href="{{ url_for('delete.delete', id=item.post_id) }}"
-                                       class="btn btn-outline-warning"
-                                       role="button">Delete</a>
                                 </td>
                             </tr>
                         {% endif %}
+                    {% endfor %}
+                    {% for post in posts %}
+                        <tr>
+                            <td>
+                                {{ post.id }}
+                            </td>
+                            <td>
+                                {{ post.title }}
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary" role="button"
+                                   href="{{ url_for('edit.edit_post', post_id=post.id) }}">Edit</a>
+                                <a href="{{ url_for('delete.delete', id=post.id) }}" class="btn btn-outline-warning"
+                                   role="button">Delete</a>
+                                <!-- Team06: Export to PDF feature -->
+                                <button type="button" class="btn btn-info"
+                                        data-toggle="modal" data-target="#exportModal"
+                                        data-id="{{ post.id }}">
+                                    <i class="fas fa-fw fa-file-pdf"></i> Export
+                                </button>
+                            </td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                     <tfoot>
@@ -59,9 +85,11 @@
                         <th>
                             #
                         </th>
-                        <th>
-                            Channel
-                        </th>
+                        {% if my_publishings %}
+                            <th>
+                                Channel
+                            </th>
+                        {% endif %}
                         <th>
                             Subject
                         </th>

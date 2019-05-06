@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, json, jsonify, request, redirect, render_template, session
 import json
-from superform.utils import login_required, datetime_converter
+from superform.utils import login_required, datetime_converter, time_converter
 from superform.models import db, Post, Publishing, Channel, State
 from superform.users import channels_available_for_user
 
@@ -96,8 +96,10 @@ def publish_edit_post(post_id):
                                 setattr(pub, k, date.today())
                             elif (k == 'date_until') and (fields.get(k) is ''):
                                 setattr(pub, k, date.today() + timedelta(days=7))
-                            elif k in {'date_from', 'date_until', 'date_start', 'date_end'}:
+                            elif k in {'date_from', 'date_until'}:
                                 setattr(pub, k, datetime_converter(fields.get(k)))
+                            elif k in {'start_hour', 'end_hour'}:
+                                setattr(pub, k, time_converter(fields.get(k)))
                             else:
                                 setattr(pub, k, fields.get(k))
                         db.session.commit()

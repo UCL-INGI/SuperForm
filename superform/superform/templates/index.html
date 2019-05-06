@@ -63,6 +63,10 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                <div class="d-flex flex-row-reverse">
+                    <a href="{{ url_for('publishings.moderate') }}"
+                       class="btn btn-outline-primary " role="button"> See more</a>
+                </div>
             {% endif %}
 
             <h2>All my posts</h2>
@@ -115,6 +119,10 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <div class="d-flex flex-row-reverse">
+                <a href="{{ url_for('lists.all_posts') }}"
+                   class="btn btn-outline-primary " role="button"> See more</a>
+            </div>
 
             <!--Add publishing that we can rebsumit-->
             <h2>Refused publishings</h2>
@@ -149,6 +157,10 @@
                         </div>
                     {% endfor %}
                 </div>
+            </div>
+            <div class="d-flex flex-row-reverse">
+                <a href="{{ url_for('lists.refused_publishings') }}"
+                   class="btn btn-outline-primary " role="button"> See more</a>
             </div>
         </div>
     {% else %}
