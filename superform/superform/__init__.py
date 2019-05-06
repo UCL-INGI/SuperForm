@@ -6,14 +6,15 @@ from flask import Flask, render_template, session, request
 import superform.plugins
 from superform.authentication import authentication_page
 from superform.authorizations import authorizations_page
-from superform.edit import edit_page
-from superform.stats import stats_page
 from superform.channels import channels_page
 from superform.delete import delete_page
+from superform.edit import edit_page
+from superform.lists import lists_page
 from superform.models import db, User, Post, Publishing, Channel, State, Comment
 from superform.posts import posts_page
-from superform.search import search_page
 from superform.publishings import pub_page
+from superform.search import search_page
+from superform.stats import stats_page
 from superform.users import get_moderate_channels_for_user, is_moderator
 from superform.plugins.pdf import export
 from superform.plugins._rss_page import rss_page
@@ -33,6 +34,7 @@ app.register_blueprint(edit_page)
 app.register_blueprint(facebook_page)
 app.register_blueprint(linkedin_page)
 app.register_blueprint(gcal_page)
+app.register_blueprint(lists_page)
 app.register_blueprint(posts_page)
 app.register_blueprint(pub_page)
 app.register_blueprint(rss_page)

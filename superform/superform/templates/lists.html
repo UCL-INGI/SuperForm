@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dataTables.bootstrap4.min.css') }}"
+          crossorigin="anonymous">
+{% endblock %}
+{% block content %}
+    <h1>{{ title }}</h1>
+
+    {% if session.logged_in %}
+        <div class="row">
+            <div class="col-md-12">
+                <table id="publishing-table" class="table table-bordered table-striped" style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>
+                            #
+                        </th>
+                        <th>
+                            Channel
+                        </th>
+                        <th>
+                            Subject
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for item in my_publishings %}
+                        {% if item.state == state %}
+                            <tr>
+                                <td>
+                                    {{ item.post_id }}
+                                </td>
+                                <td>
+                                    {{ item.channel.name }}
+                                </td>
+                                <td>
+                                    {{ item.title }}
+                                </td>
+                                <td>
+                                    {% if state == states.REFUSED.value %}
+                                        <a href="{{ url_for('posts.resubmit_publishing', id=item.publishing_id) }}"
+                                           class="btn btn-outline-primary" role="button">Resubmit</a>
+                                    {% endif %}
+                                    <a href="{{ url_for('delete.delete', id=item.post_id) }}"
+                                       class="btn btn-outline-warning"
+                                       role="button">Delete</a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>
+                            #
+                        </th>
+                        <th>
+                            Channel
+                        </th>
+                        <th>
+                            Subject
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <p>You are not logged in.</p>
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/dataTables.bootstrap4.min.js') }}" crossorigin="anonymous"></script>
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#publishing-table').DataTable({
+                "order": [[0, 'desc']]
+            });
+        });
+    </script>
+
+{% endblock %}

@@ -49,7 +49,6 @@ def display_rss_feed(id):
 
     generated_file = feed.rss()
 
-
     proxy = io.StringIO()
     proxy.write(generated_file)
 
