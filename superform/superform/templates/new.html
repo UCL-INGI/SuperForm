@@ -62,6 +62,14 @@
                                                        class="form-control">
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#dialModal">
+                                                    <i class="fas fa-fw fa-edit"></i> Copy from Dial
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -173,7 +181,8 @@
                                                             <label for="{{ chan.name }}_starthour">Starting
                                                                 hour</label><br>
                                                             <input type="time" name="{{ chan.name }}_starthour"
-                                                                   id="{{ chan.name }}_starthour" class="form-control" value="00:00">
+                                                                   id="{{ chan.name }}_starthour" class="form-control"
+                                                                   value="00:00">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
@@ -181,7 +190,8 @@
                                                             <label for="{{ chan.name }}_endhour">Ending
                                                                 hour</label><br>
                                                             <input type="time" name="{{ chan.name }}_endhour"
-                                                                   id="{{ chan.name }}_endhour" class="form-control" value="23:59">
+                                                                   id="{{ chan.name }}_endhour" class="form-control"
+                                                                   value="23:59">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -229,6 +239,37 @@
             </div>
         </form>
 
+        <!-- Dial -->
+        <div class="modal fade" id="dialModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form method="post">
+                        <input type="hidden" name="@action" value="edit">
+                        <input id="channel-id" type="hidden" name="id" value="">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Paramètre</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input name="name" type="text" class="form-control" id="inlineFormInputText"
+                                   placeholder="Author">
+                        </div>
+                        <div class="modal-body">
+                            <input name="name" type="text" class="form-control" id="inlineFormInputText"
+                                   placeholder="Publication year">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="dial_search" class="btn btn-success">Search</button>
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- Modals -->
         {% call modal.modal_block(id='previewModal', title='Image preview') %}
             <div>Preview</div>
@@ -244,6 +285,15 @@
     <script type="text/javascript">
         var post_form_validations = {{ post_form_validations|tojson }};
     </script>
+
+    <script>
+        //Dial search
+        var btn = document.getElementById("dial_search");
+        btn.onclick = function () {
+            alert(0);
+        };
+    </script>
+
     <script>
         function PreviewFunction(post) {
             var protocol = /^http[s]?:\/{2}/i;
@@ -375,7 +425,7 @@
                     var message = $("<div>");
                     message.addClass("alert");
                     message.addClass("alert-danger");
-                    message.text("Could not load the given image :(");
+                    message.text("Could not load the given image");
 
                     container.empty();
                     container.append(message);
