@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+{% block title %} Copy from Dial {% endblock %}
+{% block content %}
+    <h1>Copy from Dial</h1>
+
+    {% if session.logged_in %}
+        {% if not message_result %}
+            <p>Leave fields blank if they are not useful for the search.</p>
+            <form method="POST">
+                <input type="hidden" name="@action" value="search">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="title">Title</label><br>
+                                    <input type="text" name="title" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="author">Author</label><br>
+                                    <input type="text" name="author" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="year">Publication Year</label><br>
+                                    <input type="text" name="year" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="document_type">Document type</label><br>
+                                    <select name="document_type" class="custom-select">
+                                        <option value="" selected>Any</option>
+                                        <option value="boreal-system:ArticleCM">Journal article</option>
+                                        <option value="boreal-system:PatentCM">Patent</option>
+                                        <option value="boreal-system:SpeechCM">Conference Paper</option>
+                                        <option value="boreal-system:BookChapterCM">Book Chapter</option>
+                                        <option value="boreal-system:WorkingPaperCM">Working Paper</option>
+                                        <option value="boreal-system:BookCM">Book</option>
+                                        <option value="boreal-system:PreprintCM">Preprint</option>
+                                        <option value="boreal-system:ReportCM">Report</option>
+                                        <option value="boreal-system:ThesisCM">Dissertation</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="language">Language</label><br>
+                                    <select name="language" class="custom-select">
+                                        <option value="" selected>Any</option>
+                                        <option value="eng">English</option>
+                                        <option value="fre">French</option>
+                                        <option value="ger">German</option>
+                                        <option value="dut">Dutch</option>
+                                        <option value="ita">Italian</option>
+                                        <option value="spa">Spanish</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success" type="submit">Search</button>
+            </form>
+        {% else %}
+            <p>{{ message_result }}</p>
+            <a type="button" class="btn btn-outline-primary" href="{{ url_for('dial.dial_search') }}">New search</a>
+
+            {% if search_result|length > 0 %}
+
+                <p></p>
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Author(s)
+                        </th>
+                        <th>
+                            Publication Year
+                        </th>
+                        <th>
+                            Language
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="list-publishings">
+                    {% for reference in search_result %}
+                        <form method="POST">
+                            {% set title = reference.get('sm_title', [""])[0] %}
+                            {% set description = reference.get('tm_abstract', [""])[0] %}
+                            {% set link = reference.get('sm_handle', [""])[0] %}
+                            <tr>
+                                <td>
+                                    {{ title }}
+                                </td>
+                                <td>
+                                    {% if reference['sm_creator'] %}
+                                        {% for creat in reference['sm_creator'] %}
+                                            {{ creat + ";" }}
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if reference['sm_date'] %}
+                                        {{ reference['sm_date'][0] }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if reference['sm_isolang'] %}
+                                        {% for lang in reference['sm_isolang'] %}
+                                            {{ lang }}
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <input type="hidden" name="@action" value="import">
+                                    <input type="hidden" name="title" value="{{ title }}">
+                                    <input type="hidden" name="description" value="{{ description }}">
+                                    <input type="hidden" name="link" value="{{ link }}">
+                                    <button class="btn btn-outline-primary" type="submit">Import</button>
+                                </td>
+                            </tr>
+                        </form>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <p>You are not logged in.</p>
+    {% endif %}
+{% endblock %}

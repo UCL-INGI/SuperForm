@@ -4,6 +4,7 @@ import pkgutil
 from flask import Flask, render_template, session, request
 
 import superform.plugins
+from superform.plugins.pages.dial import dial_page
 from superform.authentication import authentication_page
 from superform.authorizations import authorizations_page
 from superform.channels import channels_page
@@ -40,6 +41,7 @@ app.register_blueprint(pub_page)
 app.register_blueprint(rss_page)
 app.register_blueprint(search_page)
 app.register_blueprint(stats_page)
+app.register_blueprint(dial_page)
 
 # Init dbs
 db.init_app(app)

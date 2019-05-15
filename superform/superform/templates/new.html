@@ -25,18 +25,23 @@
                         <div class="col-md-8">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <a href="{{ url_for('dial.dial_search') }}"
+                                       type="button" class="btn btn-primary"> Copy from Dial
+                                    </a>
                                     <div class="form-group">
                                         <label for="titlepost">Title</label><br>
-                                        <input type="text" name="titlepost" id="titlepost" class="form-control">
+                                        <input type="text" name="titlepost" id="titlepost" class="form-control"
+                                               value="{{ dial_title }}">
                                     </div>
                                     <div class="form-group">
                                         <label for="descriptionpost">Description</label><br>
                                         <textarea class="form-control" rows="5" id="descriptionpost"
-                                                  name="descriptionpost"></textarea>
+                                                  name="descriptionpost"> {{ dial_description }} </textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="linkurlpost">Link</label><br>
-                                        <input type="text" name="linkurlpost" id="linkurlpost" class="form-control">
+                                        <input type="text" name="linkurlpost" id="linkurlpost" class="form-control"
+                                               value="{{ dial_link }}">
                                     </div>
                                     <div class="form-group">
                                         <label for="imagepost">Image</label><br>
@@ -60,14 +65,6 @@
                                                 <label for="dateuntilpost">Publication Until</label><br>
                                                 <input id="dateuntilpost" name="dateuntilpost" type="date"
                                                        class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                        data-target="#dialModal">
-                                                    <i class="fas fa-fw fa-edit"></i> Copy from Dial
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -239,37 +236,6 @@
             </div>
         </form>
 
-        <!-- Dial -->
-        <div class="modal fade" id="dialModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form method="post">
-                        <input type="hidden" name="@action" value="edit">
-                        <input id="channel-id" type="hidden" name="id" value="">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Paramètre</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <input name="name" type="text" class="form-control" id="inlineFormInputText"
-                                   placeholder="Author">
-                        </div>
-                        <div class="modal-body">
-                            <input name="name" type="text" class="form-control" id="inlineFormInputText"
-                                   placeholder="Publication year">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="dial_search" class="btn btn-success">Search</button>
-                            <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
         <!-- Modals -->
         {% call modal.modal_block(id='previewModal', title='Image preview') %}
             <div>Preview</div>
@@ -284,14 +250,6 @@
 {% block scripts %}
     <script type="text/javascript">
         var post_form_validations = {{ post_form_validations|tojson }};
-    </script>
-
-    <script>
-        //Dial search
-        var btn = document.getElementById("dial_search");
-        btn.onclick = function () {
-            alert(0);
-        };
     </script>
 
     <script>

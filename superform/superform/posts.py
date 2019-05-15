@@ -44,7 +44,7 @@ def create_a_post(form):  # called in publish_from_new_post() & new_post()
 
 @posts_page.route('/new', methods=['GET', 'POST'])
 @login_required()
-def new_post():
+def new_post(dial_data=None):
     user_id = session.get("user_id", "") if session.get("logged_in", False) else -1
     list_of_channels = channels_available_for_user(user_id)
     ictv_chans = []
@@ -58,7 +58,7 @@ def new_post():
         if 'ictv_data_form' in unavailable_fields:
             ictv_chans.append(elem)
 
-    if request.method == "GET":  # when clicking on the new post tab
+    if request.method == "GET" or dial_data is not None:  # when clicking on the new post tab
         ictv_data = None
         if len(ictv_chans) != 0:
             from superform.plugins.ictv import process_ictv_channels
@@ -68,9 +68,19 @@ def new_post():
         default_date = {'from': date.today(), 'until': date.today() + timedelta(days=7)}
         post_form_validations = get_post_form_validations()
 
+        # dial
+        dial_title = ""
+        dial_description = ""
+        dial_link = ""
+        if dial_data is not None:
+            dial_title = dial_data[0]
+            dial_description = dial_data[1]
+            dial_link = dial_data[2]
+
         return render_template('new.html', l_chan=list_of_channels, ictv_data=ictv_data,
                                post_form_validations=post_form_validations,
-                               date=default_date)
+                               date=default_date, dial_title=dial_title, dial_description=dial_description,
+                               dial_link=dial_link)
     else:
         # Save as draft
         create_a_post(request.form)
