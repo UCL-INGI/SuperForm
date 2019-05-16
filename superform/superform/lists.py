@@ -31,7 +31,7 @@ def get_publications_to_moderate(user):
         .filter(Authorization.user_id == user.id, Authorization.permission == Permission.MODERATOR.value)
         .filter(Authorization.channel_id == Publishing.channel_id)
         .filter(Publishing.post_id == Post.id).filter(Channel.id == Publishing.channel_id)
-        .filter(Publishing.state == State.NOTVALIDATED.value)
+        .filter(Publishing.state == State.NOT_VALIDATED.value)
         .order_by(desc(Publishing.post_id)).all()]
     return moderable_pubs_per_chan
 
@@ -41,7 +41,7 @@ def get_publications_to_moderate(user):
 def refused_publishings():
     user = User.query.get(session.get("user_id", "")) if session.get("logged_in", False) else None
     return render_template("lists.html", title="Refused publishings", user=user, my_publishings=get_publications(user),
-                           state=State.REFUSED.value, states=State)
+                           state=State.REFUSED.value, states=State, need_action=True)
 
 
 @lists_page.route('/my_accepted_publishings', methods=['GET'])
@@ -60,8 +60,17 @@ def unmoderated_publishings():
                            my_publishings=get_publications(user), state=State.NOT_VALIDATED.value, states=State)
 
 
+@lists_page.route('/unmoderated_publishings', methods=['GET'])
+@login_required()
+def moderator_unmoderated_publishings():
+    user = User.query.get(session.get("user_id", "")) if session.get("logged_in", False) else None
+    return render_template("lists.html", title="Unmoderated publishings", user=user,
+                           my_publishings=get_publications_to_moderate(user), state=State.NOT_VALIDATED.value,
+                           to_moderate=True, states=State, need_action=True)
+
+
 @lists_page.route('/all_my_posts', methods=["GET"])
 @login_required()
 def all_posts():
     user = User.query.get(session.get("user_id", "")) if session.get("logged_in", False) else None
-    return render_template("lists.html", title="All my posts", user=user, posts=get_all_posts(user))
+    return render_template("lists.html", title="All my posts", user=user, posts=get_all_posts(user), need_action=True)

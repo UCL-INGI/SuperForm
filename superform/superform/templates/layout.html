@@ -45,15 +45,12 @@
                         <a class="nav-link" href="{{ url_for('channels.channel_list') }}">Channels</a>
                     </li>
                 {% endif %}
-
                 {% if session.moderator %}
-                    <li class="nav-item {{ 'active' if request.endpoint == 'publishings.moderate' else '' }}">
-                        <a class="nav-link" href="{{ url_for('publishings.moderate') }}">
-                            Moderate
-                        </a>
+                    <li class="nav-item {{ 'active' if request.endpoint == 'lists.moderator_unmoderated_publishings' else '' }}">
+                        <a class="nav-link" href="{{ url_for('lists.moderator_unmoderated_publishings') }}">
+                            Moderate </a>
                     </li>
                 {% endif %}
-
                 <li class="nav-item {{ 'active' if request.endpoint == 'lists.all_posts' else '' }}">
                     <a class="nav-link" href="{{ url_for('lists.all_posts') }}">All my posts</a>
                 </li>

@@ -24,9 +24,11 @@
                         <th>
                             Subject
                         </th>
-                        <th>
-                            Action
-                        </th>
+                        {% if need_action %}
+                            <th>
+                                Action
+                            </th>
+                        {% endif %}
                     </tr>
                     </thead>
 
@@ -43,17 +45,19 @@
                                 <td>
                                     {{ item.title }}
                                 </td>
-                                <td>
-                                    {% if to_moderate %}
+                                {% if to_moderate %}
+                                    <td>
                                         <a href="{{ url_for('publishings.moderate_publishing',id=item.post_id,idc=item.channel_id) }}"
                                            class="btn btn-outline-primary" role="button">Moderate</a>
-                                    {% else %}
-                                        {% if state == states.REFUSED.value %}
+                                    </td>
+                                {% else %}
+                                    {% if state == states.REFUSED.value %}
+                                        <td>
                                             <a href="{{ url_for('posts.resubmit_publishing', id=item.publishing_id) }}"
                                                class="btn btn-outline-primary" role="button">Rework</a>
-                                        {% endif %}
+                                        </td>
                                     {% endif %}
-                                </td>
+                                {% endif %}
                             </tr>
                         {% endif %}
                     {% endfor %}
@@ -93,9 +97,11 @@
                         <th>
                             Subject
                         </th>
-                        <th>
-                            Action
-                        </th>
+                        {% if need_action %}
+                            <th>
+                                Action
+                            </th>
+                        {% endif %}
                     </tr>
                     </tfoot>
                 </table>
@@ -108,12 +114,44 @@
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/dataTables.bootstrap4.min.js') }}" crossorigin="anonymous"></script>
-    <script type="text/javascript" class="init">
-        $(document).ready(function () {
-            $('#publishing-table').DataTable({
-                "order": [[0, 'desc']]
+
+    {% if my_publishings and need_action %}
+        <script type="text/javascript" class="init">
+            $(document).ready(function () {
+                $('#publishing-table').DataTable({
+                    "order": [[0, 'desc']],
+                    "columnDefs": [
+                        {"width": "8%", "targets": 0},
+                        {"width": "17%", "targets": 1},
+                        {"width": "10%", "targets": 3}
+                    ]
+                });
             });
-        });
-    </script>
+        </script>
+    {% elif my_publishings %}
+        <script type="text/javascript" class="init">
+            $(document).ready(function () {
+                $('#publishing-table').DataTable({
+                    "order": [[0, 'desc']],
+                    "columnDefs": [
+                        {"width": "8%", "targets": 0},
+                        {"width": "17%", "targets": 1}
+                    ]
+                });
+            });
+        </script>
+    {% else %}
+        <script type="text/javascript" class="init">
+            $(document).ready(function () {
+                $('#publishing-table').DataTable({
+                    "order": [[0, 'desc']],
+                    "columnDefs": [
+                        {"width": "8%", "targets": 0},
+                        {"width": "22%", "targets": 2}
+                    ]
+                });
+            });
+        </script>
+    {% endif %}
 
 {% endblock %}

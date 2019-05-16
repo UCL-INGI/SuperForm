@@ -45,7 +45,7 @@ def search_publishings():
                 row["author"] = p.get_author()
                 row["button"] = url_for('publishings.moderate_publishing', id=p.post_id, idc=p.channel_id)
                 data.append(row)
-    return json.dumps(data)
+    return json.dumps(data[:5])
 
 
 @search_page.route('/search_post', methods=['POST'])
@@ -77,4 +77,4 @@ def search_post():
             row["hrefDelete"] = "#"
             row["hrefExportPdf"] = str(item.id)
             data.append(row)
-    return json.dumps(data)
+    return json.dumps(data[:5])
