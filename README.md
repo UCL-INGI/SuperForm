@@ -7,8 +7,6 @@ SuperForm is a data sharing manager that lets users insert information in a sing
 
 This project is a web applciation written in Python and use the framework Flask.
 
-SuperForm is currently used at UCLouvain.
-
 
 ## Motivation
 
