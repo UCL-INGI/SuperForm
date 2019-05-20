@@ -9,3 +9,9 @@ __pycache__/
 /superform/.cache/*
 /superform/.pytest_cache/*
 /superform/superform/superform.db
+superform/superform/plugins/pdf/
+superform/geckodriver.log
+superform/superform/back-up/
+superform/cert.pem
+superform/key.pem
+superform/superform/plugins/rss/

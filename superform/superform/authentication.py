@@ -1,12 +1,13 @@
 from flask import Blueprint, current_app, url_for, request, make_response, redirect, session, render_template
-from flask_sqlalchemy import SQLAlchemy
 
 from onelogin.saml2.auth import OneLogin_Saml2_Auth
 from onelogin.saml2.utils import OneLogin_Saml2_Utils
 
-from superform.models import db, User
+from superform.models import db, User, Publishing
+from superform.users import get_moderate_channels_for_user, is_moderator
 
 authentication_page = Blueprint('authentication', __name__)
+
 
 def prepare_saml_request(request):
     acs_config = current_app.config["SAML"]["sp"]["assertionConsumerService"]
@@ -58,6 +59,7 @@ def callback():
         session["name"] = user.name
         session["email"] = user.email
         session["admin"] = user.admin
+        session["moderator"] = is_moderator(user)
 
         # Redirect to desired url
         self_url = OneLogin_Saml2_Utils.get_self_url(prepare_saml_request(request))

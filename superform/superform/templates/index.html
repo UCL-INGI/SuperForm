@@ -1,107 +1,257 @@
 {% extends "layout.html" %}
 {% block title %}Index{% endblock %}
+{% block messages %}
+    {% include "display_messages.html" %}
+{% endblock %}
 {% block content %}
     <h1>Index</h1>
 
     {% if session.logged_in %}
+
         <div class="row">
         <div class="col-md-12">
             {% if user.is_mod %}
                 <h2>Unmoderated Publishings</h2>
+                <div id="search_unmoderated">{% include 'search_unmoderated_publishings.html' %} </div>
                 <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>
+                            Channel
+                        </th>
+                        <th>
+                            Subject
+                        </th>
+                        <th>
+                            Body
+                        </th>
+                        <th>
+                            Author
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="list-publishings">
+                    {% for p in publishings %}
+                        <tr>
+                            <td>
+                                {% for chan in channels %}
+                                    {% if p.channel_id == chan.id %}
+                                        {{ chan.name }}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {{ p.title }}
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col">{{ p.description }}</div>
+                                </div>
+                            </td>
+                            <td>
+                                {{ p.get_author() }}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('publishings.moderate_publishing',id=p.post_id,idc=p.channel_id) }}"
+                                   class="btn btn-outline-primary" role="button">Moderate</a>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="d-flex flex-row-reverse">
+                    <a href="{{ url_for('publishings.moderate') }}"
+                       class="btn btn-outline-primary " role="button"> See more</a>
+                </div>
+            {% endif %}
+
+            <h2>All my posts</h2>
+            <div id="search_post">{% include 'search_post.html' %} </div>
+            <table class="table table-bordered">
                 <thead>
-                  <tr>
+                <tr>
                     <th>
-                      Channel
+                        #
                     </th>
                     <th>
-                      Subject
+                        Subject
                     </th>
                     <th>
-                      Body
-                    </th>
-                    <th>
-                        Author
+                        Body
                     </th>
                     <th>
                         Action
                     </th>
-                  </tr>
+                </tr>
                 </thead>
 
-                <tbody>
-                {% for p in publishings %}
+                <tbody class="list-posts">
+                {% for item in posts %}
                     <tr>
                         <td>
-                            {{ p.channel.name }}
+                            {{ item.id }}
                         </td>
                         <td>
-                            {{ p.title }}
+                            {{ item.title }}
                         </td>
                         <td>
                             <div class="row">
-                                <div class="col">{{ p.description }}</div>
+                                <div class="col">{{ item.description }}</div>
                             </div>
                         </td>
                         <td>
-                            {{ p.get_author() }}
-                        </td>
-                        <td>
-                            <a href="{{ url_for('publishings.moderate_publishing',id=p.post_id,idc=p.channel_id) }}" class="btn btn-outline-primary" role="button">Moderate</a>
-
+                            <a class="btn btn-outline-primary" role="button"
+                               href="{{ url_for('edit.edit_post', post_id=item.id) }}">Edit</a>
+                            <a href="{{ url_for('delete.delete', id=item.id) }}" class="btn btn-outline-warning"
+                               role="button">Delete</a>
+                            <!-- Team06: Export to PDF feature -->
+                            <button type="button" class="btn btn-info"
+                                    data-toggle="modal" data-target="#exportModal"
+                                    data-id="{{ item.id }}">
+                                <i class="fas fa-fw fa-file-pdf"></i> Export
+                            </button>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
-                </table>
-            {% endif %}
-            <h2>All my posts</h2>
-            <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>
-                  #
-                </th>
-                <th>
-                  Subject
-                </th>
-                <th>
-                  Body
-                </th>
-                <th>
-                    Action
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-                {% for item in posts %}
-                <tr>
-                    <td>
-                        {{ item.id }}
-                    </td>
-                    <td>
-                        {{ item.title }}
-                    </td>
-                    <td>
-                        <div class="row">
-                            <div class="col">{{ item.description }}</div>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="#" class="btn btn-outline-primary" role="button">Edit</a>
-                        <a href="#" class="btn btn-outline-primary">Copy</a>
-                        <a href="#" class="btn btn-outline-warning" role="button">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
             </table>
+            <div class="d-flex flex-row-reverse">
+                <a href="{{ url_for('lists.all_posts') }}"
+                   class="btn btn-outline-primary " role="button"> See more</a>
+            </div>
+
+            <!--Add publishing that we can rebsumit-->
+            <h2>Refused publishings</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    {% for item in pubs_unvalidated %}
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <span class="font-weight-bold">{{ item.title }}</span>
+                                </div>
+                                <div class="card-subtitle mb-2 text-muted" title="{{ item.comment }}">Comment
+                                    : {{ item.comment_short }}</div>
+                                <div class="card-text">
+                                    <div class="tags">
+                                        {% for channel in item.channels %}
+                                            <a href="#" class="badge badge-primary">
+                                                {{ channel.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                    <p class="preview">
+                                        {{ item.description }}
+                                    </p>
+                                </div>
+                                <a class="btn btn-outline-primary" role="button"
+                                   href="{{ url_for('posts.resubmit_publishing', id=item.publishing_id) }}">Resubmit</a>
+                                <a href="{{ url_for('delete.delete', id=item.post_id) }}"
+                                   class="btn btn-outline-warning"
+                                   role="button">Delete</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="d-flex flex-row-reverse">
+                <a href="{{ url_for('lists.refused_publishings') }}"
+                   class="btn btn-outline-primary " role="button"> See more</a>
+            </div>
         </div>
-      </div>
     {% else %}
-        <p>Your are not logged in.</p>
+        <!-- If not logged, log in interface -->
+        <div class="container">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <div class="d-flex justify-content-center">
+                        <img src="{{ url_for('static', filename='assets/uclouvain.png') }}" alt="logo ucl">
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-lg btn-success" href="{{ url_for('authentication.login') }}" role="button">
+                            <i class="fas fa-sign-in-alt"></i> Log In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endif %}
 
+    <!-- Team06: Export to PDF feature -->
+    {% if templates.count() > 0 %}
+        <div class="modal fade" id="exportModal" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form method="post">
+                        <input type="hidden" name="@action" value="export">
+                        <input id="post-id" type="hidden" name="id" value="">
+                        <input id="chan-id" type="hidden" name="idc" value="">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Export to PDF</h5>
+                            <button type="button" class="close"
+                                    data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Which template would you like to use ?</p>
+                        </div>
+                        <!--<form class="form-inline" method="post">-->
+                        <input type="hidden" name="@action" value="templates">
+                        <label class="sr-only" for="inlineFormInputText">Username</label>
+                        <label class="sr-only"
+                               for="inlineFormCustomSelectTemplate">Template</label>
+                        <div class="input-group mr-sm-2">
+                            <select name="template" class="custom-select"
+                                    id="inlineFormCustomSelectTemplate">
+                                <option value="0" selected disabled>Choose a template...</option>
+                                {% for template in templates %}
+                                    <option value="{{ template.id }}">{{ template.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!--</form>-->
+                        <div class="modal-footer">
+                            <button id="ExportPDF" disabled type="submit" class="btn btn-info">Export to pdf
+                            </button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#inlineFormCustomSelectTemplate').val("0");
+
+            $('#inlineFormCustomSelectTemplate').change(function () {
+                var selectVal = $('#inlineFormCustomSelectTemplate').val();
+                if (Number(selectVal) < 0) {
+                    $('#ExportPDF').prop("disabled", true);
+                } else {
+                    $('#ExportPDF').prop("disabled", false);
+                }
+            })
+
+        });
+    </script>
+    <script>
+        $('#exportModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            $(this).find('#chan-id').val(button.data('idc'));
+            $(this).find('#post-id').val(button.data('id'));
+        });
+    </script>
 {% endblock %}

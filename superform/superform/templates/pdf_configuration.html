@@ -1,0 +1,49 @@
+<!--
+author: Team 06
+date: December 2018
+This is an html file used for the pdf module
+-->
+{% extends "channel_configure.html" %}
+{% block content %}
+    <h1>Configuration</h1>
+    {% if session.logged_in %}
+        <form method="POST" action="">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% for field in config_fields %}
+                                <div class="form-group">
+                                    <label for="{{ field }}">{{ field }}</label><br>
+                                    {% if field == 'Format' %}
+                                        {% for format in formats %}
+                                            <input type="radio"
+                                                   name="format"
+                                                   value="{{ format }}"
+                                                   id="{{ format }}"
+                                            > {{ format }} <br/>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for logo in logos %}
+                                            <input type="radio"
+                                                   name="logo"
+                                                   value="{{ logo }}"
+                                                   id="{{ logo }}"
+                                            > {{ logo }} <br/>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success" type="submit">Save Configuration
+            </button>
+            <a type="button" class="btn btn-outline-primary"
+               href="{{ url_for('channels.channel_list') }}">Abort</a>
+        </form>
+    {% else %}
+        You are not logged in.
+    {% endif %}
+{% endblock %}
