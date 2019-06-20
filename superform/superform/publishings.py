@@ -31,7 +31,7 @@ def create_a_publishing(post, chn, form):
 @login_required()
 def moderate_publishing(id, idc):
     pub = db.session.query(Publishing).filter(Publishing.post_id == id, Publishing.channel_id == idc).first()
-    c = db.session.query(Channel).filter(Channel.id == pub.channel_id).first()
+    c = db.session.query(Channel).filter(Channel.id == idc).first()
     pub.date_from = str_converter(pub.date_from)
     pub.date_until = str_converter(pub.date_until)
 
@@ -42,9 +42,9 @@ def moderate_publishing(id, idc):
 
     if request.method == "GET":
         if channels.valid_conf(c_conf, plugin.CONFIG_FIELDS):
-            return render_template('moderate_post.html', pub=pub, notconf=False)
+            return render_template('moderate_post.html', pub=pub, notconf=False, chan=c)
         else:
-            return render_template('moderate_post.html', pub=pub, notconf=True)
+            return render_template('moderate_post.html', pub=pub, notconf=True, chan=c)
     else:
         pub.title = request.form.get('titlepost')
         pub.description = request.form.get('descrpost')
@@ -60,7 +60,7 @@ def moderate_publishing(id, idc):
             # running the plugin here
             plugin.run(pub, c_conf)
         else:
-            return render_template('moderate_post.html', pub=pub, notconf=True)
+            return render_template('moderate_post.html', pub=pub, notconf=True, chan=c)
 
         return redirect(url_for('index'))
 
