@@ -69,6 +69,7 @@ def test_valid_module(client):
 def test_valid_linkedin_configuration(client):
     assert "LINKEDIN_API_KEY" in client.application.config
     assert "LINKEDIN_API_SECRET" in client.application.config
+    assert "LINKEDIN_API_ACCESS_TOKEN_URL" in client.application.config
 
 
 def test_callback_no_param(client):

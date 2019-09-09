@@ -145,7 +145,7 @@ def create_data_json(post_id):
             can_edit = plugin.can_edit(pub, p.config)
         except AttributeError:
             can_edit = False
-        if not (pub.state == 1 and not can_edit):
+        if not (pub.state == State.VALIDATED.value and not can_edit):
             elem = dict((col, getattr(p, col)) for col in p.__table__.columns.keys())
             for e in elem:
                 if e == "module" or e == "name":

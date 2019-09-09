@@ -21,28 +21,5 @@ def post_pre_validation(post):
     return post_pre_validation_plugins(post, 40000, 40000)
 
 
-def authenticate(channel_id, publishing_id):
-    return 'AlreadyAuthenticated'
-
-
 def run(publishing, channel_config):
-    publishing.state = 1
-    db.session.commit()
     return StatusCode.OK, None
-
-
-def saveExtraFields(channel, form):
-    return None
-
-
-# returns the name of an extra form (pre-fillable), None if not needed
-def get_template_mod():
-    return None
-
-
-def deletable():
-    return True
-
-
-def delete(pub):
-    pass

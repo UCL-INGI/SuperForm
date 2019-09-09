@@ -33,6 +33,6 @@ setup(
         'rfeed',
         'sqlalchemy',
         'selenium',
-        'slackclient'
+        'slackclient<=1.3'
     ]
 )

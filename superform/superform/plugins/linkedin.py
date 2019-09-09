@@ -24,7 +24,6 @@ def run(publishing, channel_config):
     if 'access_token' not in json_data:
         return StatusCode.ERROR, "Invalid acces_token."
     access_token = json_data['access_token']
-    page = get_page_from_id(access_token, page_id)
     headers = {'Authorization': 'Bearer ' + access_token, 'Host': 'api.linkedin.com', 'Connection': 'Keep-Alive',
                'x-li-format': 'json', "Content-Type": "application/json"}
     if publishing.link_url == "" and publishing.image_url == "":
@@ -45,11 +44,11 @@ def run(publishing, channel_config):
 
     data = json.dumps(data)
     # response = requests.post("https://api.linkedin.com/v1/people/~/shares/?format=json",headers=headers,data=data)
-    response = requests.post("https://api.linkedin.com/v1/companies/" + page_id + "/shares/?format=json",
+    response = requests.post("https://api.linkedin.com/v2/organizations/" + page_id + "/shares/?format=json",
                              headers=headers,
                              data=data)
     if response.status_code != 201:
-        return StatusCode.ERROR, "Linked In publish failed"
+        return StatusCode.ERROR, "LinkedIn publish failed"
     return StatusCode.OK, None
 
 
@@ -69,7 +68,7 @@ def check_validity(channel_config):
     access_token = json_data['access_token']
     headers = {'Authorization': 'Bearer ' + access_token, 'Host': 'api.linkedin.com', 'Connection': 'Keep-Alive',
                'x-li-format': 'json', "Content-Type": "application/json"}
-    response = requests.get("https://api.linkedin.com/v1/people/~", headers=headers)
+    response = requests.get("https://api.linkedin.com/v2/me/~", headers=headers)
     if response.status_code == 401:
         jd = json.loads(response.text)
         if jd['message'] == 'Invalid access token.':
@@ -85,7 +84,7 @@ def get_page_from_id(acc_tok, page_id):
         return None
     try:
         response = requests.get(
-            "https://api.linkedin.com/v1/companies?format=json&is-company-admin=true&oauth2_access_token=" + acc_tok)
+            "https://api.linkedin.com/v2/companies?format=json&is-company-admin=true&oauth2_access_token=" + acc_tok)
         json_data = json.loads(response.content)
         for page in json_data['values']:
             if page['id'] == page_id:
@@ -99,7 +98,7 @@ def get_list_user_pages(acc_tok):
     """Return a list of dictionaries representing the LinkedIn pages of the user."""
     try:
         response = requests.get(
-            "https://api.linkedin.com/v1/companies?format=json&is-company-admin=true&oauth2_access_token=" + acc_tok)
+            "https://api.linkedin.com/v2/organizations?format=json&oauth2_access_token=" + acc_tok)
         json_data = json.loads(response.content)
         return json_data['values']
     except Exception:

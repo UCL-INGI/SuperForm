@@ -33,11 +33,6 @@ def test_postpre_rss():
     assert ret_code == 1
 
 
-def test_deletable():
-    ret_code = rss.deletable()
-    assert ret_code == True
-
-
 def pre_validate_post_title(channel, maxLengthTitle):
     post = Post
     post.title = "x" * maxLengthTitle

@@ -15,10 +15,10 @@ class StatusCode(Enum):
     ERROR = 1
 
 
-# ADRI standardize
+# Describe the status of a publishing
 class State(Enum):
     INCOMPLETE = -1     # draft
-    NOT_VALIDATED = 0    # waiting to be reviewed by a moderator
+    NOT_VALIDATED = 0   # waiting to be reviewed by a moderator
     VALIDATED = 1       # validated by a moderator
     PUBLISHED = 2       # archived
     REFUSED = 3         # refused by the moderation, must be reworked or deleted
@@ -36,7 +36,7 @@ class User(db.Model):
     first_name = db.Column(db.String(120), nullable=False)
     admin = db.Column(db.Boolean, default=False)
     # TEAM2: Google calendar
-    gcal_cred = db.Column(db.String(2147483647), nullable=True)
+    gcal_cred = db.Column(db.String(1000), nullable=True)
     # TEAM2: Google calendar
     posts = db.relationship("Post", backref="user", lazy=True)
     authorizations = db.relationship("Authorization", backref="user", lazy=True)
@@ -127,10 +127,6 @@ class Publishing(db.Model):
 
     def get_author(self):
         return db.session.query(Post).get(self.post_id).user_id
-
-    def get_chan_module(self):  # Return the name of the plugin used by the publication
-        chn = db.session.query(Channel).get(self.channel_id).module
-        return chn[18:]
 
 
 class Channel(db.Model):

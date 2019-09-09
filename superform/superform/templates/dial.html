@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block title %} Copy from Dial {% endblock %}
+{% block messages %}
+    {% include "display_messages.html" %}
+{% endblock %}
 {% block content %}
     <h1>Copy from Dial</h1>
 
@@ -16,9 +19,19 @@
                                     <label for="title">Title</label><br>
                                     <input type="text" name="title" class="form-control">
                                 </div>
-                                <div class="form-group">
-                                    <label for="author">Author</label><br>
-                                    <input type="text" name="author" class="form-control">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="author">Author's Name</label><br>
+                                            <input type="text" name="author_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="author">Author's First Name</label><br>
+                                            <input type="text" name="author_firstname" class="form-control">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="year">Publication Year</label><br>

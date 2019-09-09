@@ -1,7 +1,7 @@
 import importlib
 import pkgutil
 
-from flask import Flask, render_template, session, request
+from flask import Flask, render_template, session, request, current_app
 
 import superform.plugins
 from superform.plugins.pages.dial import dial_page
@@ -18,10 +18,10 @@ from superform.search import search_page
 from superform.stats import stats_page
 from superform.users import get_moderate_channels_for_user, is_moderator
 from superform.plugins.pdf import export
-from superform.plugins._rss_page import rss_page
-from superform.plugins._linkedin_callback import linkedin_page
-from superform.plugins._facebook_callback import facebook_page
-from superform.plugins._gcal_callback import gcal_page
+from superform.plugins.pages.rss_page import rss_page
+from superform.plugins.pages.linkedin_callback import linkedin_page
+from superform.plugins.pages.facebook_callback import facebook_page
+from superform.plugins.pages.gcal_callback import gcal_page
 
 app = Flask(__name__)
 app.config.from_json("config.json")
@@ -47,18 +47,11 @@ app.register_blueprint(dial_page)
 db.init_app(app)
 
 # List available channels in config
-# TEAM 7 Fb/Linkedin
-app.config["PLUGINS"] = {}
-for finder, name, ispkg in pkgutil.iter_modules(superform.plugins.__path__, superform.plugins.__name__ + "."):
-    if name[18] != '_':  # do not include files starting with an underscore (useful for callback pages)
-        app.config["PLUGINS"][name] = importlib.import_module(name)
-# TEAM 7 Fb/Linkedin
-
-# TEAM 8 Moderation
-SIZE_COMMENT = 40
-
-
-# TEAM 8 Moderation
+app.config["PLUGINS"] = {
+    name: importlib.import_module(name)
+    for finder, name, ispkg
+    in pkgutil.iter_modules(superform.plugins.__path__, superform.plugins.__name__ + ".")
+}
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -105,19 +98,20 @@ def index():
 
         for pub_unvalidated in pubs_unvalidated:
             if pub_unvalidated.post_id in post_ids:
+                size_comment = current_app.config["SIZE_COMMENT"]
                 channels_var = [db.session.query(Channel).filter(Channel.id == pub_unvalidated.channel_id).first()]
                 setattr(pub_unvalidated, "channels", channels_var)
                 last_comment = db.session.query(Comment).filter(Comment.publishing_id ==
                                                                 pub_unvalidated.publishing_id).first()
-                comm = comm_short = last_comment.moderator_comment[:SIZE_COMMENT]
-                if len(last_comment.moderator_comment) > SIZE_COMMENT:
+                comm = comm_short = last_comment.moderator_comment[:size_comment]
+                if len(last_comment.moderator_comment) > size_comment:
                     comm_short = comm + "..."
 
                 comm = last_comment.moderator_comment
                 setattr(pub_unvalidated, "comment_short", comm_short)
                 setattr(pub_unvalidated, "comment", comm)
     # TEAM06: changes in the render_template, templates
-    return render_template("index.html", posts=posts_var, pubs_unvalidated=pubs_unvalidated,
+    return render_template("index.html", posts=posts_var[:5], pubs_unvalidated=pubs_unvalidated,
                            templates=pdf_chans, user=user, channels=chans)
 
 

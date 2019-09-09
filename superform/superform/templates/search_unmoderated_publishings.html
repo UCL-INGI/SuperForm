@@ -72,8 +72,8 @@
 
         $("#search_unmoderated").find('input.checkbox').change(function () {
             tbId = $(this).attr("id").split(' ');
-            checked = $(this).is(":checked")
-            if (tbId[0] == "checkbox-search") {
+            checked = $(this).is(":checked");
+            if (tbId[0] === "checkbox-search") {
                 if (checked && !isInArray(filterPublishings.channels, tbId[1])) {
                     filterPublishings.channels.push(tbId[1]);
                     nbRequestSearchPublishings += 1;
@@ -90,8 +90,8 @@
         if (nbRequestSearchPublishings > 1) {
             nbRequestSearchPublishings -= 1;
         }
-        else if (nbRequestSearchPublishings == 1) {
-            nbRequestSearchPublishings -= 1
+        else if (nbRequestSearchPublishings === 1) {
+            nbRequestSearchPublishings -= 1;
             searchPublishings();
         }
         if (nbRequestSearchPublishings > 10) {
@@ -119,23 +119,23 @@
     }
 
     function changeTablePublishings(data) {
-        html = ''
-        if (data.length == 0) {
+        html = '';
+        if (data.length === 0) {
             html = "<b>Nothing found !</b>"
         }
         else {
             data.forEach(function (row) {
-                html += '<tr>'
-                html += '<td>' + row['channel'] + '</td>'
-                html += '<td>' + row['subject'] + '</td>'
-                html += '<td><div class="row"><div class="col">'
-                body = row['body'].substring(1, row['body'].length - 1).split(',') //String to array
+                html += '<tr>';
+                html += '<td>' + row['channel'] + '</td>';
+                html += '<td>' + row['subject'] + '</td>';
+                html += '<td><div class="row"><div class="col">';
+                body = row['body'].substring(1, row['body'].length - 1).split(','); //String to array
                 body.forEach(function (item) {
                     html += item.substring(1, item.length - 1);
                     html += '\n';
                 });
-                html += '</div></div></td>'
-                html += '<td>' + row['author'] + '</td>'
+                html += '</div></div></td>';
+                html += '<td>' + row['author'] + '</td>';
                 html += '<td><a href="' + row['button'] + '" class="btn btn-outline-primary" role="button">Moderate</a></td>'
                 html += '</tr>'
             });
@@ -155,9 +155,9 @@
     }
 
     function removeFromArray(tb, value) {
-        var tb2 = new Array()
+        var tb2 = [];
         tb.forEach(function (item, index) {
-            if (item != value)
+            if (item !== value)
                 tb2.push(item);
         });
         return tb2;
@@ -166,7 +166,7 @@
     function isInArray(tb, value) {
         var isIn = false;
         tb.forEach(function (item, index) {
-            if (item.localeCompare(value) == 0)
+            if (item.localeCompare(value) === 0)
                 isIn = true;
         });
         return isIn;

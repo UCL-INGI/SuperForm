@@ -156,18 +156,18 @@ def moderate_publishing(id, idc):
         pub.end_hour = time_converter(request.form.get('endhour')) if request.form.get(
             'endhour') is not None else time_converter("23:59")
 
-        if pub.state == 66:  # EDITION
+        if pub.state == State.EDITED.value:  # EDITION
             try:
                 can_edit = plugin.can_edit(pub, c_conf)
                 if can_edit:
                     plugin.edit(pub, c_conf)
-                    pub.state = 1
+                    pub.state = State.VALIDATED.value
                     db.session.commit()
                 else:
-                    pub.state = 1
+                    pub.state = State.VALIDATED.value
                     db.session.commit()
             except AttributeError:
-                pub.state = 1
+                pub.state = State.VALIDATED.value
                 flash("Error : module don't implement can_edit or edit method")
                 db.session.commit()
         else:
@@ -188,7 +188,7 @@ def moderate_publishing(id, idc):
                 return redirect(url_for('publishings.moderate_publishing', id=id, idc=idc))
 
             # If we reach here, the publication was successfull
-            pub.state = 1
+            pub.state = State.VALIDATED.value
             db.session.commit()
             flash("The publishing has successfully been published.", category='success')
 
@@ -215,18 +215,11 @@ def moderate():
 @pub_page.route('/moderate/unvalidate/<int:id>', methods=["GET", "POST"])
 @login_required()
 def unvalidate_publishing(id):
-    """SAVOIR SI ON FAIT POST_ID ET CHANNEL_ID OU PUBLISHING_ID DIRECTLY"""
-
-    print("pub-id to unvalidate ", id)
     pub = db.session.query(Publishing).filter(Publishing.publishing_id == id).first()
     pub.state = State.REFUSED.value
-
-    """TESTER SI MODERATOR_COMMENT EST NONE"""
     moderator_comment = ""
-    print('mod', request.form.get('moderator_comment'))
     if request.form.get('moderator_comment'):
         moderator_comment = request.form.get('moderator_comment')
-    print('mod_com', moderator_comment)
 
     comm = db.session.query(Comment).filter(Comment.publishing_id == pub.publishing_id).first()
     date_moderator_comment = str_converter_with_hour(datetime_now())
